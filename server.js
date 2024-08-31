@@ -3,6 +3,7 @@ import { DatabaseMemory } from "./database-memory.js"
 import Joi from "joi"
 import sqlite3 from 'sqlite3'
 import { randomUUID } from "node:crypto"
+import { error } from "node:console"
 
 const server = fastify()
 const database = new DatabaseMemory()
@@ -102,7 +103,7 @@ server.put('/eventos/:id', async (request, reply) => {
         const value = await schemaEvento.validateAsync(request.body)
         const { title, endereco, data, horario } = value
         const { rua, numero, bairro } = endereco
-
+        
         database.update(eventoId, {
             title,
             endereco: {
@@ -126,8 +127,26 @@ server.put('/eventos/:id', async (request, reply) => {
 server.delete('/eventos/:id', (request, reply) => {
     const eventoId = request.params.id
     database.delete(eventoId)
+    db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], (error, row) => {
+        if (error) {
+            console.error(error.message)
+            return reply.status(500).send({message: 'Erro ao consultar o evento'})
+        }
 
-    return reply.status(204).send()
+        if (!row) {
+            return reply.status(404).send({message: 'Evento não encontrado'})
+        }
+
+        db.run('DELETE FROM eventos WHERE id_evento = ?', [eventoId], (error) => {
+            if (error) {
+                console.error(error.message)
+                return reply.status(500).send({message: 'Erro ao deletar evento'})
+            }
+        })
+
+        reply.status(204).send()
+    })
+
 })
 
 server.listen({
