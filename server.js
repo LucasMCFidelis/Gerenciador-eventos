@@ -1,19 +1,40 @@
 import { fastify } from "fastify"
 import { DatabaseMemory } from "./database-memory.js"
-import Joi from "joi"
+import Joi, { string } from "joi"
 
 const server = fastify()
 const database = new DatabaseMemory()
 
 const schemaEvento = Joi.object({
-    title: Joi.string().min(3).required(),
+    title: Joi.string().min(3).required().messages({
+        'string.base': 'Titulo deve ser uma string',
+        'string.empty': 'Titulo não pode estar vazio'
+    }),
     endereco: Joi.object({
-        rua: Joi.string().required(),
-        numero: Joi.number().required(),
-        bairro: Joi.string().required()
+        rua: Joi.string().required().messages({
+            'string.base': 'Rua deve ser uma string',
+            'string.empty': 'Rua não pode estar vazia' 
+        }),
+        numero: Joi.string().pattern(new RegExp('^[a-zA-Z0-9\s]+$')).required().messages({
+            'string.base': 'Número deve ser uma string',
+            'string.empty': 'Número não pode estar vazio',
+            'string.pattern.base': 'Número deve conter apenas caracteres alfanuméricos'
+        }),
+        bairro: Joi.string().required().messages({
+            'string.base': 'Bairro deve ser uma string',
+            'string.empty': 'Bairro não pode estar vazia' 
+        }),
     }).required(),
-    data: Joi.string().required(),
-    horario: Joi.string().required()
+    data: Joi.string().pattern(new RegExp('^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$')).required().messages({
+        'string.base': 'Data deve ser uma string',
+        'string.empty': 'Data não pode estar vazia',
+        'string.pattern.base': 'Data deve estar no modelo "dd/mm/aaaa"'
+    }),
+    horario: Joi.string().pattern(new RegExp('^([01][0-9]|2[0-3]):([0-5][0-9])$')).required().messages({
+        'string.base': 'Horário deve ser uma string',
+        'string.empty': 'Horário não pode estar vazio',
+        'string.pattern.base': 'Horário deve estar no modelo "hh:mm"'
+    })
 });
 
 server.post('/eventos', async (request, reply) => {
