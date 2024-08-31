@@ -67,7 +67,7 @@ server.post('/eventos', async (request, reply) => {
         const { title, endereco, data, horario } = value
         const { rua, numero, bairro } = endereco
         
-        db.run(`INSERT INTO eventos (id_evento, titulo, rua, numero, bairro, data_inicio, horario) VALUES (?, ?, ?, ?, ?, ?, ?)`, [randomUUID(), title, rua, numero, bairro, data, horario], (error) => {
+        db.run('INSERT INTO eventos (id_evento, titulo, rua, numero, bairro, data_inicio, horario) VALUES (?, ?, ?, ?, ?, ?, ?)', [randomUUID(), title, rua, numero, bairro, data, horario], (error) => {
             if (error) {
                 return reply.status(500).send({message: 'Erro ao salvar evento'})
             }
@@ -82,9 +82,18 @@ server.post('/eventos', async (request, reply) => {
     }
 })
 
-server.get('/eventos', () => {
-    const eventos = database.list()
-    return eventos
+server.get('/eventos', (request, reply) => {
+    db.all('SELECT * FROM eventos', (error, rows) => {
+        if (error) {
+            console.error(error.message)
+            return reply.status(500).send({ message: 'Erro na consulta ao banco de dados' })
+        }
+        if (rows.length > 0) {
+            return reply.status(200).send(rows)
+        } else {
+            return reply.status(404).send({ message: 'Nenhum evento encontrado' })
+        }
+    })
 })
 
 server.put('/eventos/:id', async (request, reply) => {
