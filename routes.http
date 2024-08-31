@@ -1,0 +1,33 @@
+POST http://localhost:3333/eventos
+Content-Type: application/json
+
+{
+    "title": "dominus",
+    "endereco": {
+        "rua": "rua sla",
+        "numero": 123,
+        "bairro": "cristo"
+    },
+    "data": "23/10/2024",
+    "horario": "20:00"
+}
+
+###
+
+GET  http://localhost:3333/eventos
+
+###
+
+PUT  http://localhost:3333/eventos/291c182c-e096-4ce2-9bc3-5cf77e8a132c
+Content-Type: application/json
+
+{
+    "title": "aaaaaaaaaaaaaa",
+    "endereco": {
+        "rua": "rua slssssssssssssa",
+        "numero": 3,
+        "bairro": "aaaaaaaaaaaaaaaa"
+    },
+    "data": "23/10/2024",
+    "horario": "20:00"
+}
