@@ -1,9 +1,33 @@
 import { fastify } from "fastify"
 import { DatabaseMemory } from "./database-memory.js"
 import Joi from "joi"
+import sqlite3 from 'sqlite3'
+import { randomUUID } from "node:crypto"
 
 const server = fastify()
 const database = new DatabaseMemory()
+const db = new sqlite3.Database('eventos.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (error) => {
+    if (error) {
+        console.error('Erro ao conectar ao banco de dados:', error.message)
+        return
+    }
+    console.log('Conectado ao banco de dados.')
+})
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS eventos (
+        id_evento UUID,
+        titulo VARCHAR(45) NOT NULL,
+        rua VARCHAR(45) NOT NULL,
+        numero VARCHAR(45) NOT NULL,
+        bairro VARCHAR(20) NOT NULL,
+        complemento VARCHAR(45),
+        data_inicio DATE NOT NULL,
+        horario TIMESTAMP NOT NULL,
+        CONSTRAINT pk_id_evento PRIMARY KEY (id_evento)
+    )
+`)
+// db.run('drop table eventos')
 
 const schemaEvento = Joi.object({
     title: Joi.string().min(3).required().messages({
@@ -38,22 +62,18 @@ const schemaEvento = Joi.object({
 });
 
 server.post('/eventos', async (request, reply) => {
-    try{
+    try {
         const value = await schemaEvento.validateAsync(request.body)
-        const {title, endereco, data, horario} = value
-        const {rua, numero, bairro} = endereco
-        database.create({
-            title,
-            endereco : {
-                rua,
-                numero,
-                bairro
-            },
-            data,
-            horario,
-        })
+        const { title, endereco, data, horario } = value
+        const { rua, numero, bairro } = endereco
         
-        return reply.status(201).send(value)
+        db.run(`INSERT INTO eventos (id_evento, titulo, rua, numero, bairro, data_inicio, horario) VALUES (?, ?, ?, ?, ?, ?, ?)`, [randomUUID(), title, rua, numero, bairro, data, horario], (error) => {
+            if (error) {
+                return reply.status(500).send({message: 'Erro ao salvar evento'})
+            }
+            reply.status(200).send(value)
+        })
+
     } catch (error) {
         return reply.status(400).send({
             error: "Erro de validação",
@@ -71,12 +91,12 @@ server.put('/eventos/:id', async (request, reply) => {
     try {
         const eventoId = request.params.id
         const value = await schemaEvento.validateAsync(request.body)
-        const {title, endereco, data, horario} = value
-        const {rua, numero, bairro} = endereco
-    
+        const { title, endereco, data, horario } = value
+        const { rua, numero, bairro } = endereco
+
         database.update(eventoId, {
             title,
-            endereco : {
+            endereco: {
                 rua,
                 numero,
                 bairro
@@ -84,7 +104,7 @@ server.put('/eventos/:id', async (request, reply) => {
             data,
             horario,
         })
-        
+
         return reply.status(204).send(value)
     } catch (error) {
         return reply.status(400).send({
@@ -97,7 +117,7 @@ server.put('/eventos/:id', async (request, reply) => {
 server.delete('/eventos/:id', (request, reply) => {
     const eventoId = request.params.id
     database.delete(eventoId)
-    
+
     return reply.status(204).send()
 })
 
