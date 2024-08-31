@@ -7,33 +7,33 @@ const database = new DatabaseMemory()
 
 const schemaEvento = Joi.object({
     title: Joi.string().min(3).required().messages({
-        'string.base': 'Titulo deve ser uma string',
-        'string.empty': 'Titulo não pode estar vazio'
+        'string.base': ('Titulo deve ser uma string').toLowerCase(),
+        'string.empty': ('Titulo não pode estar vazio').toLowerCase()
     }),
     endereco: Joi.object({
         rua: Joi.string().required().messages({
-            'string.base': 'Rua deve ser uma string',
-            'string.empty': 'Rua não pode estar vazia' 
+            'string.base': ('Rua deve ser uma string').toLowerCase(),
+            'string.empty': ('Rua não pode estar vazia').toLowerCase()
         }),
         numero: Joi.string().pattern(new RegExp('^[a-zA-Z0-9\s]+$')).required().messages({
-            'string.base': 'Número deve ser uma string',
-            'string.empty': 'Número não pode estar vazio',
-            'string.pattern.base': 'Número deve conter apenas caracteres alfanuméricos'
+            'string.base': ('Número deve ser uma string').toLowerCase(),
+            'string.empty': ('Número não pode estar vazio').toLowerCase(),
+            'string.pattern.base': ('Número deve conter apenas caracteres alfanuméricos').toLowerCase()
         }),
         bairro: Joi.string().required().messages({
-            'string.base': 'Bairro deve ser uma string',
-            'string.empty': 'Bairro não pode estar vazia' 
+            'string.base': ('Bairro deve ser uma string').toLowerCase(),
+            'string.empty': ('Bairro não pode estar vazio').toLowerCase()
         }),
     }).required(),
     data: Joi.string().pattern(new RegExp('^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$')).required().messages({
-        'string.base': 'Data deve ser uma string',
-        'string.empty': 'Data não pode estar vazia',
-        'string.pattern.base': 'Data deve estar no modelo (dd/mm/yyyy)'
+        'string.base': ('Data deve ser uma string').toLowerCase(),
+        'string.empty': ('Data não pode estar vazia').toLowerCase(),
+        'string.pattern.base': ('Data deve estar no modelo (dd/mm/yyyy)').toLowerCase()
     }),
     horario: Joi.string().pattern(new RegExp('^([01][0-9]|2[0-3]):([0-5][0-9])$')).required().messages({
-        'string.base': 'Horário deve ser uma string',
-        'string.empty': 'Horário não pode estar vazio',
-        'string.pattern.base': 'Horário deve estar no modelo "hh:mm"'
+        'string.base': ('Horário deve ser uma string').toLowerCase(),
+        'string.empty': ('Horário não pode estar vazio').toLowerCase(),
+        'string.pattern.base': ('Horário deve estar no modelo (hh:mm)').toLowerCase()
     })
 });
 
