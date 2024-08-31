@@ -46,23 +46,31 @@ server.get('/eventos', () => {
     return eventos
 })
 
-server.put('/eventos/:id', (request, reply) => {
-    const eventoId = request.params.id
-    const {title, endereco, data, horario} = request.body
-    const {rua, numero, bairro} = endereco
-
-    database.update(eventoId, {
-        title,
-        endereco : {
-            rua,
-            numero,
-            bairro
-        },
-        data,
-        horario,
-    })
+server.put('/eventos/:id', async (request, reply) => {
+    try {
+        const eventoId = request.params.id
+        const value = await schemaEvento.validateAsync(request.body)
+        const {title, endereco, data, horario} = value
+        const {rua, numero, bairro} = endereco
     
-    return reply.status(204).send()
+        database.update(eventoId, {
+            title,
+            endereco : {
+                rua,
+                numero,
+                bairro
+            },
+            data,
+            horario,
+        })
+        
+        return reply.status(204).send(value)
+    } catch (error) {
+        return reply.status(400).send({
+            error: "Erro de validação",
+            details: error.details.map(detail => detail.message)
+        })
+    }
 })
 
 server.delete('/eventos/:id', (request, reply) => {
