@@ -1,6 +1,6 @@
 import { fastify } from "fastify"
 import { DatabaseMemory } from "./database-memory.js"
-import Joi, { string } from "joi"
+import Joi from "joi"
 
 const server = fastify()
 const database = new DatabaseMemory()
@@ -25,10 +25,10 @@ const schemaEvento = Joi.object({
             'string.empty': 'Bairro não pode estar vazia' 
         }),
     }).required(),
-    data: Joi.string().pattern(new RegExp('^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$')).required().messages({
+    data: Joi.string().pattern(new RegExp('^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$')).required().messages({
         'string.base': 'Data deve ser uma string',
         'string.empty': 'Data não pode estar vazia',
-        'string.pattern.base': 'Data deve estar no modelo "dd/mm/aaaa"'
+        'string.pattern.base': 'Data deve estar no modelo (dd/mm/yyyy)'
     }),
     horario: Joi.string().pattern(new RegExp('^([01][0-9]|2[0-3]):([0-5][0-9])$')).required().messages({
         'string.base': 'Horário deve ser uma string',
