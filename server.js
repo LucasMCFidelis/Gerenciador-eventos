@@ -12,7 +12,7 @@ const db = new sqlite3.Database('eventos.db', sqlite3.OPEN_READWRITE | sqlite3.O
     console.log('Conectado ao banco de dados.')
 })
 
-db.run('drop table eventos')
+// db.run('drop table eventos')
 db.run(`
     CREATE TABLE IF NOT EXISTS eventos (
         id_evento UUID,
@@ -94,7 +94,7 @@ server.post('/eventos', async (request, reply) => {
     }
 })
 
-server.get('/eventos', (reply) => {
+server.get('/eventos', (request, reply) => {
     db.all('SELECT * FROM eventos', (error, rows) => {
         if (error) {
             console.error(error.message)
