@@ -1,12 +1,9 @@
 import { fastify } from "fastify"
-import { DatabaseMemory } from "./database-memory.js"
 import Joi from "joi"
 import sqlite3 from 'sqlite3'
 import { randomUUID } from "node:crypto"
-import { error } from "node:console"
 
 const server = fastify()
-const database = new DatabaseMemory()
 const db = new sqlite3.Database('eventos.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (error) => {
     if (error) {
         console.error('Erro ao conectar ao banco de dados:', error.message)
@@ -139,7 +136,6 @@ server.put('/eventos/:id', (request, reply) => {
 
 server.delete('/eventos/:id', (request, reply) => {
     const eventoId = request.params.id
-    database.delete(eventoId)
     db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], (error, row) => {
         if (error) {
             console.error(error.message)
