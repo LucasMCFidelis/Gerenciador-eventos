@@ -67,10 +67,10 @@ server.post('/eventos', async (request, reply) => {
         const value = await schemaEvento.validateAsync(request.body)
         const { title, endereco, data, horario } = value
         const { rua, numero, bairro } = endereco
-        
+
         db.run('INSERT INTO eventos (id_evento, titulo, rua, numero, bairro, data_inicio, horario) VALUES (?, ?, ?, ?, ?, ?, ?)', [randomUUID(), title, rua, numero, bairro, data, horario], (error) => {
             if (error) {
-                return reply.status(500).send({message: 'Erro ao salvar evento'})
+                return reply.status(500).send({ message: 'Erro ao salvar evento' })
             }
             reply.status(200).send(value)
         })
@@ -97,32 +97,45 @@ server.get('/eventos', (request, reply) => {
     })
 })
 
-server.put('/eventos/:id', async (request, reply) => {
+server.put('/eventos/:id', (request, reply) => {
     try {
-        const eventoId = request.params.id
-        const value = await schemaEvento.validateAsync(request.body)
-        const { title, endereco, data, horario } = value
-        const { rua, numero, bairro } = endereco
-        
-        database.update(eventoId, {
-            title,
-            endereco: {
-                rua,
-                numero,
-                bairro
-            },
-            data,
-            horario,
+        const eventoId = request.params.id;
+
+        db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
+            if (error) {
+                console.error(error.message)
+                return reply.status(500).send({ message: 'Erro ao consultar o evento' })
+            }
+
+            if (!row) {
+                return reply.status(404).send({ message: 'Evento não encontrado' })
+            }
+
+            const value = await schemaEvento.validateAsync(request.body);
+            const { title, endereco, data, horario } = value;
+            const { rua, numero, bairro } = endereco;
+            db.run(`
+                UPDATE eventos 
+                SET titulo = ?, rua = ?, numero = ?, bairro = ?, data_inicio = ?, horario = ?
+                WHERE id_evento = ?
+                `, [title, rua, numero, bairro, data, horario, eventoId], (error) => {
+                if (error) {
+                    console.error(error.message)
+                    return reply.status(500).send({ message: 'Erro ao deletar evento' })
+                }
+            })
+
+            reply.status(204).send()
         })
 
-        return reply.status(204).send(value)
     } catch (error) {
         return reply.status(400).send({
-            error: "Erro de validação",
+            error: 'Erro de validação',
+            code: 400,
             details: error.details.map(detail => detail.message)
-        })
+        });
     }
-})
+});
 
 server.delete('/eventos/:id', (request, reply) => {
     const eventoId = request.params.id
@@ -130,23 +143,22 @@ server.delete('/eventos/:id', (request, reply) => {
     db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], (error, row) => {
         if (error) {
             console.error(error.message)
-            return reply.status(500).send({message: 'Erro ao consultar o evento'})
+            return reply.status(500).send({ message: 'Erro ao consultar o evento' })
         }
 
         if (!row) {
-            return reply.status(404).send({message: 'Evento não encontrado'})
+            return reply.status(404).send({ message: 'Evento não encontrado' })
         }
 
         db.run('DELETE FROM eventos WHERE id_evento = ?', [eventoId], (error) => {
             if (error) {
                 console.error(error.message)
-                return reply.status(500).send({message: 'Erro ao deletar evento'})
+                return reply.status(500).send({ message: 'Erro ao deletar evento' })
             }
         })
 
         reply.status(204).send()
     })
-
 })
 
 server.listen({
