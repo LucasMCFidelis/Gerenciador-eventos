@@ -80,7 +80,7 @@ server.post('/eventos', async (request, reply) => {
     }
 })
 
-server.get('/eventos', (request, reply) => {
+server.get('/eventos', (reply) => {
     db.all('SELECT * FROM eventos', (error, rows) => {
         if (error) {
             console.error(error.message)
@@ -91,6 +91,21 @@ server.get('/eventos', (request, reply) => {
         } else {
             return reply.status(404).send({ message: 'Nenhum evento encontrado' })
         }
+    })
+})
+
+server.get('/eventos/:id', (request, reply) => {
+    const eventoId = request.params.id
+    db.get('SELECT * FROM eventos WHERE id_evento = ?', [eventoId], (error, row) => {
+        if (error) {
+            console.error(error.message)
+            return reply.status(500).send({ message: 'Erro ao consultar o evento' })
+        }
+        if (!row) {
+            return reply.status(404).send({ message: 'Evento não encontrado' })
+        } 
+
+        return reply.status(200).send(row)
     })
 })
 
