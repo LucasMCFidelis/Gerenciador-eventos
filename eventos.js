@@ -51,11 +51,11 @@ export class Eventos {
         }
     }
 
-    update(request, reply) {
+    async update(request, reply) {
         try {
             const eventoId = request.params.id;
     
-            db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
+            await db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
                 if (error) {
                     console.error(error.message)
                     return reply.status(500).send({ message: 'Erro ao consultar o evento' })
@@ -68,7 +68,7 @@ export class Eventos {
                 const value = await schemaEvento.validateAsync(request.body)
                 const { title, endereco, data, horario } = value;
                 const { rua, numero, bairro } = endereco;
-                db.run(`
+                await db.run(`
                     UPDATE eventos 
                     SET titulo = ?, rua = ?, numero = ?, bairro = ?, data_inicio = ?, horario = ?
                     WHERE id_evento = ?
@@ -92,7 +92,7 @@ export class Eventos {
     }
 
     async delete(eventoId, reply) {
-        await db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], (error, row) => {
+        await db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
             if (error) {
                 console.error(error.message)
                 return reply.status(500).send({ message: 'Erro ao consultar o evento' })
@@ -102,7 +102,7 @@ export class Eventos {
                 return reply.status(404).send({ message: 'Evento não encontrado' })
             }
     
-            db.run('DELETE FROM eventos WHERE id_evento = ?', [eventoId], (error) => {
+            await db.run('DELETE FROM eventos WHERE id_evento = ?', [eventoId], (error) => {
                 if (error) {
                     console.error(error.message)
                     return reply.status(500).send({ message: 'Erro ao deletar evento' })
