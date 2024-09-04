@@ -16,7 +16,7 @@ const eventos = new Eventos()
 db.run(`
     CREATE TABLE IF NOT EXISTS eventos (
         id_evento UUID,
-        titulo VARCHAR(45) NOT NULL,
+        titulo VARCHAR(120) NOT NULL,
         rua VARCHAR(120) NOT NULL,
         numero VARCHAR(8) NOT NULL,
         bairro VARCHAR(20) NOT NULL,
