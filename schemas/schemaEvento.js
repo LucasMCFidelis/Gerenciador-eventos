@@ -27,9 +27,7 @@ export const schemaEvento = Joi.object({
             'string.min': ('Rua deve conter no mínimo 10 caracteres').toLowerCase(),
             'string.max': ('Rua deve conter no máximo 120 caracteres').toLowerCase()
         }),
-        numero: Joi.string().max(8).pattern(new RegExp('^[a-zA-Z0-9\s]+$')).required().custom(
-            (value, helpers) => validarApenasEspacos(value, helpers, 'Número não pode conter apenas espaços em branco')
-        ).messages({
+        numero: Joi.string().max(8).pattern(new RegExp('^[a-zA-Z0-9\s]+$')).required().messages({
             'string.base': ('Número deve ser uma string').toLowerCase(),
             'string.empty': ('Número não pode estar vazio').toLowerCase(),
             'string.pattern.base': ('Número deve conter apenas caracteres alfanuméricos').toLowerCase(),
