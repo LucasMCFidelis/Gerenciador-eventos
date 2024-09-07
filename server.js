@@ -40,7 +40,7 @@ server.post('/usuarios', (request, reply) => {
 })
 
 server.put('/usuarios/id/:id', async (request, reply) => {
-    usuarios.update()
+    usuarios.update(request, reply)
 })
 
 server.delete('/usuarios/id/:id', (request, reply) => {
