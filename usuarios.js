@@ -8,11 +8,11 @@ export class Usuarios {
         await db.get('SELECT id_usuario, nome, sobrenome, email FROM usuarios WHERE id_usuario = ?', [usuarioId], (error, row) => {
             if (error) {
                 console.error(error.message)
-                return reply.status(500).send({message: 'Erro ao consultar o evento'})
+                return reply.status(500).send({message: 'Erro ao consultar o usuário'})
             }
 
             if (!row) {
-                return reply.status(404).send({message: 'Evento não encontrado'})
+                return reply.status(404).send({message: 'Usuário não encontrado'})
             }
 
             return reply.status(200).send(row)
@@ -55,11 +55,11 @@ export class Usuarios {
             await db.get('SELECT id_usuario, nome, sobrenome, email FROM usuarios WHERE id_usuario = ?', [usuarioId], async (error, row) => {
                 if (error) {
                     console.error(error.message)
-                    return reply.status(500).send({ message: 'Erro ao consultar o evento' })
+                    return reply.status(500).send({ message: 'Erro ao consultar o Usuário' })
                 }
     
                 if (!row) {
-                    return reply.status(404).send({ message: 'Evento não encontrado' })
+                    return reply.status(404).send({ message: 'Usuário não encontrado' })
                 }
     
                 const value = await schemaCadastro.validateAsync(request.body)
@@ -71,7 +71,7 @@ export class Usuarios {
                     `, [nome, sobrenome, email, telefone, usuarioId], (error) => {
                     if (error) {
                         console.error(error.message)
-                        return reply.status(500).send({ message: 'Erro ao deletar evento' })
+                        return reply.status(500).send({ message: 'Erro ao deletar usuário' })
                     }
                 })
             })
