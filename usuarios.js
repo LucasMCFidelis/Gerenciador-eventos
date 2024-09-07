@@ -1,6 +1,7 @@
 import { db } from "./createDatabase.js"
 import { randomUUID } from "crypto"
 import { schemaCadastro } from "./schemas/schemaCadastro.js"
+import { schemaSenhaUsuario } from "./schemas/schemaSenhaUsuario.js"
 
 export class Usuarios {
     async get(usuarioId, reply) {
@@ -20,15 +21,25 @@ export class Usuarios {
     
     async create(request, reply) {
         try {
-            const value = await schemaCadastro.validateAsync(request.body)
+            
+            const {nome, sobrenome, email, telefone, senha} = request.body
+            await schemaCadastro.validateAsync({nome, sobrenome, email, telefone})
+            await schemaSenhaUsuario.validateAsync({senha})
             const usuarioId = randomUUID()
-            const {nome, sobrenome, email, telefone, senha} = value
+            
             await db.run('INSERT INTO usuarios (id_usuario, nome, sobrenome, email, telefone, senha) VALUES (?, ?, ?, ?, ?, ?)', [usuarioId, nome, sobrenome, email, telefone, senha], (error) => {
                 if (error) {
                     console.error(error.message)
                     return reply.status(500).send()
                 }
-                return reply.status(200).send(value)
+                return reply.status(200).send(
+                    {
+                        nome, 
+                        sobrenome, 
+                        email, 
+                        telefone
+                    }
+                )
             })
         } catch (error) {
             return reply.status(400).send({
