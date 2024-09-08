@@ -1,8 +1,6 @@
 import { fastify } from "fastify"
 import { Eventos } from "./eventos.js"
 import { Usuarios } from "./usuarios.js"
-import { schemaCadastro } from "./schemas/schemaCadastro.js"
-import { db } from "./createDatabase.js"
 
 const server = fastify()
 const eventos = new Eventos()
@@ -31,8 +29,11 @@ server.delete('/eventos/:id', (request, reply) => {
 })
 
 server.get('/usuarios/id/:id', (request, reply) => {
-    const usuarioId = request.params.id
-    usuarios.get(usuarioId, reply)
+    usuarios.get(request, reply)
+})
+
+server.get('/usuarios/email/:email', (request, reply) => {
+    usuarios.get(request, reply)
 })
 
 server.post('/usuarios', (request, reply) => {
