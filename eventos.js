@@ -1,6 +1,7 @@
 import { db } from "./createDatabase.js"
 import { schemaEvento } from "./schemas/schemaEvento.js"
 import { randomUUID } from "crypto"
+import { handleError } from "./utils/handleError.js"
 
 export class Eventos {
     async list(request, reply) {
@@ -44,10 +45,7 @@ export class Eventos {
                 reply.status(200).send(value)
             })
         } catch (error) {
-            return reply.status(400).send({
-                error: "Erro de validação",
-                details: error.details.map(detail => detail.message)
-            })
+            return handleError(error, reply)
         }
     }
 
@@ -75,7 +73,7 @@ export class Eventos {
                     `, [title, rua, numero, bairro, data, horario, eventoId], (error) => {
                     if (error) {
                         console.error(error.message)
-                        return reply.status(500).send({ message: 'Erro ao deletar evento' })
+                        return reply.status(500).send({ message: 'Erro ao atualizar evento' })
                     }
                 })
 
@@ -83,33 +81,34 @@ export class Eventos {
             })
 
         } catch (error) {
-            return reply.status(400).send({
-                error: 'Erro de validação',
-                details: error.details.map(detail => detail.message)
-            })
+            return handleError(error, reply)
         }
     }
 
     async delete(eventoId, reply) {
-        await db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
-            if (error) {
-                console.error(error.message)
-                return reply.status(500).send({ message: 'Erro ao consultar o evento' })
-            }
-
-            if (!row) {
-                return reply.status(404).send({ message: 'Evento não encontrado' })
-            }
-
-            await db.run('DELETE FROM eventos WHERE id_evento = ?', [eventoId], (error) => {
+        try {
+            await db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
                 if (error) {
                     console.error(error.message)
-                    return reply.status(500).send({ message: 'Erro ao deletar evento' })
+                    return reply.status(500).send({ message: 'Erro ao consultar o evento' })
                 }
+    
+                if (!row) {
+                    return reply.status(404).send({ message: 'Evento não encontrado' })
+                }
+    
+                await db.run('DELETE FROM eventos WHERE id_evento = ?', [eventoId], (error) => {
+                    if (error) {
+                        console.error(error.message)
+                        return reply.status(500).send({ message: 'Erro ao deletar evento' })
+                    }
+                })
+    
+                reply.status(204).send()
             })
-
-            reply.status(204).send()
-        })
+        } catch (error) {
+            return handleError(error, reply)
+        }
     }
 
 }
