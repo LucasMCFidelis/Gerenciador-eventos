@@ -7,15 +7,14 @@ import { handleError } from "./utils/handleError.js"
 export class Usuarios {
     async get(request, reply) {
         try {         
-            let user 
             const {id, email} = request.params
-            
-            if (id) {
-                user = await this.getUserById(id)
-            } else {
-                user = await this.getUserByEmail(email)
-            }
 
+            if (!id && !email) {
+                return reply.status(400).send({message: 'ID ou Email devem ser fornecidos'})
+            }
+            
+            const user = id ? await this.getUserById(id) : await this.getUserByEmail(email)
+            
             if (!user) {
                 return reply.status(404).send({ message: 'Usuário não encontrado' })
             }
