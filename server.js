@@ -40,7 +40,7 @@ server.post('/usuarios', (request, reply) => {
     usuarios.create(request, reply)
 })
 
-server.put('/usuarios/id/:id', async (request, reply) => {
+server.put('/usuarios/id/:id', (request, reply) => {
     usuarios.update(request, reply)
 })
 
