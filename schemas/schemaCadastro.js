@@ -1,12 +1,5 @@
 import Joi from "joi"
-
-const validarApenasEspacos = (value, helpers, message) => {
-    value = value.trim()
-    if (value === '') {
-        return helpers.message(message)
-    }
-    return value
-}
+import { validarApenasEspacos } from "../utils/validaApenasEspacos.js"
 
 export const schemaCadastro = Joi.object({
     nome: Joi.string().custom(
