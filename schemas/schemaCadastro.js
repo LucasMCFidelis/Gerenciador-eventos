@@ -3,7 +3,7 @@ import Joi from "joi"
 const validarApenasEspacos = (value, helpers, message) => {
     value = value.trim()
     if (value === '') {
-        return helpers.message(message.toLowerCase())
+        return helpers.message(message)
     }
     return value
 }
@@ -25,13 +25,15 @@ export const schemaCadastro = Joi.object({
         'string.min': 'Sobrenome deve possuir no mínimo 5 caracteres',
         'string.pattern.base': 'Sobrenome deve conter apenas caracteres alfabéticos, acentuados e espaços'
     }),
-    email: Joi.string().email().custom(
-        (value, helpers) => validarApenasEspacos(value, helpers, 'Email não pode conter apenas espaços em branco')
-    ).required().messages({
-        'string.email': 'E-mail deve ser um email válido',
-        'string.empty': 'E-mail não pode estar vazio'
+    email: Joi.string().email().required().messages({
+        'string.base': 'Email deve ser uma string',
+        'string.email': 'Email deve ser um email válido',
+        'string.empty': 'Email não pode estar vazio'
     }),
-    telefone: Joi.string().trim().pattern(new RegExp('^[0-9]*$')).allow('').optional().messages({
-        'string.pattern.base': 'Telefone deve conter apenas números'
+    telefone: Joi.number().integer().min(1000000000).max(99999999999).allow(null).optional().messages({
+        'number.base': 'Telefone deve ser um número',
+        'number.integer': 'Telefone deve ser um número inteiro',
+        'number.min': 'Telefone deve ter no mínimo 10 dígitos',
+        'number.max': 'Telefone deve ter no máximo 11 dígitos'
     })
 })
