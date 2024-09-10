@@ -1,7 +1,7 @@
-export const validarApenasEspacos = (value, helpers, message) => {
+export const validarApenasEspacos = (value, helpers, field) => {
     value = value.trim()
     if (value === '') {
-        return helpers.message(message)
+        return helpers.message(`${field} não pode conter apenas espaços em branco`)
     }
     return value
 }

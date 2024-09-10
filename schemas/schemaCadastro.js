@@ -3,7 +3,7 @@ import { validarApenasEspacos } from "../utils/validaApenasEspacos.js"
 
 export const schemaCadastro = Joi.object({
     nome: Joi.string().custom(
-        (value, helpers) => validarApenasEspacos(value, helpers, 'Nome não pode conter apenas espaços em branco')
+        (value, helpers) => validarApenasEspacos(value, helpers, 'Nome')
     ).min(3).pattern(new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$')).required().messages({
         'string.base': 'Nome deve ser uma string',
         'string.empty': 'Nome não pode estar vazio',
@@ -11,7 +11,7 @@ export const schemaCadastro = Joi.object({
         'string.pattern.base': 'Nome deve conter apenas caracteres alfabéticos, acentuados e espaços'
     }),
     sobrenome: Joi.string().custom(
-        (value, helpers) => validarApenasEspacos(value, helpers, 'Sobrenome não pode conter apenas espaços em branco')
+        (value, helpers) => validarApenasEspacos(value, helpers, 'Sobrenome')
     ).min(5).pattern(new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$')).required().messages({
         'string.base': 'Sobrenome deve ser uma string',
         'string.empty': 'Sobrenome não pode estar vazio',
