@@ -3,6 +3,7 @@ import { randomUUID } from "crypto"
 import { schemaCadastro } from "./schemas/schemaCadastro.js"
 import { schemaSenhaUsuario } from "./schemas/schemaSenhaUsuario.js"
 import { handleError } from "./utils/handleError.js"
+import { resolve } from "path"
 
 async function getUserById(usuarioId) {
     return new Promise((resolve, reject) => {
@@ -26,6 +27,19 @@ async function getUserByEmail(usuarioEmail) {
             resolve(row || null)
         })
     })
+}
+
+function updateUserPassword(userId, newPassword) {
+    return new Promise((resolve, reject) => {
+        db.run(`
+            UPDATE usuarios
+            SET senha = ? 
+            WHERE id_usuario = ?
+        `, [newPassword, userId], (error) => {
+            if (error) return reject(error);
+            resolve();
+        });
+    });
 }
 
 export async function usuarios(fastify, options) {
@@ -120,7 +134,26 @@ export async function usuarios(fastify, options) {
             await db.run('DELETE FROM usuarios WHERE id_usuario = ?', [usuarioId])
             reply.status(204).send()
         } catch (error) {
-            return handleError(error)
+            return handleError(error, reply)
+        }
+    })
+
+    fastify.patch('/usuarios/email/:email', async (request, reply) => {
+        try {
+            const usuarioEmail = request.params.email
+            const user = await getUserByEmail(usuarioEmail)
+            
+            if (!user) {
+                return reply.status(404).send({ message: 'Usuário não encontrado' })
+            }
+            
+            const { senha } = request.body
+            await schemaSenhaUsuario.validateAsync({ senha })
+            await updateUserPassword(user.id_usuario, senha)
+
+            return reply.status(204).send({ message: 'Senha atualizada com sucesso' })
+        } catch (error) {
+            return handleError(error, reply)
         }
     })
 }
