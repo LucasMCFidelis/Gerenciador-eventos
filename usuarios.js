@@ -3,7 +3,6 @@ import { randomUUID } from "crypto"
 import { schemaCadastro } from "./schemas/schemaCadastro.js"
 import { schemaSenhaUsuario } from "./schemas/schemaSenhaUsuario.js"
 import { handleError } from "./utils/handleError.js"
-import { resolve } from "path"
 
 async function getUserById(usuarioId) {
     return new Promise((resolve, reject) => {
@@ -36,10 +35,10 @@ function updateUserPassword(userId, newPassword) {
             SET senha = ? 
             WHERE id_usuario = ?
         `, [newPassword, userId], (error) => {
-            if (error) return reject(error);
-            resolve();
-        });
-    });
+            if (error) return reject(error)
+            resolve()
+        })
+    })
 }
 
 export async function usuarios(fastify, options) {
@@ -79,6 +78,8 @@ export async function usuarios(fastify, options) {
         }
     })
 
+    // ADICIONAR BLOQUEIO PARA EMAILS JÁ CADASTRADOS
+    // ADICIONAR HASH NAS SENHAS ANTES DO CADASTRAMENTO 
     fastify.post('/usuarios', async (request, reply) => {
         try {
             const { nome, sobrenome, email, telefone, senha } = request.body
@@ -138,21 +139,42 @@ export async function usuarios(fastify, options) {
         }
     })
 
+    // ADICIONAR VALIDAÇÃO POR CÓDIGO EM EMAIL OU ALGUMA OUTRA OPÇÃO
     fastify.patch('/usuarios/recuperacao/esqueci-senha', async (request, reply) => {
         try {
             const { email, novaSenha } = request.body
             const user = await getUserByEmail(email)
-            
+
             if (!user) {
                 return reply.status(404).send({ message: 'Usuário não encontrado' })
             }
-            
+
             await schemaSenhaUsuario.validateAsync({ senha: novaSenha })
             await updateUserPassword(user.id_usuario, novaSenha)
 
             return reply.status(204).send({ message: 'Senha atualizada com sucesso' })
         } catch (error) {
             return handleError(error, reply)
+        }
+    })
+
+    // ADICIONAR FUNÇÃO DE COMPARAÇÃO DA SENHA FORNECIDA COM A ARMAZENADA EM HASH
+    // ADICIONAR LOGICA DE CRIAÇÃO DE TOKENS PARA PRÓXIMAS AUTENTICAÇÕES 
+    fastify.post('usuarios/login', async (request, reply) => {
+        try {
+            const { email, senha } = request.body
+
+            const user = await getUserByEmail(email)
+            if (!user) {
+                return reply.status(404).send({ message: 'Usuário não encontrado' })
+            }
+
+            // VERIFICAR QUAL MELHOR OPÇÃO
+            // 1 - MODIFICAR MÉTODOS GET PARA O SELECT RETORNAR SENHA
+            // 2 - CRIAR UM SELECT ESPECIFICO AQUI QUE RECEBA APENAS EMAIL E SENHA (me parece mais logico)
+
+        } catch (error) {
+            return reply.status(500).send({ message: 'Erro ao realizar login' })
         }
     })
 }
