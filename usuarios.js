@@ -138,18 +138,17 @@ export async function usuarios(fastify, options) {
         }
     })
 
-    fastify.patch('/usuarios/email/:email', async (request, reply) => {
+    fastify.patch('/usuarios/recuperacao/esqueci-senha', async (request, reply) => {
         try {
-            const usuarioEmail = request.params.email
-            const user = await getUserByEmail(usuarioEmail)
+            const { email, novaSenha } = request.body
+            const user = await getUserByEmail(email)
             
             if (!user) {
                 return reply.status(404).send({ message: 'Usuário não encontrado' })
             }
             
-            const { senha } = request.body
-            await schemaSenhaUsuario.validateAsync({ senha })
-            await updateUserPassword(user.id_usuario, senha)
+            await schemaSenhaUsuario.validateAsync({ senha: novaSenha })
+            await updateUserPassword(user.id_usuario, novaSenha)
 
             return reply.status(204).send({ message: 'Senha atualizada com sucesso' })
         } catch (error) {
