@@ -1,5 +1,6 @@
 import { db } from "./createDatabase.js"
 import { randomUUID } from "crypto"
+import bcrypt from "bcrypt"
 import { schemaCadastro } from "./schemas/schemaCadastro.js"
 import { schemaSenhaUsuario } from "./schemas/schemaSenhaUsuario.js"
 import { handleError } from "./utils/handleError.js"
@@ -16,9 +17,9 @@ async function getUserById(usuarioId) {
     })
 }
 
-async function getUserByEmail(usuarioEmail) {
+async function getUserByEmail(userEmail) {
     return new Promise((resolve, reject) => {
-        db.get('SELECT id_usuario, nome, sobrenome, email FROM usuarios WHERE email = ?', [usuarioEmail], (error, row) => {
+        db.get('SELECT id_usuario, email, senha FROM usuarios WHERE email = ?', [userEmail], (error, row) => {
             if (error) {
                 console.error(error.message)
                 return reject(error)
@@ -28,13 +29,23 @@ async function getUserByEmail(usuarioEmail) {
     })
 }
 
-function updateUserPassword(userId, newPassword) {
+async function hashPassword(password) {
+    const saltHounds = 10
+    return await bcrypt.hash(password, saltHounds)
+}
+
+async function comparePasswords(passwordProvided, passwordHash) {
+    return await bcrypt.compare(passwordProvided, passwordHash)
+}
+
+async function updateUserPassword(userId, newPassword) {
+    const newPasswordHash = await hashPassword(newPassword)
     return new Promise((resolve, reject) => {
         db.run(`
             UPDATE usuarios
             SET senha = ? 
             WHERE id_usuario = ?
-        `, [newPassword, userId], (error) => {
+        `, [newPasswordHash, userId], (error) => {
             if (error) return reject(error)
             resolve()
         })
@@ -79,15 +90,15 @@ export async function usuarios(fastify, options) {
     })
 
     // ADICIONAR BLOQUEIO PARA EMAILS JÁ CADASTRADOS
-    // ADICIONAR HASH NAS SENHAS ANTES DO CADASTRAMENTO 
     fastify.post('/usuarios', async (request, reply) => {
         try {
             const { nome, sobrenome, email, telefone, senha } = request.body
             await schemaCadastro.validateAsync({ nome, sobrenome, email, telefone })
             await schemaSenhaUsuario.validateAsync({ senha })
             const usuarioId = randomUUID()
+            const senhaHash = await hashPassword(senha)
 
-            await db.run('INSERT INTO usuarios (id_usuario, nome, sobrenome, email, telefone, senha) VALUES (?, ?, ?, ?, ?, ?)', [usuarioId, nome, sobrenome, email, telefone, senha])
+            await db.run('INSERT INTO usuarios (id_usuario, nome, sobrenome, email, telefone, senha) VALUES (?, ?, ?, ?, ?, ?)', [usuarioId, nome, sobrenome, email, telefone, senhaHash])
             return reply.status(200).send({
                 nome,
                 sobrenome,
@@ -152,26 +163,34 @@ export async function usuarios(fastify, options) {
             await schemaSenhaUsuario.validateAsync({ senha: novaSenha })
             await updateUserPassword(user.id_usuario, novaSenha)
 
-            return reply.status(204).send({ message: 'Senha atualizada com sucesso' })
+            return reply.status(200).send({ message: 'Senha atualizada com sucesso' })
         } catch (error) {
             return handleError(error, reply)
         }
     })
 
-    // ADICIONAR FUNÇÃO DE COMPARAÇÃO DA SENHA FORNECIDA COM A ARMAZENADA EM HASH
     // ADICIONAR LOGICA DE CRIAÇÃO DE TOKENS PARA PRÓXIMAS AUTENTICAÇÕES 
-    fastify.post('usuarios/login', async (request, reply) => {
+    fastify.post('/usuarios/login', async (request, reply) => {
         try {
-            const { email, senha } = request.body
+            const { email, senhaFornecida } = request.body
+            console.log(email, senhaFornecida);
+            
 
             const user = await getUserByEmail(email)
+            console.log(user);
+            
             if (!user) {
-                return reply.status(404).send({ message: 'Usuário não encontrado' })
+                return reply.status(401).send({ message: 'Credenciais inválidas' })
             }
 
-            // VERIFICAR QUAL MELHOR OPÇÃO
-            // 1 - MODIFICAR MÉTODOS GET PARA O SELECT RETORNAR SENHA
-            // 2 - CRIAR UM SELECT ESPECIFICO AQUI QUE RECEBA APENAS EMAIL E SENHA (me parece mais logico)
+            const passwordValid = await comparePasswords(senhaFornecida, user.senha)
+            console.log(passwordValid);
+            
+            if (!passwordValid) {
+                return reply.status(401).send({message: 'Credenciais inválidas'})
+            }
+
+            return reply.status(200).send({message: 'Login bem-sucedido', userId: user.id_usuario})
 
         } catch (error) {
             return reply.status(500).send({ message: 'Erro ao realizar login' })
