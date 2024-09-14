@@ -71,24 +71,6 @@ export async function usuarios(fastify, options) {
         }
     })
 
-    fastify.get('/usuarios/email/:email', async (request, reply) => {
-        try {
-            const { email } = request.params
-            if (!email) {
-                return reply.status(400).send({ message: 'Email deve ser fornecido' })
-            }
-
-            const user = await getUserByEmail(email)
-            if (!user) {
-                return reply.status(404).send({ message: 'Usuário não encontrado' })
-            }
-
-            return reply.status(200).send(user)
-        } catch (error) {
-            return handleError(error, reply)
-        }
-    })
-
     // ADICIONAR BLOQUEIO PARA EMAILS JÁ CADASTRADOS
     fastify.post('/usuarios', async (request, reply) => {
         try {
