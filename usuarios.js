@@ -71,7 +71,6 @@ export async function usuarios(fastify, options) {
         }
     })
 
-    // ADICIONAR BLOQUEIO PARA EMAILS JÁ CADASTRADOS
     fastify.post('/usuarios', async (request, reply) => {
         try {
             const { nome, sobrenome, email, telefone, senha } = request.body
@@ -80,13 +79,33 @@ export async function usuarios(fastify, options) {
             const usuarioId = randomUUID()
             const senhaHash = await hashPassword(senha)
 
-            await db.run('INSERT INTO usuarios (id_usuario, nome, sobrenome, email, telefone, senha) VALUES (?, ?, ?, ?, ?, ?)', [usuarioId, nome, sobrenome, email, telefone, senhaHash])
-            return reply.status(200).send({
-                nome,
-                sobrenome,
-                email,
-                telefone
+            const existingUser = await new Promise((resolve, reject) => {
+                db.get('SELECT email FROM usuarios WHERE email = ?', [email], (error, row) => {
+                    if (error) {
+                        return reject(error)
+                    }
+                    resolve(row)
+                })
             })
+
+            if (existingUser) {
+                return reply.status(400).send({ message: 'Este email já está cadastrado' })
+            }
+
+            db.run('INSERT INTO usuarios (id_usuario, nome, sobrenome, email, telefone, senha) VALUES (?, ?, ?, ?, ?, ?)', [usuarioId, nome, sobrenome, email, telefone, senhaHash], (error) => {
+                if (error) {
+                    console.error(error)
+                    return reply.status(500).send({ message: 'Erro ao salvar cadastro' })
+                }
+                return reply.status(200).send({
+                    usuarioId,
+                    nome,
+                    sobrenome,
+                    email,
+                    telefone
+                })
+            })
+
         } catch (error) {
             return handleError(error, reply)
         }
@@ -156,23 +175,23 @@ export async function usuarios(fastify, options) {
         try {
             const { email, senhaFornecida } = request.body
             console.log(email, senhaFornecida);
-            
+
 
             const user = await getUserByEmail(email)
             console.log(user);
-            
+
             if (!user) {
                 return reply.status(401).send({ message: 'Credenciais inválidas' })
             }
 
             const passwordValid = await comparePasswords(senhaFornecida, user.senha)
             console.log(passwordValid);
-            
+
             if (!passwordValid) {
-                return reply.status(401).send({message: 'Credenciais inválidas'})
+                return reply.status(401).send({ message: 'Credenciais inválidas' })
             }
 
-            return reply.status(200).send({message: 'Login bem-sucedido', userId: user.id_usuario})
+            return reply.status(200).send({ message: 'Login bem-sucedido', userId: user.id_usuario })
 
         } catch (error) {
             return reply.status(500).send({ message: 'Erro ao realizar login' })
