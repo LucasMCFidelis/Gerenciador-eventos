@@ -22,7 +22,11 @@ export async function eventos(fastify, options) {
     })
     
     fastify.get('/eventos', (request, reply) => {
-        db.all('SELECT * FROM eventos', (error, rows) => {
+        db.all(`
+            SELECT * 
+            FROM eventos
+            ORDER BY data_inicio
+            `, (error, rows) => {
             if (error) {
                 console.error(error.message)
                 return reply.status(500).send({ message: 'Erro na consulta ao banco de dados' })

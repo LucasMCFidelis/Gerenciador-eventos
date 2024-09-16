@@ -16,7 +16,7 @@ db.run(`
         numero VARCHAR(8) NOT NULL,
         bairro VARCHAR(20) NOT NULL,
         complemento VARCHAR(30),
-        data_inicio CHAR(10) NOT NULL,
+        data_inicio DATE NOT NULL,
         horario CHAR(5) NOT NULL,
         CONSTRAINT pk_id_evento PRIMARY KEY (id_evento)
     )
