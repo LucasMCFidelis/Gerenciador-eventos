@@ -1,9 +1,9 @@
 import Joi from "joi"
-import { validarApenasEspacos } from "../utils/validaApenasEspacos.js"
+import { removeEspacos } from "../utils/removeEspacos.ts"
 
 export const schemaCadastro = Joi.object({
     nome: Joi.string().custom(
-        (value, helpers) => validarApenasEspacos(value, helpers, 'Nome')
+        (value) => removeEspacos(value)
     ).min(3).pattern(new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$')).required().messages({
         'string.base': 'Nome deve ser uma string',
         'string.empty': 'Nome não pode estar vazio',
@@ -11,7 +11,7 @@ export const schemaCadastro = Joi.object({
         'string.pattern.base': 'Nome deve conter apenas caracteres alfabéticos, acentuados e espaços'
     }),
     sobrenome: Joi.string().custom(
-        (value, helpers) => validarApenasEspacos(value, helpers, 'Sobrenome')
+        (value) => removeEspacos(value)
     ).min(5).pattern(new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$')).required().messages({
         'string.base': 'Sobrenome deve ser uma string',
         'string.empty': 'Sobrenome não pode estar vazio',

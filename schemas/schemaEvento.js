@@ -1,19 +1,18 @@
 import Joi from "joi"
-import { validarApenasEspacos } from "../utils/validaApenasEspacos.js"
+import { removeEspacos } from "../utils/removeEspacos.ts"
 
 export const schemaEvento = Joi.object({
     title: Joi.string().required().custom(
-        (value, helpers) => validarApenasEspacos(value, helpers, 'Título')
+        (value) => removeEspacos(value)
     ).min(3).max(120).messages({
         'string.base': ('Titulo deve ser uma string'),
         'string.empty': ('Titulo não pode estar vazio'),
         'string.min': ('Titulo deve conter no mínimo 3 caracteres'),
         'string.max': ('Titulo deve conter no máximo 120 caracteres')
-
     }),
     endereco: Joi.object({
         rua: Joi.string().required().custom(
-            (value, helpers) => validarApenasEspacos(value, helpers, 'Rua')
+            (value) => removeEspacos(value)
         ).min(10).max(120).messages({
             'string.base': ('Rua deve ser uma string'),
             'string.empty': ('Rua não pode estar vazia'),
@@ -27,7 +26,7 @@ export const schemaEvento = Joi.object({
             'string.max': ('Número deve conter no máximo 8 caracteres')
         }),
         bairro: Joi.string().required().custom(
-            (value, helpers) => validarApenasEspacos(value, helpers, 'Bairro')
+            (value) => removeEspacos(value)
         ).min(5).max(20).messages({
             'string.base': ('Bairro deve ser uma string'),
             'string.empty': ('Bairro não pode estar vazio'),
