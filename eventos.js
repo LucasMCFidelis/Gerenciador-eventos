@@ -13,12 +13,8 @@ export async function eventos(fastify, options) {
             const eventoData = new Date(data)
 
             if (eventoData < new Date()) {
-                console.log('menor');
                 return reply.status(404).send({ message: 'Data invalida' })
-
             }
-            console.log('passou de boa');
-
 
             await db.run('INSERT INTO eventos (id_evento, titulo, rua, numero, bairro, complemento, data_inicio, horario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [id_evento, title, rua, numero, bairro, complemento, data, horario], (error) => {
                 if (error) {
