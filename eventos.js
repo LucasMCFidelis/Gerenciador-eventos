@@ -10,6 +10,16 @@ export async function eventos(fastify, options) {
             const id_evento = randomUUID()
             const { title, endereco, data, horario } = value
             const { rua, numero, bairro, complemento } = endereco
+            const eventoData = new Date(data)
+
+            if (eventoData < new Date()) {
+                console.log('menor');
+                return reply.status(404).send({ message: 'Data invalida' })
+
+            }
+            console.log('passou de boa');
+
+
             await db.run('INSERT INTO eventos (id_evento, titulo, rua, numero, bairro, complemento, data_inicio, horario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [id_evento, title, rua, numero, bairro, complemento, data, horario], (error) => {
                 if (error) {
                     return reply.status(500).send({ message: 'Erro ao salvar evento' })
@@ -20,7 +30,7 @@ export async function eventos(fastify, options) {
             return handleError(error, reply)
         }
     })
-    
+
     fastify.get('/eventos', (request, reply) => {
         db.all(`
             SELECT * 
@@ -38,7 +48,7 @@ export async function eventos(fastify, options) {
             }
         })
     })
-    
+
     fastify.get('/eventos/:id', (request, reply) => {
         const eventoId = request.params.id
         db.get('SELECT * FROM eventos WHERE id_evento = ?', [eventoId], (error, row) => {
@@ -53,7 +63,7 @@ export async function eventos(fastify, options) {
             return reply.status(200).send(row)
         })
     })
-    
+
     fastify.put('/eventos/id/:id', (request, reply) => {
         try {
             const eventoId = request.params.id;
@@ -89,7 +99,7 @@ export async function eventos(fastify, options) {
             return handleError(error, reply)
         }
     })
-    
+
     fastify.delete('/eventos/id/:id', (request, reply) => {
         const eventoId = request.params.id
         try {
