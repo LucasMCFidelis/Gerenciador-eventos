@@ -1,5 +1,5 @@
 import Joi from "joi"
-import { removeEspacos } from "../utils/removeEspacos.ts"
+import { removeEspacos } from "../utils/removeEspacos.js"
 
 export const schemaCadastro = Joi.object({
     nome: Joi.string().custom(
