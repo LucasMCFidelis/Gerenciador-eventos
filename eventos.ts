@@ -2,8 +2,9 @@ import { db } from "./createDatabase.js"
 import { schemaEvento } from "./schemas/schemaEvento.js"
 import { randomUUID } from "crypto"
 import { handleError } from "./utils/handleError.js"
+import { FastifyInstance } from "fastify"
 
-export async function eventos(fastify, options) {
+export async function eventos(fastify: FastifyInstance) {
     fastify.post('/eventos', async (request, reply) => {
         try {
             const value = await schemaEvento.validateAsync(request.body)
@@ -46,7 +47,7 @@ export async function eventos(fastify, options) {
     })
 
     fastify.get('/eventos/:id', (request, reply) => {
-        const eventoId = request.params.id
+        const eventoId = (request.params as { id: string }).id
         db.get('SELECT * FROM eventos WHERE id_evento = ?', [eventoId], (error, row) => {
             if (error) {
                 console.error(error.message)
@@ -62,7 +63,7 @@ export async function eventos(fastify, options) {
 
     fastify.put('/eventos/id/:id', (request, reply) => {
         try {
-            const eventoId = request.params.id;
+            const eventoId = (request.params as { id: string }).id;
 
             db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
                 if (error) {
@@ -97,7 +98,7 @@ export async function eventos(fastify, options) {
     })
 
     fastify.delete('/eventos/id/:id', (request, reply) => {
-        const eventoId = request.params.id
+        const eventoId = (request.params as { id: string }).id
         try {
             db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
                 if (error) {
