@@ -1,6 +1,6 @@
 import { fastify } from "fastify"
-import { usuarios } from "./usuarios.js"
-import { eventos } from "./eventos.js"
+import { usuarios } from "./http/usuarios.js"
+import { eventos } from "./http/eventos.js"
 
 const server = fastify()
 server.register(eventos)

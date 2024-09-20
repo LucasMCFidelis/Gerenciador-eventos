@@ -1,9 +1,9 @@
-import { db } from "./createDatabase.js"
+import { db } from "../createDatabase.js"
 import { randomUUID } from "crypto"
 import bcrypt from "bcrypt"
-import { schemaCadastro } from "./schemas/schemaCadastro.js"
-import { schemaSenhaUsuario } from "./schemas/schemaSenhaUsuario.js"
-import { handleError } from "./utils/handleError.js"
+import { schemaCadastro } from "../schemas/schemaCadastro.js"
+import { schemaSenhaUsuario } from "../schemas/schemaSenhaUsuario.js"
+import { handleError } from "../utils/handleError.js"
 import { FastifyInstance } from "fastify"
 
 interface Usuario {
