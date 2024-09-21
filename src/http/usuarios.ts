@@ -1,25 +1,25 @@
 import { db } from "../createDatabase.js"
-import { randomUUID } from "crypto"
 import bcrypt from "bcrypt"
 import { schemaCadastro } from "../schemas/schemaCadastro.js"
 import { schemaSenhaUsuario } from "../schemas/schemaSenhaUsuario.js"
 import { handleError } from "../utils/handleError.js"
 import { FastifyInstance } from "fastify"
+import { prisma } from "../utils/prisma.js"
 
 interface Usuario {
-    id_usuario: string
-    nome: string
-    sobrenome: string
+    userId: string
+    firstName: string
+    lastName: string
     email: string
-    telefone?: number
+    phoneNumber?: string | null
 }
 
 interface Cadastro {
-    nome: string
-    sobrenome: string
+    firstName: string
+    lastName: string
     email: string
-    telefone?: number
-    senha: string
+    phoneNumber?: string | null
+    password: string
 }
 
 interface UserAutentication {
@@ -29,26 +29,29 @@ interface UserAutentication {
 }
 
 async function getUserById(userId: string): Promise<Usuario | null> {
-    return new Promise((resolve, reject) => {
-        db.get('SELECT id_usuario, nome, sobrenome, email, telefone FROM usuarios WHERE id_usuario = ?', [userId], (error: Error | null, row: any) => {
-            if (error) {
-                console.error(error.message)
-                return reject(error)
-            }
+    if (!userId) {
+        console.error("Invalid userId")
+        return null
+    }
 
-            if (row && typeof row.id_usuario === 'string' && typeof row.email === 'string' && typeof row.senha === 'string') {
-                resolve({
-                    id_usuario: row.id_usuario,
-                    nome: row.nome,
-                    sobrenome: row.sobrenome,
-                    email: row.email,
-                    telefone: row.telefone
-                })
-            } else {
-                resolve(null)
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                userId
+            },
+            select: {
+                userId: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                phoneNumber: true
             }
         })
-    })
+        return user
+    } catch (error) {
+        console.error("Error fetching user:", error)
+        return null
+    }
 }
 
 async function getUserByEmail(userEmail: string): Promise<UserAutentication | null> {
@@ -116,37 +119,51 @@ export async function usuarios(fastify: FastifyInstance) {
 
     fastify.post('/usuarios', async (request, reply) => {
         try {
-            const { nome, sobrenome, email, telefone, senha } = request.body as Cadastro
-            await schemaCadastro.validateAsync({ nome, sobrenome, email, telefone })
-            await schemaSenhaUsuario.validateAsync({ senha })
-            const usuarioId = randomUUID()
-            const senhaHash = await hashPassword(senha)
-
-            const existingUser = await new Promise((resolve, reject) => {
-                db.get('SELECT email FROM usuarios WHERE email = ?', [email], (error, row) => {
-                    if (error) {
-                        return reject(error)
-                    }
-                    resolve(row)
-                })
+            const { firstName, lastName, email, phoneNumber, password } = request.body as Cadastro
+            await schemaCadastro.validateAsync({
+                nome: firstName,
+                sobrenome: lastName,
+                email,
+                telefone: phoneNumber
             })
+            await schemaSenhaUsuario.validateAsync({
+                senha: password
+            })
+            const senhaHash = await hashPassword(password)
+
+            const existingUser = await prisma.user.findUnique({
+                where: {
+                    email
+                },
+                select: {
+                    email: true
+                }
+            })
+            console.log(existingUser)
 
             if (existingUser) {
                 return reply.status(400).send({ message: 'Este email já está cadastrado' })
             }
 
-            db.run('INSERT INTO usuarios (id_usuario, nome, sobrenome, email, telefone, senha) VALUES (?, ?, ?, ?, ?, ?)', [usuarioId, nome, sobrenome, email, telefone, senhaHash], (error: Error) => {
-                if (error) {
-                    console.error(error)
-                    return reply.status(500).send({ message: 'Erro ao salvar cadastro' })
-                }
-                return reply.status(200).send({
-                    usuarioId,
-                    nome,
-                    sobrenome,
+            await prisma.user.create({
+                data: {
+                    firstName,
+                    lastName,
                     email,
-                    telefone
+                    phoneNumber,
+                    password: senhaHash
+                }
+            }).then((usuario) => {
+                return reply.status(200).send({
+                    userId: usuario.userId,
+                    firstName: usuario.firstName,
+                    lastName: usuario.lastName,
+                    email: usuario.email,
+                    phoneNumber: usuario.phoneNumber,
                 })
+            }).catch((error) => {
+                console.error(error)
+                return reply.status(500).send({ message: 'Erro ao salvar cadastro' })
             })
 
         } catch (error) {
