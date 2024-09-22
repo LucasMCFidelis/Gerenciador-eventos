@@ -135,19 +135,10 @@ export async function usuarios(fastify: FastifyInstance) {
                 senha: password
             })
             const senhaHash = await hashPassword(password)
-
-            const existingUser = await prisma.user.findUnique({
-                where: {
-                    email
-                },
-                select: {
-                    email: true
-                }
-            })
-            console.log(existingUser)
-
-            if (existingUser) {
-                return reply.status(400).send({ message: 'Este email já está cadastrado' })
+            
+            const userAlreadyExistsReply = await checkExistingUser(email, reply)           
+            if (userAlreadyExistsReply) {
+                return
             }
 
             await prisma.user.create({
@@ -188,7 +179,7 @@ export async function usuarios(fastify: FastifyInstance) {
             const { nome, sobrenome, email, telefone } = userDataValidate
             
             const userAlreadyExistsReply = await checkExistingUser(email, reply)
-            if (!userAlreadyExistsReply) {
+            if (userAlreadyExistsReply) {
                 return
             }
 
