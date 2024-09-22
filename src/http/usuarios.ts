@@ -5,6 +5,7 @@ import { schemaSenhaUsuario } from "../schemas/schemaSenhaUsuario.js"
 import { handleError } from "../utils/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
+import { checkExistingUser } from "../utils/checkExistingUser.js"
 
 interface Usuario {
     userId: string
@@ -185,6 +186,11 @@ export async function usuarios(fastify: FastifyInstance) {
 
             const userDataValidate = await schemaCadastro.validateAsync(request.body)
             const { nome, sobrenome, email, telefone } = userDataValidate
+            
+            const userAlreadyExistsReply = await checkExistingUser(email, reply)
+            if (!userAlreadyExistsReply) {
+                return
+            }
 
             await prisma.user.update({
                 where: {
