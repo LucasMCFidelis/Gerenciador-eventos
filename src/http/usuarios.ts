@@ -63,7 +63,7 @@ async function getUserByEmail(userEmail: string): Promise<UserAutentication | nu
         return await prisma.user.findUnique({
             where: {
                 email: userEmail
-            }, 
+            },
             select: {
                 userId: true,
                 email: true,
@@ -89,8 +89,8 @@ async function updateUserPassword(userId: string, newPassword: string, reply: Fa
     const newPasswordHash = await hashPassword(newPassword)
     await prisma.user.update({
         where: {
-            userId 
-        }, 
+            userId
+        },
         data: {
             password: newPasswordHash
         }
@@ -183,19 +183,22 @@ export async function usuarios(fastify: FastifyInstance) {
                 return reply.status(404).send({ message: 'Usuário não encontrado' })
             }
 
-            const value = await schemaCadastro.validateAsync(request.body)
-            const { nome, sobrenome, email, telefone } = value
-            await new Promise<void>((resolve, reject) => {
-                db.run(`
-                    UPDATE usuarios 
-                    SET nome = ?, sobrenome = ?, email = ?, telefone = ?
-                    WHERE id_usuario = ?
-                    `, [nome, sobrenome, email, telefone, userId], (error: Error) => {
-                    if (error) return reject(error)
-                    resolve()
-                })
+            const userDataValidate = await schemaCadastro.validateAsync(request.body)
+            const { nome, sobrenome, email, telefone } = userDataValidate
+
+            await prisma.user.update({
+                where: {
+                    userId: user.userId
+                },
+                data: {
+                    firstName: nome,
+                    lastName: sobrenome,
+                    email,
+                    phoneNumber: telefone
+                }
+            }).then(() => {
+                return reply.status(200).send({ message: 'Usuário atualizado com sucesso' })
             })
-            return reply.status(200).send({ message: 'Usuário atualizado com sucesso' })
         } catch (error) {
             return handleError(error, reply)
         }
