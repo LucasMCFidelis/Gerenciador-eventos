@@ -23,9 +23,9 @@ interface Cadastro {
 }
 
 interface UserAutentication {
-    id_usuario: string
+    userId: string
     email: string
-    senha: string
+    password: string
 }
 
 async function getUserById(userId: string): Promise<Usuario | null> {
@@ -49,30 +49,31 @@ async function getUserById(userId: string): Promise<Usuario | null> {
         })
         return user
     } catch (error) {
-        console.error("Error fetching user:", error)
+        console.error("Erro ao buscar usuário", error)
         return null
     }
 }
 
 async function getUserByEmail(userEmail: string): Promise<UserAutentication | null> {
-    return new Promise((resolve, reject) => {
-        db.get('SELECT id_usuario, email, senha FROM usuarios WHERE email = ?', [userEmail], (error: Error | null, row: any) => {
-            if (error) {
-                console.error(error.message)
-                return reject(error)
-            }
+    if (!userEmail) {
+        console.error('Invalid userEmail')
+    }
 
-            if (row && typeof row.id_usuario === 'string' && typeof row.email === 'string' && typeof row.senha === 'string') {
-                resolve({
-                    id_usuario: row.id_usuario,
-                    email: row.email,
-                    senha: row.senha
-                })
-            } else {
-                resolve(null)
+    try {
+        return await prisma.user.findUnique({
+            where: {
+                email: userEmail
+            }, 
+            select: {
+                userId: true,
+                email: true,
+                password: true
             }
         })
-    })
+    } catch (error) {
+        console.error("Erro ao buscar usuário", error)
+        return null
+    }
 }
 
 async function hashPassword(password: string) {
@@ -222,7 +223,7 @@ export async function usuarios(fastify: FastifyInstance) {
             }
 
             await schemaSenhaUsuario.validateAsync({ senha: novaSenha })
-            await updateUserPassword(user.id_usuario, novaSenha)
+            await updateUserPassword(user.userId, novaSenha)
 
             return reply.status(200).send({ message: 'Senha atualizada com sucesso' })
         } catch (error) {
@@ -241,13 +242,13 @@ export async function usuarios(fastify: FastifyInstance) {
                 return reply.status(401).send({ message: 'Credenciais inválidas' })
             }
 
-            const passwordValid = await comparePasswords(senhaFornecida, user.senha)
+            const passwordValid = await comparePasswords(senhaFornecida, user.password)
 
             if (!passwordValid) {
                 return reply.status(401).send({ message: 'Credenciais inválidas' })
             }
 
-            return reply.status(200).send({ message: 'Login bem-sucedido', userId: user.id_usuario })
+            return reply.status(200).send({ message: 'Login bem-sucedido', userId: user.userId })
 
         } catch (error) {
             return reply.status(500).send({ message: 'Erro ao realizar login' })
