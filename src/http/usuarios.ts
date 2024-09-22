@@ -203,13 +203,19 @@ export async function usuarios(fastify: FastifyInstance) {
 
     fastify.delete('/usuarios/id/:id', async (request, reply) => {
         try {
-            const usuarioId = (request.params as { id: string }).id
-            const user = await getUserById(usuarioId)
+            const userId = (request.params as { id: string }).id
+            const user = await getUserById(userId)
             if (!user) {
                 return reply.status(404).send({ message: 'Usuário não encontrado' })
             }
-            await db.run('DELETE FROM usuarios WHERE id_usuario = ?', [usuarioId])
-            reply.status(204).send()
+
+            await prisma.user.delete({
+                where: {
+                    userId
+                }
+            }).then(() => {
+                reply.status(204).send()
+            })
         } catch (error) {
             return handleError(error, reply)
         }
