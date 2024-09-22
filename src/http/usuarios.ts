@@ -3,7 +3,7 @@ import bcrypt from "bcrypt"
 import { schemaCadastro } from "../schemas/schemaCadastro.js"
 import { schemaSenhaUsuario } from "../schemas/schemaSenhaUsuario.js"
 import { handleError } from "../utils/handleError.js"
-import { FastifyInstance } from "fastify"
+import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
 
 interface Usuario {
@@ -85,17 +85,20 @@ async function comparePasswords(passwordProvided: string, passwordHash: string) 
     return await bcrypt.compare(passwordProvided, passwordHash)
 }
 
-async function updateUserPassword(userId: string, newPassword: string): Promise<void> {
+async function updateUserPassword(userId: string, newPassword: string, reply: FastifyReply) {
     const newPasswordHash = await hashPassword(newPassword)
-    return new Promise((resolve, reject) => {
-        db.run(`
-            UPDATE usuarios
-            SET senha = ? 
-            WHERE id_usuario = ?
-        `, [newPasswordHash, userId], (error: Error) => {
-            if (error) return reject(error)
-            resolve()
-        })
+    await prisma.user.update({
+        where: {
+            userId 
+        }, 
+        data: {
+            password: newPasswordHash
+        }
+    }).then(() => {
+        return reply.status(200).send({ message: 'Senha atualizada com sucesso' })
+    }).catch((error) => {
+        console.error(error)
+        return reply.status(500).send({ message: 'Erro ao atualizar senha' })
     })
 }
 
@@ -223,9 +226,7 @@ export async function usuarios(fastify: FastifyInstance) {
             }
 
             await schemaSenhaUsuario.validateAsync({ senha: novaSenha })
-            await updateUserPassword(user.userId, novaSenha)
-
-            return reply.status(200).send({ message: 'Senha atualizada com sucesso' })
+            await updateUserPassword(user.userId, novaSenha, reply)
         } catch (error) {
             return handleError(error, reply)
         }
