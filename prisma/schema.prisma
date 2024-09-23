@@ -18,3 +18,19 @@ model User {
 
   @@map("users")
 }
+
+model Event {
+  eventId       String    @id @default(uuid())
+  title         String    @db.VarChar(120)
+  description   String?   @db.VarChar(600)
+  linkEvent     String?   @db.VarChar(255)
+  street        String    @db.VarChar(120)
+  number        String    @db.VarChar(8)
+  neighborhood  String    @db.VarChar(20)
+  complement    String?   @db.VarChar(30)
+  startDateTime DateTime
+  endDateTime   DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@map("events")
+}
