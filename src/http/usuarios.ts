@@ -1,4 +1,3 @@
-import { db } from "../createDatabase.js"
 import bcrypt from "bcrypt"
 import { schemaCadastro } from "../schemas/schemaCadastro.js"
 import { schemaSenhaUsuario } from "../schemas/schemaSenhaUsuario.js"
