@@ -3,25 +3,45 @@ import { schemaEvento } from "../schemas/schemaEvento.js"
 import { randomUUID } from "crypto"
 import { handleError } from "../utils/handleError.js"
 import { FastifyInstance } from "fastify"
+import { prisma } from "../utils/prisma.js"
+
+interface Event {
+    title: string
+    description?: string
+    linkEvent?: string
+    address: {
+        street: string
+        number: string
+        neighborhood: string
+        complement?: string
+    }
+    startDateTime: Date
+    endDateTime?: Date
+}
 
 export async function eventos(fastify: FastifyInstance) {
     fastify.post('/eventos', async (request, reply) => {
         try {
             const value = await schemaEvento.validateAsync(request.body)
-            const id_evento = randomUUID()
-            const { title, endereco, data, horario } = value
-            const { rua, numero, bairro, complemento } = endereco
-            const eventoData = new Date(data)
+            const { title, description, linkEvent, address, startDateTime, endDateTime } = value as Event
 
-            if (eventoData < new Date()) {
-                return reply.status(404).send({ message: 'Data invalida' })
-            }
-
-            await db.run('INSERT INTO eventos (id_evento, titulo, rua, numero, bairro, complemento, data_inicio, horario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [id_evento, title, rua, numero, bairro, complemento, data, horario], (error) => {
-                if (error) {
-                    return reply.status(500).send({ message: 'Erro ao salvar evento' })
+            await prisma.event.create({
+                data: {
+                    title,
+                    description,
+                    linkEvent,
+                    street: address.street,
+                    number: address.number,
+                    neighborhood: address.neighborhood,
+                    complement: address.complement,
+                    startDateTime,
+                    endDateTime,
                 }
-                reply.status(200).send(value)
+            }).then((event) => {
+                return reply.status(200).send(event)
+            }).catch((error) => {
+                console.error(error)
+                return reply.status(500).send({ message: 'Erro ao salvar evento' })
             })
         } catch (error) {
             return handleError(error, reply)
