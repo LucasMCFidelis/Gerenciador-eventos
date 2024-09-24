@@ -47,8 +47,9 @@ export const schemaEvento = Joi.object({
             'string.max': 'Complemento deve conter no máximo 30 caracteres'
         }),
     }).required(),
-    startDateTime: Joi.date().required().messages({
+    startDateTime: Joi.date().min('now').required().messages({
         'date.base': 'Data de início deve ser válida',
+        'date.min': 'Data de início não pode ser anterior à data atual',
         'any.required': 'Data de início é obrigatória'
     }),
     endDateTime: Joi.date().greater(Joi.ref('startDateTime')).optional().messages({
