@@ -82,37 +82,52 @@ export async function eventos(fastify: FastifyInstance) {
         })
     })
 
-    fastify.put('/eventos/id/:id', (request, reply) => {
+    fastify.put('/eventos/id/:id', async (request, reply) => {
         try {
-            const eventoId = (request.params as { id: string }).id;
+            const eventId = (request.params as { id: string }).id
+            const {
+                title,
+                description,
+                linkEvent,
+                address,
+                startDateTime,
+                endDateTime
+            } = await schemaEvento.validateAsync(request.body as Event)
 
-            db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
-                if (error) {
-                    console.error(error.message)
-                    return reply.status(500).send({ message: 'Erro ao consultar o evento' })
+            await prisma.event.findUnique({
+                select: {
+                    eventId: true
+                },
+                where: {
+                    eventId
                 }
-
-                if (!row) {
+            }).then((event) => {
+                if (!event) {
                     return reply.status(404).send({ message: 'Evento não encontrado' })
                 }
-
-                const value = await schemaEvento.validateAsync(request.body)
-                const { title, endereco, data, horario } = value;
-                const { rua, numero, bairro } = endereco;
-                await db.run(`
-                    UPDATE eventos 
-                    SET titulo = ?, rua = ?, numero = ?, bairro = ?, data_inicio = ?, horario = ?
-                    WHERE id_evento = ?
-                    `, [title, rua, numero, bairro, data, horario, eventoId], (error) => {
-                    if (error) {
-                        console.error(error.message)
-                        return reply.status(500).send({ message: 'Erro ao atualizar evento' })
-                    }
-                })
-
-                reply.status(204).send()
             })
 
+            await prisma.event.update({
+                data: {
+                    title,
+                    description,
+                    linkEvent,
+                    street: address.street,
+                    number: address.number,
+                    neighborhood: address.neighborhood,
+                    complement: address.complement,
+                    startDateTime,
+                    endDateTime
+                },
+                where: {
+                    eventId
+                }
+            }).then(() => {
+                return reply.status(204).send()
+            }).catch((error) => {
+                console.error(error.message)
+                return reply.status(500).send({ message: 'Erro ao atualizar evento' })
+            })
         } catch (error) {
             return handleError(error, reply)
         }
