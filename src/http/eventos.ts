@@ -48,21 +48,20 @@ export async function eventos(fastify: FastifyInstance) {
         }
     })
 
-    fastify.get('/eventos', (request, reply) => {
-        db.all(`
-            SELECT * 
-            FROM eventos
-            ORDER BY data_inicio
-            `, (error, rows) => {
-            if (error) {
-                console.error(error.message)
-                return reply.status(500).send({ message: 'Erro na consulta ao banco de dados' })
+    fastify.get('/eventos', async (request, reply) => {
+        await prisma.event.findMany({
+            orderBy: {
+                title: "asc"
             }
-            if (rows.length > 0) {
-                return reply.status(200).send(rows)
+        }).then((events) => {
+            if (events.length > 0) {
+                return reply.status(200).send(events)
             } else {
                 return reply.status(404).send({ message: 'Nenhum evento encontrado' })
             }
+        }).catch((error) => {
+            console.error(error.message)
+            return reply.status(500).send({ message: 'Erro na consulta ao banco de dados' })
         })
     })
 
