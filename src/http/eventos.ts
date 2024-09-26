@@ -19,7 +19,7 @@ interface Event {
     endDateTime?: Date
 }
 
-async function getEventById(eventId: string, reply: FastifyReply){
+async function getEventById(eventId: string, reply: FastifyReply) {
     await prisma.event.findUnique({
         where: {
             eventId
@@ -32,6 +32,21 @@ async function getEventById(eventId: string, reply: FastifyReply){
     }).catch((error) => {
         console.error(error)
         return reply.status(500).send({ message: 'Erro ao consultar o evento' })
+    })
+}
+
+async function checkExistingEvent(eventId: string, reply: FastifyReply) {
+    await prisma.event.findUnique({
+        select: {
+            eventId: true
+        },
+        where: {
+            eventId
+        }
+    }).then((event) => {
+        if (!event) {
+            return reply.status(404).send({ message: 'Evento não encontrado' })
+        }
     })
 }
 
@@ -98,18 +113,7 @@ export async function eventos(fastify: FastifyInstance) {
                 endDateTime
             } = await schemaEvento.validateAsync(request.body as Event)
 
-            await prisma.event.findUnique({
-                select: {
-                    eventId: true
-                },
-                where: {
-                    eventId
-                }
-            }).then((event) => {
-                if (!event) {
-                    return reply.status(404).send({ message: 'Evento não encontrado' })
-                }
-            })
+            await checkExistingEvent(eventId, reply)
 
             await prisma.event.update({
                 data: {
@@ -137,27 +141,20 @@ export async function eventos(fastify: FastifyInstance) {
         }
     })
 
-    fastify.delete('/eventos/id/:id', (request, reply) => {
-        const eventoId = (request.params as { id: string }).id
+    fastify.delete('/eventos/id/:id', async (request, reply) => {
+        const eventId = (request.params as { id: string }).id
         try {
-            db.get('SELECT id_evento FROM eventos WHERE id_evento = ?', [eventoId], async (error, row) => {
-                if (error) {
-                    console.error(error.message)
-                    return reply.status(500).send({ message: 'Erro ao consultar o evento' })
+            await checkExistingEvent(eventId, reply)
+
+            await prisma.event.delete({
+                where: {
+                    eventId
                 }
-
-                if (!row) {
-                    return reply.status(404).send({ message: 'Evento não encontrado' })
-                }
-
-                await db.run('DELETE FROM eventos WHERE id_evento = ?', [eventoId], (error) => {
-                    if (error) {
-                        console.error(error.message)
-                        return reply.status(500).send({ message: 'Erro ao deletar evento' })
-                    }
-                })
-
-                reply.status(204).send()
+            }).then(() => {
+                return reply.status(204).send()
+            }).catch((error) => {
+                console.error(error.message)
+                return reply.status(500).send({ message: 'Erro ao excluir evento' })
             })
         } catch (error) {
             return handleError(error, reply)
