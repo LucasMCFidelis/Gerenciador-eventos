@@ -2,7 +2,7 @@ import { db } from "../createDatabase.js"
 import { schemaEvento } from "../schemas/schemaEvento.js"
 import { randomUUID } from "crypto"
 import { handleError } from "../utils/handleError.js"
-import { FastifyInstance } from "fastify"
+import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
 
 interface Event {
@@ -17,6 +17,22 @@ interface Event {
     }
     startDateTime: Date
     endDateTime?: Date
+}
+
+async function getEventById(eventId: string, reply: FastifyReply){
+    await prisma.event.findUnique({
+        where: {
+            eventId
+        }
+    }).then((event) => {
+        if (!event) {
+            return reply.status(404).send({ message: 'Evento não encontrado' })
+        }
+        return reply.status(200).send(event)
+    }).catch((error) => {
+        console.error(error)
+        return reply.status(500).send({ message: 'Erro ao consultar o evento' })
+    })
 }
 
 export async function eventos(fastify: FastifyInstance) {
@@ -67,19 +83,7 @@ export async function eventos(fastify: FastifyInstance) {
 
     fastify.get('/eventos/:id', async (request, reply) => {
         const eventId = (request.params as { id: string }).id
-        await prisma.event.findUnique({
-            where: {
-                eventId
-            }
-        }).then((event) => {
-            if (!event) {
-                return reply.status(404).send({ message: 'Evento não encontrado' })
-            }
-            return reply.status(200).send(event)
-        }).catch((error) => {
-            console.error(error)
-            return reply.status(500).send({ message: 'Erro ao consultar o evento' })
-        })
+        await getEventById(eventId, reply)
     })
 
     fastify.put('/eventos/id/:id', async (request, reply) => {
