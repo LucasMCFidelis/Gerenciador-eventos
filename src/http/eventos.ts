@@ -35,19 +35,28 @@ async function getEventById(eventId: string, reply: FastifyReply) {
     })
 }
 
-async function checkExistingEvent(eventId: string, reply: FastifyReply) {
-    await prisma.event.findUnique({
-        select: {
-            eventId: true
-        },
-        where: {
-            eventId
-        }
-    }).then((event) => {
+async function checkExistingEvent(eventId: string, reply: FastifyReply): Promise<boolean> {
+    try {
+        const event = await prisma.event.findUnique({
+            select: {
+                eventId: true
+            },
+            where: {
+                eventId
+            }
+        })
+
         if (!event) {
-            return reply.status(404).send({ message: 'Evento não encontrado' })
+            reply.status(404).send({ message: 'Evento não encontrado' })
+            return false
         }
-    })
+
+        return true
+    } catch (error) {
+        console.error(error)
+        reply.status(500).send({ message: 'Erro ao consultar o evento' })
+        return false
+    }
 }
 
 export async function eventos(fastify: FastifyInstance) {
@@ -144,7 +153,10 @@ export async function eventos(fastify: FastifyInstance) {
     fastify.delete('/eventos/id/:id', async (request, reply) => {
         const eventId = (request.params as { id: string }).id
         try {
-            await checkExistingEvent(eventId, reply)
+            const eventExisting = await checkExistingEvent(eventId, reply)
+            if (!eventExisting){
+                return
+            }
 
             await prisma.event.delete({
                 where: {
