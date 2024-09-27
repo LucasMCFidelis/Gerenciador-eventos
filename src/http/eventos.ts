@@ -1,6 +1,4 @@
-import { db } from "../createDatabase.js"
 import { schemaEvento } from "../schemas/schemaEvento.js"
-import { randomUUID } from "crypto"
 import { handleError } from "../utils/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
