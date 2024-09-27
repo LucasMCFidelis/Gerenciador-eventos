@@ -122,7 +122,10 @@ export async function eventos(fastify: FastifyInstance) {
                 endDateTime
             } = await schemaEvento.validateAsync(request.body as Event)
 
-            await checkExistingEvent(eventId, reply)
+            const eventExisting = await checkExistingEvent(eventId, reply)
+            if (!eventExisting){
+                return
+            }
 
             await prisma.event.update({
                 data: {
