@@ -15,7 +15,7 @@ async function seedAdmins() {
     data: [
       {
         firstName: 'John', 
-        lastName: 'Doe', 
+        lastName: 'Doe acme', 
         email: 'john.doe@example.com',
         phoneNumber: '5551234567',
         password: '@J0hnD03#',
@@ -23,7 +23,7 @@ async function seedAdmins() {
       },
       {
         firstName: 'Carlos', 
-        lastName: 'Pedro', 
+        lastName: 'Pedro Araújo', 
         email: 'carlos@example.com',
         phoneNumber: '5588874567',
         password: '@JMKIoowD03#',
