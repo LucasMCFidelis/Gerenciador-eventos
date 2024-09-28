@@ -16,6 +16,10 @@ model User {
   password    String
   createdAt   DateTime @default(now())
 
+  // Adicionando relacionamento com Role
+  roleId      Int?
+  role        Role?    @relation(fields: [roleId], references: [roleId])
+
   @@map("users")
 }
 
@@ -33,4 +37,15 @@ model Event {
   createdAt     DateTime  @default(now())
 
   @@map("events")
+}
+
+model  Role {
+  roleId Int @id @default(autoincrement())
+  roleName String @unique
+  roleDescription String? 
+
+  // Relacionamento com usuários
+  users User[]
+
+  @@map("roles")
 }
