@@ -17,8 +17,9 @@ model User {
   createdAt   DateTime @default(now())
 
   // Adicionando relacionamento com Role
-  roleId      Int?
-  role        Role?    @relation(fields: [roleId], references: [roleId])
+  // 1 - Admim / 2 - User
+  roleId Int? @default(2) 
+  role   Role? @relation(fields: [roleId], references: [roleId])
 
   @@map("users")
 }
@@ -39,10 +40,10 @@ model Event {
   @@map("events")
 }
 
-model  Role {
-  roleId Int @id @default(autoincrement())
-  roleName String @unique
-  roleDescription String? 
+model Role {
+  roleId          Int     @id @default(autoincrement())
+  roleName        String  @unique @db.VarChar(20)
+  roleDescription String? @db.VarChar(80)
 
   // Relacionamento com usuários
   users User[]
