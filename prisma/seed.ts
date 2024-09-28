@@ -10,8 +10,32 @@ async function seedRoles() {
   console.log('Papéis criados com sucesso!')
 }
 
+async function seedAdmins() {
+  await prisma.user.createMany({
+    data: [
+      {
+        firstName: 'John', 
+        lastName: 'Doe', 
+        email: 'john.doe@example.com',
+        phoneNumber: '5551234567',
+        password: '@J0hnD03#',
+        roleId: 1
+      },
+      {
+        firstName: 'Carlos', 
+        lastName: 'Pedro', 
+        email: 'carlos@example.com',
+        phoneNumber: '5588874567',
+        password: '@JMKIoowD03#',
+        roleId: 1
+      }
+    ]
+  })
+}
+
 async function main() {
   await seedRoles()
+  await seedAdmins()
 }
 
 main()
