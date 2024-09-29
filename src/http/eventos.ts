@@ -176,6 +176,12 @@ export async function eventos(fastify: FastifyInstance) {
     fastify.delete('/eventos/id/:id', async (request, reply) => {
         const eventId = (request.params as { id: string }).id
         try {
+            const { userId } = request.body as { userId: string }
+            const hasPermission = await verifyRole({userId, requiredRole: 'Admin'})
+            if (!hasPermission) {
+                return reply.status(403).send({message: 'Permissão negada'})
+            }
+
             const eventExisting = await checkExistingEvent(eventId, reply)
             if (!eventExisting) {
                 return
