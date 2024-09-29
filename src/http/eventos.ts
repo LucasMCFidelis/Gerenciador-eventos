@@ -73,9 +73,9 @@ export async function eventos(fastify: FastifyInstance) {
                 endDateTime
             })
 
-            const hasPermission = await verifyRole({ userId, requiredRole: 'Admin' })
+            const {status, hasPermission, message} = await verifyRole({userId, requiredRole: 'Admin'})
             if (!hasPermission) {
-                return reply.status(403).send({ message: 'Permissão negada' })
+                return reply.status(status).send({message})
             }
 
             await prisma.event.create({
@@ -128,9 +128,9 @@ export async function eventos(fastify: FastifyInstance) {
             const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = request.body as Event
             const eventId = (request.params as { id: string }).id
 
-            const hasPermission = await verifyRole({ userId, requiredRole: 'Admin' })
+            const {status, hasPermission, message} = await verifyRole({userId, requiredRole: 'Admin'})
             if (!hasPermission) {
-                return reply.status(403).send({ message: 'Permissão negada' })
+                return reply.status(status).send({message})
             }
             
             await schemaEvento.validateAsync({
@@ -177,9 +177,10 @@ export async function eventos(fastify: FastifyInstance) {
         const eventId = (request.params as { id: string }).id
         try {
             const { userId } = request.body as { userId: string }
-            const hasPermission = await verifyRole({userId, requiredRole: 'Admin'})
+
+            const {status, hasPermission, message} = await verifyRole({userId, requiredRole: 'Admin'})
             if (!hasPermission) {
-                return reply.status(403).send({message: 'Permissão negada'})
+                return reply.status(status).send({message})
             }
 
             const eventExisting = await checkExistingEvent(eventId, reply)
