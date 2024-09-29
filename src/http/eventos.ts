@@ -2,8 +2,10 @@ import { schemaEvento } from "../schemas/schemaEvento.js"
 import { handleError } from "../utils/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
+import { verifyRole } from "../utils/verifyRole.js"
 
 interface Event {
+    userId: string
     title: string
     description?: string
     linkEvent?: string
@@ -61,7 +63,12 @@ export async function eventos(fastify: FastifyInstance) {
     fastify.post('/eventos', async (request, reply) => {
         try {
             const value = await schemaEvento.validateAsync(request.body)
-            const { title, description, linkEvent, address, startDateTime, endDateTime } = value as Event
+            const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = value as Event
+
+            const hasPermission = await verifyRole({ userId, requiredRole: 'Admin' })
+            if (!hasPermission) {
+                return reply.status(403).send({message: 'Permissão negada'})
+            }
 
             await prisma.event.create({
                 data: {
