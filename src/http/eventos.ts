@@ -63,7 +63,7 @@ export async function eventos(fastify: FastifyInstance) {
     fastify.post('/eventos', async (request, reply) => {
         try {
             const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = request.body as Event
-            
+
             await schemaEvento.validateAsync({
                 title,
                 description,
@@ -125,15 +125,22 @@ export async function eventos(fastify: FastifyInstance) {
 
     fastify.put('/eventos/id/:id', async (request, reply) => {
         try {
+            const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = request.body as Event
             const eventId = (request.params as { id: string }).id
-            const {
+
+            const hasPermission = await verifyRole({ userId, requiredRole: 'Admin' })
+            if (!hasPermission) {
+                return reply.status(403).send({ message: 'Permissão negada' })
+            }
+            
+            await schemaEvento.validateAsync({
                 title,
                 description,
                 linkEvent,
                 address,
                 startDateTime,
                 endDateTime
-            } = await schemaEvento.validateAsync(request.body as Event)
+            })
 
             const eventExisting = await checkExistingEvent(eventId, reply)
             if (!eventExisting) {
