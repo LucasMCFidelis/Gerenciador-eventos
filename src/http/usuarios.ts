@@ -5,14 +5,7 @@ import { handleError } from "../utils/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
 import { checkExistingUser } from "../utils/checkExistingUser.js"
-
-interface Usuario {
-    userId: string
-    firstName: string
-    lastName: string
-    email: string
-    phoneNumber?: string | null
-}
+import { getUserById } from "../utils/getUserById.js"
 
 interface Cadastro {
     firstName: string
@@ -26,32 +19,6 @@ interface UserAutentication {
     userId: string
     email: string
     password: string
-}
-
-async function getUserById(userId: string): Promise<Usuario | null> {
-    if (!userId) {
-        console.error("Invalid userId")
-        return null
-    }
-
-    try {
-        const user = await prisma.user.findUnique({
-            where: {
-                userId
-            },
-            select: {
-                userId: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                phoneNumber: true
-            }
-        })
-        return user
-    } catch (error) {
-        console.error("Erro ao buscar usuário", error)
-        return null
-    }
 }
 
 async function getUserByEmail(userEmail: string): Promise<UserAutentication | null> {
