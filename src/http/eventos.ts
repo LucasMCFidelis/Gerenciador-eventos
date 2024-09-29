@@ -62,12 +62,20 @@ async function checkExistingEvent(eventId: string, reply: FastifyReply): Promise
 export async function eventos(fastify: FastifyInstance) {
     fastify.post('/eventos', async (request, reply) => {
         try {
-            const value = await schemaEvento.validateAsync(request.body)
-            const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = value as Event
+            const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = request.body as Event
+            
+            await schemaEvento.validateAsync({
+                title,
+                description,
+                linkEvent,
+                address,
+                startDateTime,
+                endDateTime
+            })
 
             const hasPermission = await verifyRole({ userId, requiredRole: 'Admin' })
             if (!hasPermission) {
-                return reply.status(403).send({message: 'Permissão negada'})
+                return reply.status(403).send({ message: 'Permissão negada' })
             }
 
             await prisma.event.create({
@@ -128,7 +136,7 @@ export async function eventos(fastify: FastifyInstance) {
             } = await schemaEvento.validateAsync(request.body as Event)
 
             const eventExisting = await checkExistingEvent(eventId, reply)
-            if (!eventExisting){
+            if (!eventExisting) {
                 return
             }
 
@@ -162,7 +170,7 @@ export async function eventos(fastify: FastifyInstance) {
         const eventId = (request.params as { id: string }).id
         try {
             const eventExisting = await checkExistingEvent(eventId, reply)
-            if (!eventExisting){
+            if (!eventExisting) {
                 return
             }
 
