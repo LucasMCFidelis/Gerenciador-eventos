@@ -102,9 +102,9 @@ export async function usuarios(fastify: FastifyInstance) {
             })
             const senhaHash = await hashPassword(password)
             
-            const userAlreadyExistsReply = await checkExistingUser(email, reply)           
-            if (userAlreadyExistsReply) {
-                return
+            const {status, existingUser, message} = await checkExistingUser(email)           
+            if (existingUser) {
+                return reply.status(status).send({message})
             }
 
             await prisma.user.create({
@@ -144,9 +144,9 @@ export async function usuarios(fastify: FastifyInstance) {
             const userDataValidate = await schemaCadastro.validateAsync(request.body)
             const { nome, sobrenome, email, telefone } = userDataValidate
             
-            const userAlreadyExistsReply = await checkExistingUser(email, reply)
-            if (userAlreadyExistsReply) {
-                return
+            const {status, existingUser, message} = await checkExistingUser(email)           
+            if (existingUser) {
+                return reply.status(status).send({message})
             }
 
             await prisma.user.update({
