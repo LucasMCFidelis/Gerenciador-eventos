@@ -1,7 +1,12 @@
-import { FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
 
-export async function checkExistingUser(userEmail: string, reply: FastifyReply){
+interface checkExistingUserResponse {
+    status: number
+    existingUser: boolean
+    message?: string
+}
+
+export async function checkExistingUser(userEmail: string): Promise<checkExistingUserResponse>{
     const existingUser = await prisma.user.findUnique({
         where: {
             email: userEmail
@@ -10,11 +15,16 @@ export async function checkExistingUser(userEmail: string, reply: FastifyReply){
             email: true
         }
     })
-    console.log(existingUser)
     
     if (existingUser) {
-        reply.status(400).send({ message: 'Este email já está cadastrado' })
-        return true 
+        return {
+            status: 400,
+            existingUser: true,
+            message: 'Este email já está cadastrado'
+        }
     }
-    return false
+    return {
+        status: 200,
+        existingUser: false
+    }
 }
