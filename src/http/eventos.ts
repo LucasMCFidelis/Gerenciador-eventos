@@ -3,6 +3,7 @@ import { handleError } from "../utils/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
 import { verifyRole } from "../utils/verifyRole.js"
+import { checkExistingEvent } from "../utils/checkExistingEvent.js"
 
 interface Event {
     userId: string
@@ -35,30 +36,6 @@ async function getEventById(eventId: string, reply: FastifyReply) {
     })
 }
 
-async function checkExistingEvent(eventId: string, reply: FastifyReply): Promise<boolean> {
-    try {
-        const event = await prisma.event.findUnique({
-            select: {
-                eventId: true
-            },
-            where: {
-                eventId
-            }
-        })
-
-        if (!event) {
-            reply.status(404).send({ message: 'Evento não encontrado' })
-            return false
-        }
-
-        return true
-    } catch (error) {
-        console.error(error)
-        reply.status(500).send({ message: 'Erro ao consultar o evento' })
-        return false
-    }
-}
-
 export async function eventos(fastify: FastifyInstance) {
     fastify.post('/eventos', async (request, reply) => {
         try {
@@ -73,9 +50,9 @@ export async function eventos(fastify: FastifyInstance) {
                 endDateTime
             })
 
-            const {status, hasPermission, message} = await verifyRole({userId, requiredRole: 'Admin'})
+            const { status, hasPermission, message } = await verifyRole({ userId, requiredRole: 'Admin' })
             if (!hasPermission) {
-                return reply.status(status).send({message})
+                return reply.status(status).send({ message })
             }
 
             await prisma.event.create({
@@ -128,11 +105,14 @@ export async function eventos(fastify: FastifyInstance) {
             const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = request.body as Event
             const eventId = (request.params as { id: string }).id
 
-            const {status, hasPermission, message} = await verifyRole({userId, requiredRole: 'Admin'})
+            const { status: roleStatus, hasPermission, message: roleMessage } = await verifyRole({
+                userId,
+                requiredRole: 'Admin'
+            })
             if (!hasPermission) {
-                return reply.status(status).send({message})
+                return reply.status(roleStatus).send({ roleMessage })
             }
-            
+
             await schemaEvento.validateAsync({
                 title,
                 description,
@@ -142,9 +122,9 @@ export async function eventos(fastify: FastifyInstance) {
                 endDateTime
             })
 
-            const eventExisting = await checkExistingEvent(eventId, reply)
+            const { status: eventStatus, eventExisting, message: eventMessage } = await checkExistingEvent(eventId)
             if (!eventExisting) {
-                return
+                return reply.status(eventStatus).send({ eventMessage })
             }
 
             await prisma.event.update({
@@ -178,14 +158,17 @@ export async function eventos(fastify: FastifyInstance) {
         try {
             const { userId } = request.body as { userId: string }
 
-            const {status, hasPermission, message} = await verifyRole({userId, requiredRole: 'Admin'})
+            const { status: roleStatus, hasPermission, message: roleMessage } = await verifyRole({
+                userId,
+                requiredRole: 'Admin'
+            })
             if (!hasPermission) {
-                return reply.status(status).send({message})
+                return reply.status(roleStatus).send({ roleMessage })
             }
 
-            const eventExisting = await checkExistingEvent(eventId, reply)
+            const { status: eventStatus, eventExisting, message: eventMessage } = await checkExistingEvent(eventId)
             if (!eventExisting) {
-                return
+                return reply.status(eventStatus).send({ eventMessage })
             }
 
             await prisma.event.delete({
