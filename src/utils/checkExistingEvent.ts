@@ -1,4 +1,3 @@
-import { FastifyReply } from "fastify"
 import { prisma } from "./prisma.js"
 
 interface checkExistingEventResponse {
