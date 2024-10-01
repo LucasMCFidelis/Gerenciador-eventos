@@ -1,9 +1,9 @@
 import Joi from "joi";
-import { removeEspacos } from "../utils/removeEspacos.js";
+import { removeWhitespace } from "../utils/removeWhitespace.js";
 
 export const schemaEvento = Joi.object({
     title: Joi.string().required().custom(
-        (value) => removeEspacos(value)
+        (value) => removeWhitespace(value)
     ).min(3).max(120).messages({
         'string.base': 'Título deve ser uma string',
         'string.empty': 'Título não pode estar vazio',
@@ -11,7 +11,7 @@ export const schemaEvento = Joi.object({
         'string.max': 'Título deve conter no máximo 120 caracteres'
     }),
     description: Joi.string().optional().custom(
-        (value) => removeEspacos(value)
+        (value) => removeWhitespace(value)
     ).min(3).max(120).messages({
         'string.base': 'Descrição deve ser uma string',
     }),
@@ -21,7 +21,7 @@ export const schemaEvento = Joi.object({
     }),
     address: Joi.object({
         street: Joi.string().required().custom(
-            (value) => removeEspacos(value)
+            (value) => removeWhitespace(value)
         ).min(10).max(120).messages({
             'string.base': 'Rua deve ser uma string',
             'string.empty': 'Rua não pode estar vazia',
@@ -35,7 +35,7 @@ export const schemaEvento = Joi.object({
             'string.max': 'Número deve conter no máximo 8 caracteres'
         }),
         neighborhood: Joi.string().required().custom(
-            (value) => removeEspacos(value)
+            (value) => removeWhitespace(value)
         ).min(5).max(20).messages({
             'string.base': 'Bairro deve ser uma string',
             'string.empty': 'Bairro não pode estar vazio',
