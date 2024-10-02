@@ -98,7 +98,7 @@ export async function usuarios(fastify: FastifyInstance) {
                 phoneNumber
             })
             await schemaUserPassword.validateAsync({
-                senha: password
+                password
             })
             const senhaHash = await hashPassword(password)
             
@@ -197,7 +197,7 @@ export async function usuarios(fastify: FastifyInstance) {
                 return reply.status(404).send({ message: 'Usuário não encontrado' })
             }
 
-            await schemaUserPassword.validateAsync({ senha: novaSenha })
+            await schemaUserPassword.validateAsync({ novaSenha })
             await updateUserPassword(user.userId, novaSenha, reply)
         } catch (error) {
             return handleError(error, reply)
