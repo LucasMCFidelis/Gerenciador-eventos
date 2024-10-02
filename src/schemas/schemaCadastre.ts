@@ -1,7 +1,7 @@
 import Joi from "joi"
 import { removeWhitespace } from "../utils/removeWhitespace.js"
 
-export const schemaCadastro = Joi.object({
+export const schemaCadastre = Joi.object({
     firstName: Joi.string().custom(
         (value) => removeWhitespace(value)
     ).min(3).pattern(new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$')).required().messages({

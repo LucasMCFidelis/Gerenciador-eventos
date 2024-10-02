@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { removeWhitespace } from "../utils/removeWhitespace.js";
 
-export const schemaEvento = Joi.object({
+export const schemaEvent = Joi.object({
     title: Joi.string().required().custom(
         (value) => removeWhitespace(value)
     ).min(3).max(120).messages({

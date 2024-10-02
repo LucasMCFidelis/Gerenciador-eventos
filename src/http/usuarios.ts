@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt"
-import { schemaCadastro } from "../schemas/schemaCadastre.js"
+import { schemaCadastre } from "../schemas/schemaCadastre.js"
 import { schemaUserPassword } from "../schemas/schemaUserPassword.js"
 import { handleError } from "../utils/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
@@ -91,11 +91,11 @@ export async function usuarios(fastify: FastifyInstance) {
     fastify.post('/usuarios', async (request, reply) => {
         try {
             const { firstName, lastName, email, phoneNumber, password } = request.body as Cadastro
-            await schemaCadastro.validateAsync({
-                nome: firstName,
-                sobrenome: lastName,
+            await schemaCadastre.validateAsync({
+                firstName,
+                lastName,
                 email,
-                telefone: phoneNumber
+                phoneNumber
             })
             await schemaUserPassword.validateAsync({
                 senha: password
@@ -141,8 +141,8 @@ export async function usuarios(fastify: FastifyInstance) {
                 return reply.status(404).send({ message: 'Usuário não encontrado' })
             }
 
-            const userDataValidate = await schemaCadastro.validateAsync(request.body)
-            const { nome, sobrenome, email, telefone } = userDataValidate
+            const userDataValidate = await schemaCadastre.validateAsync(request.body)
+            const { firstName, lastName, email, phoneNumber } = userDataValidate
             
             const {status, existingUser, message} = await checkExistingUser(email)           
             if (existingUser) {
@@ -154,10 +154,10 @@ export async function usuarios(fastify: FastifyInstance) {
                     userId: user.userId
                 },
                 data: {
-                    firstName: nome,
-                    lastName: sobrenome,
+                    firstName,
+                    lastName,
                     email,
-                    phoneNumber: telefone
+                    phoneNumber
                 }
             }).then(() => {
                 return reply.status(200).send({ message: 'Usuário atualizado com sucesso' })

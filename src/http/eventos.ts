@@ -1,4 +1,4 @@
-import { schemaEvento } from "../schemas/schemaEvent.js"
+import { schemaEvent } from "../schemas/schemaEvent.js"
 import { handleError } from "../utils/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
@@ -41,7 +41,7 @@ export async function eventos(fastify: FastifyInstance) {
         try {
             const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = request.body as Event
 
-            await schemaEvento.validateAsync({
+            await schemaEvent.validateAsync({
                 title,
                 description,
                 linkEvent,
@@ -113,7 +113,7 @@ export async function eventos(fastify: FastifyInstance) {
                 return reply.status(roleStatus).send({ roleMessage })
             }
 
-            await schemaEvento.validateAsync({
+            await schemaEvent.validateAsync({
                 title,
                 description,
                 linkEvent,
