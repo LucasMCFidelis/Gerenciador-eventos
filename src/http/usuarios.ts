@@ -16,23 +16,6 @@ interface UserAutentication {
 }
 
 export async function usuarios(fastify: FastifyInstance) {
-    // ADICIONAR VALIDAÇÃO POR CÓDIGO EM EMAIL OU ALGUMA OUTRA OPÇÃO
-    fastify.patch('/usuarios/recuperacao/esqueci-senha', async (request, reply) => {
-        try {
-            const { email, novaSenha } = request.body as { email: string, novaSenha: string }
-            const user = await getUserByEmail(email)
-
-            if (!user) {
-                return reply.status(404).send({ message: 'Usuário não encontrado' })
-            }
-
-            await schemaUserPassword.validateAsync({ novaSenha })
-            await updateUserPassword(user.userId, novaSenha, reply)
-        } catch (error) {
-            return handleError(error, reply)
-        }
-    })
-
     // ADICIONAR LOGICA DE CRIAÇÃO DE TOKENS PARA PRÓXIMAS AUTENTICAÇÕES 
     fastify.post('/usuarios/login', async (request, reply) => {
         try {
