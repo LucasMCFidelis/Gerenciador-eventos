@@ -26,24 +26,6 @@ interface UserAutentication {
 }
 
 export async function usuarios(fastify: FastifyInstance) {
-    fastify.get('/usuarios/id/:id', async (request, reply) => {
-        try {
-            const { id } = request.params as { id: string }
-            if (!id) {
-                return reply.status(400).send({ message: 'ID deve ser fornecido' })
-            }
-
-            const user = await getUserById(id)
-            if (!user) {
-                return reply.status(404).send({ message: 'Usuário não encontrado' })
-            }
-
-            return reply.status(200).send(user)
-        } catch (error: unknown) {
-            return handleError(error, reply)
-        }
-    })
-
     fastify.post('/usuarios', async (request, reply) => {
         try {
             const { firstName, lastName, email, phoneNumber, password } = request.body as Cadastro
