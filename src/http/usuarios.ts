@@ -8,6 +8,7 @@ import { checkExistingUser } from "../utils/checkExistingUser.js"
 import { getUserById } from "../utils/getUserById.js"
 import { getUserByEmail } from "../utils/getUserByEmail.js"
 import { hashPassword } from "../utils/hashPassword.js"
+import { comparePasswords } from "../utils/comparePasswords.js"
 
 interface Cadastro {
     firstName: string
@@ -21,10 +22,6 @@ interface UserAutentication {
     userId: string
     email: string
     password: string
-}
-
-async function comparePasswords(passwordProvided: string, passwordHash: string) {
-    return await bcrypt.compare(passwordProvided, passwordHash)
 }
 
 async function updateUserPassword(userId: string, newPassword: string, reply: FastifyReply) {
