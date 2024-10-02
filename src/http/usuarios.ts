@@ -7,6 +7,7 @@ import { prisma } from "../utils/prisma.js"
 import { checkExistingUser } from "../utils/checkExistingUser.js"
 import { getUserById } from "../utils/getUserById.js"
 import { getUserByEmail } from "../utils/getUserByEmail.js"
+import { hashPassword } from "../utils/hashPassword.js"
 
 interface Cadastro {
     firstName: string
@@ -20,11 +21,6 @@ interface UserAutentication {
     userId: string
     email: string
     password: string
-}
-
-async function hashPassword(password: string) {
-    const saltHounds = 10
-    return await bcrypt.hash(password, saltHounds)
 }
 
 async function comparePasswords(passwordProvided: string, passwordHash: string) {
