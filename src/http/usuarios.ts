@@ -9,6 +9,7 @@ import { getUserById } from "../utils/getUserById.js"
 import { getUserByEmail } from "../utils/getUserByEmail.js"
 import { hashPassword } from "../utils/hashPassword.js"
 import { comparePasswords } from "../utils/comparePasswords.js"
+import { updateUserPassword } from "../utils/updateUserPassword.js"
 
 interface Cadastro {
     firstName: string
@@ -22,23 +23,6 @@ interface UserAutentication {
     userId: string
     email: string
     password: string
-}
-
-async function updateUserPassword(userId: string, newPassword: string, reply: FastifyReply) {
-    const newPasswordHash = await hashPassword(newPassword)
-    await prisma.user.update({
-        where: {
-            userId
-        },
-        data: {
-            password: newPasswordHash
-        }
-    }).then(() => {
-        return reply.status(200).send({ message: 'Senha atualizada com sucesso' })
-    }).catch((error) => {
-        console.error(error)
-        return reply.status(500).send({ message: 'Erro ao atualizar senha' })
-    })
 }
 
 export async function usuarios(fastify: FastifyInstance) {
