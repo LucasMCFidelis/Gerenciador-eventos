@@ -1,9 +1,9 @@
 import { FastifyInstance } from "fastify";
-import { checkExistingUser } from "../../utils/checkExistingUser.js";
+import { checkExistingUser } from "../../utils/validators/checkExistingUser.js";
 import { schemaCadastre } from "../../schemas/schemaCadastre.js";
-import { getUserById } from "../../utils/getUserById.js";
-import { handleError } from "../../utils/handleError.js";
-import { prisma } from "../../utils/prisma.js";
+import { getUserById } from "../../utils/db/getUserById.js";
+import { handleError } from "../../utils/handlers/handleError.js";
+import { prisma } from "../../utils/db/prisma.js";
 
 export async function updateUserRoute(fastify:FastifyInstance) {
     fastify.put('/usuarios/id/:id', async (request, reply) => {

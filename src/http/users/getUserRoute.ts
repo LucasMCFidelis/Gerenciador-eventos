@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify"
-import { getUserById } from "../../utils/getUserById.js"
-import { handleError } from "../../utils/handleError.js"
+import { getUserById } from "../../utils/db/getUserById.js"
+import { handleError } from "../../utils/handlers/handleError.js"
 
 export async function getUserRoute(fastify: FastifyInstance) {
     fastify.get('/usuarios/id/:id', async (request, reply) => {

@@ -1,4 +1,4 @@
-import { getUserById } from "./getUserById.js"
+import { getUserById } from "../db/getUserById.js"
 
 interface verifyRoleResponse {
     status: number

@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { schemaUserPassword } from "../../schemas/schemaUserPassword.js";
-import { handleError } from "../../utils/handleError.js";
-import { getUserByEmail } from "../../utils/getUserByEmail.js";
-import { updateUserPassword } from "../../utils/updateUserPassword.js";
+import { handleError } from "../../utils/handlers/handleError.js";
+import { getUserByEmail } from "../../utils/db/getUserByEmail.js";
+import { updateUserPassword } from "../../utils/db/updateUserPassword.js";
 
 export async function updateUserPasswordRoute(fastify:FastifyInstance) {
     // ADICIONAR VALIDAÇÃO POR CÓDIGO EM EMAIL OU ALGUMA OUTRA OPÇÃO

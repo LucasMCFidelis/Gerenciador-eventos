@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { getUserById } from "../../utils/getUserById.js";
-import { handleError } from "../../utils/handleError.js";
-import { prisma } from "../../utils/prisma.js";
+import { getUserById } from "../../utils/db/getUserById.js";
+import { handleError } from "../../utils/handlers/handleError.js";
+import { prisma } from "../../utils/db/prisma.js";
 
 export async function deleteUserRoute(fastify:FastifyInstance) {
     fastify.delete('/usuarios/id/:id', async (request, reply) => {

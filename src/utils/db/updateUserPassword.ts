@@ -1,5 +1,5 @@
 import { FastifyReply } from "fastify"
-import { hashPassword } from "./hashPassword.js"
+import { hashPassword } from "../security/hashPassword.js"
 import { prisma } from "./prisma.js"
 
 export async function updateUserPassword(userId: string, newPassword: string, reply: FastifyReply) {

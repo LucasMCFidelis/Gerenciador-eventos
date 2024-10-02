@@ -1,10 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { schemaCadastre } from "../../schemas/schemaCadastre.js";
 import { schemaUserPassword } from "../../schemas/schemaUserPassword.js";
-import { checkExistingUser } from "../../utils/checkExistingUser.js";
-import { handleError } from "../../utils/handleError.js";
-import { prisma } from "../../utils/prisma.js";
-import { hashPassword } from "../../utils/hashPassword.js";
+import { checkExistingUser } from "../../utils/validators/checkExistingUser.js";
+import { handleError } from "../../utils/handlers/handleError.js";
+import { prisma } from "../../utils/db/prisma.js";
+import { hashPassword } from "../../utils/security/hashPassword.js";
 
 interface Cadastro {
     firstName: string

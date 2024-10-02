@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { removeWhitespace } from "../utils/removeWhitespace.js";
+import { removeWhitespace } from "../utils/formatters/removeWhitespace.js";
 
 export const schemaEvent = Joi.object({
     title: Joi.string().required().custom(

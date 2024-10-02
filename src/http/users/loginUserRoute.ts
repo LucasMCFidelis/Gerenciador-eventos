@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { comparePasswords } from "../../utils/comparePasswords.js";
-import { getUserByEmail } from "../../utils/getUserByEmail.js";
+import { comparePasswords } from "../../utils/security/comparePasswords.js";
+import { getUserByEmail } from "../../utils/db/getUserByEmail.js";
 
 export async function loginUserRoute(fastify:FastifyInstance) {
     // ADICIONAR LOGICA DE CRIAÇÃO DE TOKENS PARA PRÓXIMAS AUTENTICAÇÕES 

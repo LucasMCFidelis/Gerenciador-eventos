@@ -1,4 +1,4 @@
-import { prisma } from "./prisma.js"
+import { prisma } from "../db/prisma.js"
 
 interface checkExistingEventResponse {
     status: number

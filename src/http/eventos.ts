@@ -1,9 +1,9 @@
 import { schemaEvent } from "../schemas/schemaEvent.js"
-import { handleError } from "../utils/handleError.js"
+import { handleError } from "../utils/handlers/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
-import { prisma } from "../utils/prisma.js"
-import { verifyRole } from "../utils/verifyRole.js"
-import { checkExistingEvent } from "../utils/checkExistingEvent.js"
+import { prisma } from "../utils/db/prisma.js"
+import { verifyRole } from "../utils/security/verifyRole.js"
+import { checkExistingEvent } from "../utils/validators/checkExistingEvent.js"
 
 interface Event {
     userId: string

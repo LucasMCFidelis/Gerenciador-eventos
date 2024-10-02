@@ -1,5 +1,5 @@
 import Joi from "joi"
-import { removeWhitespace } from "../utils/removeWhitespace.js"
+import { removeWhitespace } from "../utils/formatters/removeWhitespace.js"
 
 export const schemaCadastre = Joi.object({
     firstName: Joi.string().custom(
