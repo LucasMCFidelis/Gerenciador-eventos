@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt"
-import { schemaCadastro } from "../schemas/schemaCadastro.js"
-import { schemaSenhaUsuario } from "../schemas/schemaSenhaUsuario.js"
+import { schemaCadastro } from "../schemas/schemaCadastre.js"
+import { schemaUserPassword } from "../schemas/schemaUserPassword.js"
 import { handleError } from "../utils/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
@@ -97,7 +97,7 @@ export async function usuarios(fastify: FastifyInstance) {
                 email,
                 telefone: phoneNumber
             })
-            await schemaSenhaUsuario.validateAsync({
+            await schemaUserPassword.validateAsync({
                 senha: password
             })
             const senhaHash = await hashPassword(password)
@@ -197,7 +197,7 @@ export async function usuarios(fastify: FastifyInstance) {
                 return reply.status(404).send({ message: 'Usuário não encontrado' })
             }
 
-            await schemaSenhaUsuario.validateAsync({ senha: novaSenha })
+            await schemaUserPassword.validateAsync({ senha: novaSenha })
             await updateUserPassword(user.userId, novaSenha, reply)
         } catch (error) {
             return handleError(error, reply)

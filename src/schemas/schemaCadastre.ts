@@ -2,7 +2,7 @@ import Joi from "joi"
 import { removeWhitespace } from "../utils/removeWhitespace.js"
 
 export const schemaCadastro = Joi.object({
-    nome: Joi.string().custom(
+    firstName: Joi.string().custom(
         (value) => removeWhitespace(value)
     ).min(3).pattern(new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$')).required().messages({
         'string.base': 'Nome deve ser uma string',
@@ -10,7 +10,7 @@ export const schemaCadastro = Joi.object({
         'string.min': 'Nome deve possuir no mínimo 3 caracteres',
         'string.pattern.base': 'Nome deve conter apenas caracteres alfabéticos, acentuados e espaços'
     }),
-    sobrenome: Joi.string().custom(
+    lastName: Joi.string().custom(
         (value) => removeWhitespace(value)
     ).min(5).pattern(new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$')).required().messages({
         'string.base': 'Sobrenome deve ser uma string',
@@ -23,7 +23,7 @@ export const schemaCadastro = Joi.object({
         'string.email': 'Email deve ser um email válido',
         'string.empty': 'Email não pode estar vazio'
     }),
-    telefone: Joi.string().pattern(/^\+?[0-9]{10,15}$/).allow(null).optional().messages({
+    phoneNumber: Joi.string().pattern(/^\+?[0-9]{10,15}$/).allow(null).optional().messages({
         'string.base': 'Telefone deve ser uma string',
         'string.pattern.base': 'Telefone deve começar com "+" e conter entre 10 e 15 dígitos numéricos',
         'string.empty': 'Telefone não pode estar vazio'

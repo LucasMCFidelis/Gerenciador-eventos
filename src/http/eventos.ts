@@ -1,4 +1,4 @@
-import { schemaEvento } from "../schemas/schemaEvento.js"
+import { schemaEvento } from "../schemas/schemaEvent.js"
 import { handleError } from "../utils/handleError.js"
 import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/prisma.js"
