@@ -4,6 +4,7 @@ import { FastifyInstance, FastifyReply } from "fastify"
 import { prisma } from "../utils/db/prisma.js"
 import { verifyRole } from "../utils/security/verifyRole.js"
 import { checkExistingEvent } from "../utils/validators/checkExistingEvent.js"
+import { getEventById } from "../utils/db/getEventById.js"
 
 interface Event {
     userId: string
@@ -18,22 +19,6 @@ interface Event {
     }
     startDateTime: Date
     endDateTime?: Date
-}
-
-async function getEventById(eventId: string, reply: FastifyReply) {
-    await prisma.event.findUnique({
-        where: {
-            eventId
-        }
-    }).then((event) => {
-        if (!event) {
-            return reply.status(404).send({ message: 'Evento não encontrado' })
-        }
-        return reply.status(200).send(event)
-    }).catch((error) => {
-        console.error(error)
-        return reply.status(500).send({ message: 'Erro ao consultar o evento' })
-    })
 }
 
 export async function eventos(fastify: FastifyInstance) {
