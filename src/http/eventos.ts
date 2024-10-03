@@ -22,11 +22,6 @@ interface Event {
 }
 
 export async function eventos(fastify: FastifyInstance) {
-    fastify.get('/eventos/:id', async (request, reply) => {
-        const eventId = (request.params as { id: string }).id
-        await getEventById(eventId, reply)
-    })
-
     fastify.put('/eventos/id/:id', async (request, reply) => {
         try {
             const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = request.body as Event
