@@ -6,7 +6,7 @@ import { verifyRole } from "../../utils/security/verifyRole.js"
 import { checkExistingEvent } from "../../utils/validators/checkExistingEvent.js"
 import { Event } from "./eventInterface.js"
 
-export async function createEventRoute(fastify: FastifyInstance) {
+export async function UpdateEventRoute(fastify: FastifyInstance) {
     fastify.put('/eventos/id/:id', async (request, reply) => {
         try {
             const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = request.body as Event

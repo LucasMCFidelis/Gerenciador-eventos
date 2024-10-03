@@ -1,10 +1,10 @@
 import { fastify } from "fastify"
-import { eventos } from "./http/eventos.js"
 import { userRoutes } from "./http/users/index.js"
+import { eventRoutes } from "./http/events/index.js"
 
 const server = fastify()
-server.register(eventos)
 server.register(userRoutes)
+server.register(eventRoutes)
 
 const PORT = Number(process.env.PORT) || 3333
 server.listen({ port: PORT })

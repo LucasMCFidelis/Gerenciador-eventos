@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { prisma } from "../../utils/db/prisma.js"
 
-export async function createEventRoute(fastify: FastifyInstance) {
+export async function listEventRoute(fastify: FastifyInstance) {
     fastify.get('/eventos', async (request, reply) => {
         await prisma.event.findMany({
             orderBy: {

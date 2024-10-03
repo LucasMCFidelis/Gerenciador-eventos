@@ -4,7 +4,7 @@ import { handleError } from "../../utils/handlers/handleError.js"
 import { verifyRole } from "../../utils/security/verifyRole.js"
 import { checkExistingEvent } from "../../utils/validators/checkExistingEvent.js"
 
-export async function createEventRoute(fastify: FastifyInstance) {
+export async function deleteEventRoute(fastify: FastifyInstance) {
     fastify.delete('/eventos/id/:id', async (request, reply) => {
         const eventId = (request.params as { id: string }).id
         try {
