@@ -1,27 +1,10 @@
-import { schemaEvent } from "../schemas/schemaEvent.js"
-import { handleError } from "../utils/handlers/handleError.js"
-import { FastifyInstance, FastifyReply } from "fastify"
-import { prisma } from "../utils/db/prisma.js"
-import { verifyRole } from "../utils/security/verifyRole.js"
-import { checkExistingEvent } from "../utils/validators/checkExistingEvent.js"
-import { getEventById } from "../utils/db/getEventById.js"
+import { FastifyInstance } from "fastify"
+import { prisma } from "../../utils/db/prisma.js"
+import { handleError } from "../../utils/handlers/handleError.js"
+import { verifyRole } from "../../utils/security/verifyRole.js"
+import { checkExistingEvent } from "../../utils/validators/checkExistingEvent.js"
 
-interface Event {
-    userId: string
-    title: string
-    description?: string
-    linkEvent?: string
-    address: {
-        street: string
-        number: string
-        neighborhood: string
-        complement?: string
-    }
-    startDateTime: Date
-    endDateTime?: Date
-}
-
-export async function eventos(fastify: FastifyInstance) {
+export async function createEventRoute(fastify: FastifyInstance) {
     fastify.delete('/eventos/id/:id', async (request, reply) => {
         const eventId = (request.params as { id: string }).id
         try {
