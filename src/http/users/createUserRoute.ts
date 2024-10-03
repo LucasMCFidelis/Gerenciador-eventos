@@ -5,19 +5,12 @@ import { checkExistingUser } from "../../utils/validators/checkExistingUser.js";
 import { handleError } from "../../utils/handlers/handleError.js";
 import { prisma } from "../../utils/db/prisma.js";
 import { hashPassword } from "../../utils/security/hashPassword.js";
-
-interface Cadastro {
-    firstName: string
-    lastName: string
-    email: string
-    phoneNumber?: string | null
-    password: string
-}
+import { CadastreUser } from "../../interfaces/cadastreUserInterface.js";
 
 export async function createUserRoute(fastify:FastifyInstance) {
     fastify.post('/usuarios', async (request, reply) => {
         try {
-            const { firstName, lastName, email, phoneNumber, password } = request.body as Cadastro
+            const { firstName, lastName, email, phoneNumber, password } = request.body as CadastreUser
             await schemaCadastre.validateAsync({
                 firstName,
                 lastName,
