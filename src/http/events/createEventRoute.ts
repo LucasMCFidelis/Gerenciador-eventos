@@ -3,7 +3,7 @@ import { schemaEvent } from "../../schemas/schemaEvent.js"
 import { prisma } from "../../utils/db/prisma.js"
 import { handleError } from "../../utils/handlers/handleError.js"
 import { verifyRole } from "../../utils/security/verifyRole.js"
-import { Event } from "./eventInterface.js"
+import { Event } from "../../interfaces/eventInterface.js"
 
 export async function createEventRoute(fastify: FastifyInstance) {
     fastify.post('/eventos', async (request, reply) => {

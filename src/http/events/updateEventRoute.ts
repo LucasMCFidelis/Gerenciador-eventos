@@ -4,7 +4,7 @@ import { prisma } from "../../utils/db/prisma.js"
 import { handleError } from "../../utils/handlers/handleError.js"
 import { verifyRole } from "../../utils/security/verifyRole.js"
 import { checkExistingEvent } from "../../utils/validators/checkExistingEvent.js"
-import { Event } from "./eventInterface.js"
+import { Event } from "../../interfaces/eventInterface.js"
 
 export async function UpdateEventRoute(fastify: FastifyInstance) {
     fastify.put('/eventos/id/:id', async (request, reply) => {
