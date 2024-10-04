@@ -1,3 +1,4 @@
+import { schemaUserId } from "../../schemas/schemaUserId.js"
 import { prisma } from "./prisma.js"
 
 interface Usuario {
@@ -21,15 +22,19 @@ interface GetUserResponse {
 }
 
 export async function getUserById(userId: string): Promise<GetUserResponse> {
-    if (!userId.trim()) {
+    // 2. Validar o ID utilizando o schemaUserId
+    const { error } = schemaUserId.validate({ id: userId });
+    if (error) {
+        // Se o ID for inválido, retornar a mensagem de erro personalizada
         return {
             status: 400,
-            message: "Invalid userId",
+            message: error.message ,
             error: true
         }
     }
 
     try {
+        // 2. Buscar o usuário no banco de dados
         const user = await prisma.user.findUnique({
             where: {
                 userId
@@ -43,6 +48,8 @@ export async function getUserById(userId: string): Promise<GetUserResponse> {
                 role: true
             }
         })
+
+        // 3. Verificar se o usuário foi encontrado
         if (!user) {
             return {
                 status: 404,
