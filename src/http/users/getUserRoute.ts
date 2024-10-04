@@ -5,23 +5,22 @@ import { handleError } from "../../utils/handlers/handleError.js"
 export async function getUserRoute(fastify: FastifyInstance) {
     fastify.get('/usuarios/id/:id', async (request, reply) => {
         try {
+            // 1. Verifica se o parâmetro id foi fornecido
             const { id: userId } = request.params as { id: string }
             if (!userId) {
                 return reply.status(400).send({ message: 'ID deve ser fornecido' })
             }
 
-            const {
-                status: getStatus, 
-                data: user, 
-                message: getMessage, 
-                error: getError
-            } = await getUserById(userId)
-            if (!user || getError) {
-                return reply.status(getStatus).send({ message: getMessage })
+            // 2. Verifica se o usuário existe
+            const userResponse = await getUserById(userId)
+            if (!userResponse.data || userResponse.error) {
+                return reply.status(userResponse.status).send({ message: userResponse.message })
             }
 
-            return reply.status(200).send(user)
+            // 3. Responde com sucesso, devolvendo o usuário encontrado
+            return reply.status(200).send(userResponse.data)
         } catch (error: unknown) {
+            // 4. Tratamento de erros genéricos
             return handleError(error, reply)
         }
     })
