@@ -22,10 +22,10 @@ interface GetUserResponse {
 }
 
 export async function getUserById(userId: string): Promise<GetUserResponse> {
-    // 2. Validar o ID utilizando o schemaUserId
+    // Validar o ID utilizando o schemaUserId
     const { error } = schemaUserId.validate({ id: userId });
     if (error) {
-        // Se o ID for inválido, retornar a mensagem de erro personalizada
+        // Retornar mensagem de erro caso a validação falhe
         return {
             status: 400,
             message: error.message ,
@@ -34,7 +34,7 @@ export async function getUserById(userId: string): Promise<GetUserResponse> {
     }
 
     try {
-        // 2. Buscar o usuário no banco de dados
+        // Buscar o usuário no banco de dados com os campos necessários
         const user = await prisma.user.findUnique({
             where: {
                 userId
@@ -49,7 +49,7 @@ export async function getUserById(userId: string): Promise<GetUserResponse> {
             }
         })
 
-        // 3. Verificar se o usuário foi encontrado
+        // Retornar mensagem de erro caso o usuário não seja encontrado
         if (!user) {
             return {
                 status: 404,
@@ -57,6 +57,8 @@ export async function getUserById(userId: string): Promise<GetUserResponse> {
                 error: true
             }
         }
+
+        // Retornar o usuário encontrado
         return {
             status: 200,
             data: user
