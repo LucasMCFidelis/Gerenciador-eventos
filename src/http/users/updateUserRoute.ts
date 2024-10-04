@@ -9,17 +9,27 @@ export async function updateUserRoute(fastify:FastifyInstance) {
     fastify.put('/usuarios/id/:id', async (request, reply) => {
         try {
             const userId = (request.params as { id: string }).id
-            const user = await getUserById(userId)
-            if (!user) {
-                return reply.status(404).send({ message: 'Usuário não encontrado' })
+            const {
+                status: getStatus, 
+                data: user, 
+                message: getMessage, 
+                error: getError
+            } = await getUserById(userId)
+            if (!user || getError) {
+                return reply.status(getStatus).send({ message: getMessage })
             }
 
             const userDataValidate = await schemaCadastre.validateAsync(request.body)
             const { firstName, lastName, email, phoneNumber } = userDataValidate
             
-            const { status, existingUser, message, error } = await checkExistingUser(email)
-            if (existingUser || error) {
-                return reply.status(status).send({ message })
+            const { 
+                status: existingUserStatus, 
+                existingUser, 
+                message: existingUserMessage, 
+                error: existingUserError
+            } = await checkExistingUser(email)
+            if (existingUser || existingUserError) {
+                return reply.status(existingUserStatus).send({ message: existingUserMessage })
             }
 
             await prisma.user.update({
