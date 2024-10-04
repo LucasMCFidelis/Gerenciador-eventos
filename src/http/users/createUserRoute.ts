@@ -7,7 +7,7 @@ import { prisma } from "../../utils/db/prisma.js";
 import { hashPassword } from "../../utils/security/hashPassword.js";
 import { CadastreUser } from "../../interfaces/cadastreUserInterface.js";
 
-export async function createUserRoute(fastify:FastifyInstance) {
+export async function createUserRoute(fastify: FastifyInstance) {
     fastify.post('/usuarios', async (request, reply) => {
         try {
             const { firstName, lastName, email, phoneNumber, password } = request.body as CadastreUser
@@ -21,10 +21,10 @@ export async function createUserRoute(fastify:FastifyInstance) {
                 password
             })
             const senhaHash = await hashPassword(password)
-            
-            const {status, existingUser, message} = await checkExistingUser(email)           
-            if (existingUser) {
-                return reply.status(status).send({message})
+
+            const { status, existingUser, message, error } = await checkExistingUser(email)
+            if (existingUser || error) {
+                return reply.status(status).send({ message })
             }
 
             await prisma.user.create({

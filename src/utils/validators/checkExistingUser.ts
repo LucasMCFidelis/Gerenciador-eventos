@@ -4,37 +4,29 @@ interface checkExistingUserResponse {
     status: number
     existingUser: boolean
     message?: string
+    error?: boolean
 }
 
-export async function checkExistingUser(userEmail: string): Promise<checkExistingUserResponse>{
-    try{
+export async function checkExistingUser(userEmail: string): Promise<checkExistingUserResponse> {
+    try {
+        const existingUser = await prisma.user.findUnique({
+            where: { email: userEmail },
+            select: { email: true }
+        })
 
+        return {
+            status: existingUser ? 409 : 200,
+            existingUser: !!existingUser,
+            message: existingUser ? 'Este email já está cadastrado' : undefined,
+            error: false
+        }
     } catch (error) {
         console.error(error)
         return {
             status: 500,
-            existingUser: true,
-            message: 'Falha ao checar a existência do usuário'
+            existingUser: false,
+            message: 'Erro ao verificar existência do usuário.',
+            error: true
         }
-    }
-    const existingUser = await prisma.user.findUnique({
-        where: {
-            email: userEmail
-        },
-        select: {
-            email: true
-        }
-    })
-    
-    if (existingUser) {
-        return {
-            status: 400,
-            existingUser: true,
-            message: 'Este email já está cadastrado'
-        }
-    }
-    return {
-        status: 200,
-        existingUser: false
     }
 }

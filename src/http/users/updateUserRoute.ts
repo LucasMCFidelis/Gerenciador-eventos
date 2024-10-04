@@ -17,9 +17,9 @@ export async function updateUserRoute(fastify:FastifyInstance) {
             const userDataValidate = await schemaCadastre.validateAsync(request.body)
             const { firstName, lastName, email, phoneNumber } = userDataValidate
             
-            const {status, existingUser, message} = await checkExistingUser(email)           
-            if (existingUser) {
-                return reply.status(status).send({message})
+            const { status, existingUser, message, error } = await checkExistingUser(email)
+            if (existingUser || error) {
+                return reply.status(status).send({ message })
             }
 
             await prisma.user.update({
