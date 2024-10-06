@@ -11,21 +11,20 @@ export async function createUserRoute(fastify: FastifyInstance) {
     fastify.post('/usuarios', async (request, reply) => {
         try {
             const { firstName, lastName, email, phoneNumber, password } = request.body as CadastreUser
-            await schemaCadastre.validateAsync({
+            await schemaCadastre.concat(schemaUserPassword).validateAsync({
                 firstName,
                 lastName,
                 email,
-                phoneNumber
-            })
-            await schemaUserPassword.validateAsync({
+                phoneNumber,
                 password
             })
-            const senhaHash = await hashPassword(password)
-
+        
             const { status, existingUser, message, error } = await checkExistingUser(email)
             if (existingUser || error) {
                 return reply.status(status).send({ message })
             }
+
+            const hashedPassword = await hashPassword(password)
 
             await prisma.user.create({
                 data: {
@@ -33,7 +32,7 @@ export async function createUserRoute(fastify: FastifyInstance) {
                     lastName,
                     email,
                     phoneNumber,
-                    password: senhaHash
+                    password: hashedPassword
                 }
             }).then((usuario) => {
                 return reply.status(200).send({
