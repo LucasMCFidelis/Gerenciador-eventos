@@ -4,31 +4,28 @@ import { handleError } from "../../utils/handlers/handleError.js"
 import { prisma } from "../../utils/db/prisma.js"
 
 export async function deleteUserRoute(fastify: FastifyInstance) {
-    fastify.delete('/usuarios/id/:id', async (request, reply) => {
+    fastify.delete<{Params: {id: string}}>('/usuarios/:id', async (request, reply) => {
         try {
-            // 1. Verifica se o parâmetro id foi fornecido
-            const userId = (request.params as { id: string }).id
-            if (!userId) {
-                return reply.status(400).send({ message: 'ID deve ser fornecido' })
-            }
+            // Extrair o ID do usuário a partir dos parâmetros da rota
+            const userId = request.params.id
 
-            // 2. Verifica se o usuário existe
+            // Buscar o usuário no banco de dados utilizando a função utilitária
             const userResponse = await getUserById(userId)
             if (!userResponse.data || userResponse.error) {
                 return reply.status(userResponse.status).send({ message: userResponse.message })
             }
 
-            // 3. Deletar usuário 
+            // Deletar usuário 
             await prisma.user.delete({
                 where: {
                     userId
                 }
             })
 
-            // 4. Sucesso ao deletar usuário
-            return reply.status(204).send()
+            // Retornar sucesso ao deletar usuário
+            return reply.status(204).send({message: 'Usuário excluído com sucesso'})
         } catch (error) {
-            // 5. Tratamento de erros genéricos
+            // Tratamento de erros genéricos utilizando o handler global
             return handleError(error, reply)
         }
     })
