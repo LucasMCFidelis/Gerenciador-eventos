@@ -10,7 +10,10 @@ import { CadastreUser } from "../../interfaces/cadastreUserInterface.js";
 export async function createUserRoute(fastify: FastifyInstance) {
     fastify.post('/usuarios', async (request, reply) => {
         try {
+            // Extrair dados fornecidos no corpo da requisição
             const { firstName, lastName, email, phoneNumber, password } = request.body as CadastreUser
+
+            // Validação dos dados com schemas
             await schemaCadastre.concat(schemaUserPassword).validateAsync({
                 firstName,
                 lastName,
@@ -18,15 +21,18 @@ export async function createUserRoute(fastify: FastifyInstance) {
                 phoneNumber,
                 password
             })
-        
+
+            // Verificação de usuário existente
             const { status, existingUser, message, error } = await checkExistingUser(email)
             if (existingUser || error) {
                 return reply.status(status).send({ message })
             }
 
+            // Criptografar a senha do usuário
             const hashedPassword = await hashPassword(password)
 
-            await prisma.user.create({
+            // Criar o usuário no banco de dados
+            const newUser = await prisma.user.create({
                 data: {
                     firstName,
                     lastName,
@@ -34,20 +40,18 @@ export async function createUserRoute(fastify: FastifyInstance) {
                     phoneNumber,
                     password: hashedPassword
                 }
-            }).then((usuario) => {
-                return reply.status(200).send({
-                    userId: usuario.userId,
-                    firstName: usuario.firstName,
-                    lastName: usuario.lastName,
-                    email: usuario.email,
-                    phoneNumber: usuario.phoneNumber,
-                })
-            }).catch((error) => {
-                console.error(error)
-                return reply.status(500).send({ message: 'Erro ao salvar cadastro' })
             })
 
+            // Responder com os dados do usuário (sem retornar a senha)
+            return reply.status(201).send({
+                userId: newUser.userId,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
+                phoneNumber: newUser.phoneNumber,
+            })
         } catch (error) {
+            // Tratamento de erros genéricos utilizando o handler global
             return handleError(error, reply)
         }
     })
