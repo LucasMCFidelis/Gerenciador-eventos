@@ -9,14 +9,20 @@ export async function updateUserPasswordRoute(fastify:FastifyInstance) {
     fastify.patch('/usuarios/recuperacao/esqueci-senha', async (request, reply) => {
         try {
             const { email, novaSenha } = request.body as { email: string, novaSenha: string }
-            const user = await getUserByEmail(email)
+            const userResponse = await getUserByEmail(email)
+            const user = userResponse.data
 
-            if (!user) {
-                return reply.status(404).send({ message: 'Usuário não encontrado' })
+            if (!user || userResponse.error) {
+                return reply.status(userResponse.status).send({ message: userResponse.message })
             }
 
-            await schemaUserPassword.validateAsync({ novaSenha })
-            await updateUserPassword(user.userId, novaSenha, reply)
+            await schemaUserPassword.validateAsync({ password: novaSenha })
+            const updateResponse =await updateUserPassword(user.userId, novaSenha)
+            if (updateResponse.error) {
+                return reply.status(updateResponse.status).send({message: updateResponse.message})
+            }
+
+            return reply.status(200).send({message: 'Senha atualizada com sucesso'})
         } catch (error) {
             return handleError(error, reply)
         }
