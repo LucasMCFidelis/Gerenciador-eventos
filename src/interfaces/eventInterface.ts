@@ -1,14 +1,14 @@
 export interface Event {
-    userId: string
+    eventId: string
     title: string
-    description?: string
-    linkEvent?: string
+    description?: string | null
+    linkEvent?: string | null
     address: {
         street: string
         number: string
         neighborhood: string
-        complement?: string
+        complement?: string | null
     }
     startDateTime: Date
-    endDateTime?: Date
+    endDateTime?: Date | null
 }

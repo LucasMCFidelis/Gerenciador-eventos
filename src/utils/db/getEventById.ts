@@ -1,18 +1,53 @@
-import { FastifyReply } from "fastify"
+import { Event } from "../../interfaces/eventInterface.js"
 import { prisma } from "./prisma.js"
 
-export async function getEventById(eventId: string, reply: FastifyReply) {
-    await prisma.event.findUnique({
-        where: {
-            eventId
-        }
-    }).then((event) => {
+interface GetEventResponse {
+    status: number
+    data?: Event
+    message?: string
+    error?: boolean
+}
+
+export async function getEventById(eventId: string): Promise<GetEventResponse> {
+    try {
+        const event = await prisma.event.findUnique({
+            where: {
+                eventId
+            }
+        })
+
         if (!event) {
-            return reply.status(404).send({ message: 'Evento não encontrado' })
+            return {
+                status: 404,
+                message: 'Evento não encontrado',
+                error: true
+            }
         }
-        return reply.status(200).send(event)
-    }).catch((error) => {
+        
+        return {
+            status: 200,
+            data: {
+                eventId,
+                title: event.title,
+                description: event.description,
+                linkEvent: event.linkEvent,
+                address: {
+                    street: event.street,
+                    number: event.number,
+                    neighborhood: event.neighborhood,
+                    complement: event.complement,
+                },
+                startDateTime: event.startDateTime,
+                endDateTime: event.endDateTime
+            },
+            error: false
+        }
+    } catch (error) {
         console.error(error)
-        return reply.status(500).send({ message: 'Erro ao consultar o evento' })
-    })
+        return {
+            status: 500,
+            message: 'Erro ao consultar o evento',
+            error: true
+        }
+    }
 }
