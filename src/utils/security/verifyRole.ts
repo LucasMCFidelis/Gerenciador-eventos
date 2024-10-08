@@ -13,13 +13,13 @@ interface verifyRoleProps {
 
 export async function verifyRole({ userId, requiredRole }: verifyRoleProps): Promise<verifyRoleResponse> {
     try {
-        const user = await getUserById(userId)
+        const { status, data: user, message, error} = await getUserById(userId)
 
-        if (!user) {
+        if (!user || error) {
             return {
-                status: 404,
+                status,
                 hasPermission: false,
-                message: 'Usuário não encontrado'
+                message
             }
         }
 
