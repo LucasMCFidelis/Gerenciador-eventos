@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AccessibilityLevel {
+  SEM_ACESSIBILIDADE      @map("Sem Acessibilidade")
+  ACESSIBILIDADE_BASICA   @map("Acessibilidade Básica")
+  ACESSIBILIDADE_AUDITIVA @map("Acessibilidade Auditiva")
+  ACESSIBILIDADE_VISUAL   @map("Acessibilidade Visual")
+  ACESSIBILIDADE_COMPLETA @map("Acessibilidade Completa")
+  NAO_INFORMADA           @map("Acessibilidade não informada")
+}
+
 model User {
   userId      String   @id @default(uuid())
   firstName   String   @db.VarChar(50)
@@ -18,24 +27,25 @@ model User {
 
   // Adicionando relacionamento com Role
   // 1 - Admim / 2 - User
-  roleId Int? @default(2) 
+  roleId Int?  @default(2)
   role   Role? @relation(fields: [roleId], references: [roleId])
 
   @@map("users")
 }
 
 model Event {
-  eventId       String    @id @default(uuid())
-  title         String    @db.VarChar(120)
-  description   String?   @db.VarChar(600)
-  linkEvent     String?   @db.VarChar(255)
-  street        String    @db.VarChar(120)
-  number        String    @db.VarChar(8)
-  neighborhood  String    @db.VarChar(20)
-  complement    String?   @db.VarChar(30)
-  startDateTime DateTime
-  endDateTime   DateTime?
-  createdAt     DateTime  @default(now())
+  eventId            String             @id @default(uuid())
+  title              String             @db.VarChar(120)
+  description        String?            @db.VarChar(600)
+  linkEvent          String?            @db.VarChar(255)
+  street             String             @db.VarChar(120)
+  number             String             @db.VarChar(8)
+  neighborhood       String             @db.VarChar(20)
+  complement         String?            @db.VarChar(30)
+  accessibilityLevel AccessibilityLevel @default(NAO_INFORMADA)
+  startDateTime      DateTime
+  endDateTime        DateTime?
+  createdAt          DateTime           @default(now())
 
   @@map("events")
 }
