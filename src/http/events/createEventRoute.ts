@@ -40,7 +40,8 @@ export async function createEventRoute(fastify: FastifyInstance) {
                 linkEvent,
                 address,
                 startDateTime,
-                endDateTime
+                endDateTime,
+                accessibilityLevel
             })
 
             // Criar o evento no banco de dados

@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { removeWhitespace } from "../utils/formatters/removeWhitespace.js";
+import { AccessibilityLevel } from "../interfaces/eventInterface.js";
 
 export const schemaEvent = Joi.object({
     title: Joi.string().required().custom(
@@ -56,4 +57,9 @@ export const schemaEvent = Joi.object({
         'date.base': 'Data de término deve ser válida',
         'date.greater': 'Data de término não pode ser menor que a data de início',
     }),
+    accessibilityLevel: Joi.string().valid(...Object.values(AccessibilityLevel)).required().messages({
+        'any.only': 'Nível de acessibilidade inválido',
+        'any.required': 'Nível de acessibilidade é obrigatório'
+    })
+
 });
