@@ -5,11 +5,33 @@ import { handleError } from "../../utils/handlers/handleError.js"
 import { verifyRole } from "../../utils/security/verifyRole.js"
 import { Event } from "../../interfaces/eventInterface.js"
 
+interface CreateEventRequestBody extends Event {
+    userId: string
+}
+
 export async function createEventRoute(fastify: FastifyInstance) {
     fastify.post('/eventos', async (request, reply) => {
         try {
-            const { userId, title, description, linkEvent, address, startDateTime, endDateTime } = request.body as Event
+            const {
+                userId,
+                title,
+                description,
+                linkEvent,
+                address,
+                startDateTime,
+                endDateTime
+            } = request.body as CreateEventRequestBody
 
+            // Verificar permissão do usuário antes de validar os dados
+            const { status, hasPermission, message } = await verifyRole({
+                userId,
+                requiredRole: 'Admin'
+            })
+            if (!hasPermission) {
+                return reply.status(status).send({ message })
+            }
+
+            // Validar os dados fornecidos no corpo da requisição
             await schemaEvent.validateAsync({
                 title,
                 description,
@@ -19,12 +41,8 @@ export async function createEventRoute(fastify: FastifyInstance) {
                 endDateTime
             })
 
-            const { status, hasPermission, message } = await verifyRole({ userId, requiredRole: 'Admin' })
-            if (!hasPermission) {
-                return reply.status(status).send({ message })
-            }
-
-            await prisma.event.create({
+            // Criar o evento no banco de dados
+            const newEvent = await prisma.event.create({
                 data: {
                     title,
                     description,
@@ -36,12 +54,9 @@ export async function createEventRoute(fastify: FastifyInstance) {
                     startDateTime,
                     endDateTime,
                 }
-            }).then((event) => {
-                return reply.status(200).send(event)
-            }).catch((error) => {
-                console.error(error)
-                return reply.status(500).send({ message: 'Erro ao salvar evento' })
             })
+            // Retornar os dados do evento criado
+            return reply.status(200).send(newEvent)
         } catch (error) {
             return handleError(error, reply)
         }
