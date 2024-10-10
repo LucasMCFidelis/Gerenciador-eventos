@@ -4,6 +4,7 @@ import { prisma } from "../../utils/db/prisma.js"
 import { handleError } from "../../utils/handlers/handleError.js"
 import { verifyRole } from "../../utils/security/verifyRole.js"
 import { Event } from "../../interfaces/eventInterface.js"
+import { AccessibilityLevel } from "@prisma/client"
 
 interface CreateEventRequestBody extends Event {
     userId: string
@@ -19,7 +20,8 @@ export async function createEventRoute(fastify: FastifyInstance) {
                 linkEvent,
                 address,
                 startDateTime,
-                endDateTime
+                endDateTime,
+                accessibilityLevel
             } = request.body as CreateEventRequestBody
 
             // Verificar permissão do usuário antes de validar os dados
@@ -53,6 +55,7 @@ export async function createEventRoute(fastify: FastifyInstance) {
                     complement: address.complement,
                     startDateTime,
                     endDateTime,
+                    accessibilityLevel
                 }
             })
             // Retornar os dados do evento criado
