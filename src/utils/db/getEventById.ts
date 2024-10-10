@@ -1,4 +1,6 @@
 import { Event } from "../../interfaces/eventInterface.js"
+import { schemaId } from "../../schemas/schemaId.js"
+import { mapAccessibilityLevel } from "../validators/mapAccessibilityLevel.js"
 import { prisma } from "./prisma.js"
 
 interface GetEventResponse {
@@ -10,6 +12,17 @@ interface GetEventResponse {
 
 export async function getEventById(eventId: string): Promise<GetEventResponse> {
     try {
+        // Validar o ID utilizando o schemaUserId
+        const { error } = schemaId.validate({ id: eventId });
+        if (error) {
+            // Retornar mensagem de erro caso a validação falhe
+            return {
+                status: 400,
+                message: error.message,
+                error: true
+            }
+        }
+        
         const event = await prisma.event.findUnique({
             where: {
                 eventId
@@ -23,7 +36,7 @@ export async function getEventById(eventId: string): Promise<GetEventResponse> {
                 error: true
             }
         }
-        
+
         return {
             status: 200,
             data: {
@@ -38,7 +51,8 @@ export async function getEventById(eventId: string): Promise<GetEventResponse> {
                     complement: event.complement,
                 },
                 startDateTime: event.startDateTime,
-                endDateTime: event.endDateTime
+                endDateTime: event.endDateTime,
+                accessibilityLevel: mapAccessibilityLevel(event.accessibilityLevel)
             },
             error: false
         }
