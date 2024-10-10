@@ -3,16 +3,12 @@ import { schemaEvent } from "../../schemas/schemaEvent.js"
 import { prisma } from "../../utils/db/prisma.js"
 import { handleError } from "../../utils/handlers/handleError.js"
 import { verifyRole } from "../../utils/security/verifyRole.js"
-import { Event } from "../../interfaces/eventInterface.js"
-import { AccessibilityLevel } from "@prisma/client"
-
-interface CreateEventRequestBody extends Event {
-    userId: string
-}
+import { EventRequestBody } from "../../interfaces/eventRequestBodyInterface.js"
 
 export async function createEventRoute(fastify: FastifyInstance) {
     fastify.post('/eventos', async (request, reply) => {
         try {
+            // Extrai os dados do corpo da requisição com base na interface EventRequestBody
             const {
                 userId,
                 title,
@@ -22,7 +18,7 @@ export async function createEventRoute(fastify: FastifyInstance) {
                 startDateTime,
                 endDateTime,
                 accessibilityLevel
-            } = request.body as CreateEventRequestBody
+            } = request.body as EventRequestBody
 
             // Verificar permissão do usuário antes de validar os dados
             const { status, hasPermission, message } = await verifyRole({
