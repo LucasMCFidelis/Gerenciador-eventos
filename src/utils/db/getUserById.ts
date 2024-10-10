@@ -1,4 +1,4 @@
-import { schemaUserId } from "../../schemas/schemaUserId.js"
+import { schemaId } from "../../schemas/schemaId.js"
 import { prisma } from "./prisma.js"
 
 interface Usuario {
@@ -22,8 +22,8 @@ interface GetUserResponse {
 }
 
 export async function getUserById(userId: string): Promise<GetUserResponse> {
-    // Validar o ID utilizando o schemaUserId
-    const { error } = schemaUserId.validate({ id: userId });
+    // Validar o ID utilizando o schemaId
+    const { error } = schemaId.validate({ id: userId });
     if (error) {
         // Retornar mensagem de erro caso a validação falhe
         return {
