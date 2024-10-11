@@ -1,13 +1,11 @@
 import { Event } from "../../interfaces/eventInterface.js"
+import { GetResponse } from "../../interfaces/getResponseInterface.js"
 import { schemaId } from "../../schemas/schemaId.js"
 import { mapAccessibilityLevel } from "../validators/mapAccessibilityLevel.js"
 import { prisma } from "./prisma.js"
 
-interface GetEventResponse {
-    status: number
+interface GetEventResponse extends GetResponse{
     data?: Event
-    message?: string
-    error?: boolean
 }
 
 export async function getEventById(eventId: string): Promise<GetEventResponse> {

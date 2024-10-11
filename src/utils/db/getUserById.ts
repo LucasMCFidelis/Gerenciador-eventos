@@ -1,3 +1,4 @@
+import { GetResponse } from "../../interfaces/getResponseInterface.js"
 import { schemaId } from "../../schemas/schemaId.js"
 import { prisma } from "./prisma.js"
 
@@ -14,11 +15,8 @@ interface Usuario {
     } | null
 }
 
-interface GetUserResponse {
-    status: number
+interface GetUserResponse extends GetResponse{
     data?: Usuario | null
-    message?: string
-    error?: boolean
 }
 
 export async function getUserById(userId: string): Promise<GetUserResponse> {

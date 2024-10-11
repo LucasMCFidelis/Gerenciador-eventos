@@ -1,3 +1,4 @@
+import { GetResponse } from "../../interfaces/getResponseInterface.js"
 import { prisma } from "./prisma.js"
 
 interface UserAutentication {
@@ -6,11 +7,8 @@ interface UserAutentication {
     password: string
 }
 
-interface GetUserResponse {
-    status: number
+interface GetUserResponse extends GetResponse{
     data?: UserAutentication | null
-    message?: string
-    error?: boolean
 }
 
 export async function getUserByEmail(userEmail: string): Promise<GetUserResponse> {
