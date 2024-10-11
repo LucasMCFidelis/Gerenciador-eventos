@@ -6,9 +6,9 @@ import { prisma } from "../../utils/db/prisma.js";
 import { schemaUserUpdate } from "../../schemas/schemaUserUpdate.js";
 import { CadastreUser } from "../../interfaces/cadastreUserInterface.js";
 
-export async function updateUserRoute(fastify:FastifyInstance) {
+export async function updateUserRoute(fastify: FastifyInstance) {
     fastify.put<{
-        Params: {id: string},
+        Params: { id: string },
         Body: Partial<CadastreUser>
     }>('/usuarios/:id', async (request, reply) => {
         try {
@@ -24,9 +24,9 @@ export async function updateUserRoute(fastify:FastifyInstance) {
             // 2. Valida o corpo da requisição com schemaCadastre
             const userData = await schemaUserUpdate.validateAsync(request.body)
             const { firstName, lastName, email, phoneNumber } = userData
-            
+
             // 3. Checa se o email já existe, exceto para o email atual do usuário
-            if (email !== user.email){
+            if (email !== user.email) {
                 const emailCheckResponse = await checkExistingUser(email)
                 if (emailCheckResponse.existingUser || emailCheckResponse.error) {
                     return reply.status(emailCheckResponse.status).send({ message: emailCheckResponse.message })
@@ -39,10 +39,10 @@ export async function updateUserRoute(fastify:FastifyInstance) {
                     userId: user.userId
                 },
                 data: {
-                    firstName,
-                    lastName,
-                    email,
-                    phoneNumber
+                    ...(firstName && { firstName }),
+                    ...(lastName && { lastName }),
+                    ...(email && { email }),
+                    ...(phoneNumber && { phoneNumber })
                 }
             })
 
