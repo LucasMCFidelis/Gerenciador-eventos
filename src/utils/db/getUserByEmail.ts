@@ -1,4 +1,5 @@
 import { GetResponse } from "../../interfaces/getResponseInterface.js"
+import { schemaUserUpdate } from "../../schemas/schemaUserUpdate.js"
 import { prisma } from "./prisma.js"
 
 interface UserAutentication {
@@ -7,19 +8,21 @@ interface UserAutentication {
     password: string
 }
 
-interface GetUserResponse extends GetResponse{
+interface GetUserResponse extends GetResponse {
     data?: UserAutentication | null
 }
 
 export async function getUserByEmail(userEmail: string): Promise<GetUserResponse> {
     // Validação inicial de entrada
-    if (!userEmail || typeof userEmail !== "string") {
+    try {
+        await schemaUserUpdate.validateAsync({ email: userEmail })
+    } catch (error: any) {
         return {
             status: 400,
-            message: "Email inválido",
+            message: error.message.toLowerCase(),
             error: true,
             data: null
-        };
+        }
     }
 
     try {
@@ -36,7 +39,7 @@ export async function getUserByEmail(userEmail: string): Promise<GetUserResponse
         })
 
         // Retorno caso o usuário não seja encontrado
-        if (!user){
+        if (!user) {
             return {
                 status: 404,
                 message: "Nenhum usuário encontrado com este email",
