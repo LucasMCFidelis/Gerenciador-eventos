@@ -21,11 +21,11 @@ export async function createEventRoute(fastify: FastifyInstance) {
             } = request.body as EventRequestBody
 
             // Verificar permissão do usuário antes de validar os dados
-            const { status, hasPermission, message } = await verifyRole({
+            const { status, hasPermission, message, error} = await verifyRole({
                 userId,
                 requiredRole: 'Admin'
             })
-            if (!hasPermission) {
+            if (!hasPermission || error) {
                 return reply.status(status).send({ message })
             }
 
