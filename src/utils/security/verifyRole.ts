@@ -1,9 +1,8 @@
+import { GetResponse } from "../../interfaces/getResponseInterface.js"
 import { getUserById } from "../db/getUserById.js"
 
-interface verifyRoleResponse {
-    status: number
+interface verifyRoleResponse extends GetResponse{
     hasPermission: boolean
-    message?: string
 }
 
 interface verifyRoleProps {
@@ -19,7 +18,8 @@ export async function verifyRole({ userId, requiredRole }: verifyRoleProps): Pro
             return {
                 status,
                 hasPermission: false,
-                message
+                message, 
+                error
             }
         }
 
@@ -27,11 +27,16 @@ export async function verifyRole({ userId, requiredRole }: verifyRoleProps): Pro
             return {
                 status: 403,
                 hasPermission: false,
-                message: `Permissão insuficiente. Requerido: ${requiredRole}, atual: ${user.role?.roleName}`
+                message: `Permissão insuficiente. Requerido: ${requiredRole}, atual: ${user.role?.roleName}`,
+                error: true
             }
         }
 
-        return { status: 200, hasPermission: true }
+        return { 
+            status: 200, 
+            hasPermission: true,
+            error: false 
+        }
     } catch (error) {
         if (error instanceof Error) {
             console.error(`Erro ao verificar o papel do usuário: ${error.message}`);
@@ -41,7 +46,8 @@ export async function verifyRole({ userId, requiredRole }: verifyRoleProps): Pro
         return { 
             status: 500, 
             hasPermission: false, 
-            message: 'Erro ao verificar permissões' 
+            message: 'Erro ao verificar permissões', 
+            error: true
         }
     }
 }
