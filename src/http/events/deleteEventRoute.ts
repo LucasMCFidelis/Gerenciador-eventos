@@ -15,11 +15,11 @@ export async function deleteEventRoute(fastify: FastifyInstance) {
             const userId = request.body.userId
 
             // Valida a permissão do usuário
-            const { status: roleStatus, hasPermission, message: roleMessage } = await verifyRole({
+            const { status: roleStatus, hasPermission, message: roleMessage, error} = await verifyRole({
                 userId,
                 requiredRole: 'Admin'
             })
-            if (!hasPermission) {
+            if (!hasPermission || error) {
                 return reply.status(roleStatus).send({ roleMessage })
             }
 
