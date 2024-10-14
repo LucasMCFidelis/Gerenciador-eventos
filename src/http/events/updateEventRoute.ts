@@ -22,11 +22,11 @@ export async function UpdateEventRoute(fastify: FastifyInstance) {
             }
 
             // Valida a permissão do usuário
-            const { status: roleStatus, hasPermission, message: roleMessage } = await verifyRole({
+            const { status: roleStatus, hasPermission, message: roleMessage, error } = await verifyRole({
                 userId,
                 requiredRole: 'Admin'
             })
-            if (!hasPermission) {
+            if (!hasPermission || error) {
                 return reply.status(roleStatus).send({ message: roleMessage })
             }
 
