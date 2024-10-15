@@ -5,8 +5,8 @@ import { prisma } from "../../utils/db/prisma.js";
 import { handleError } from "../../utils/handlers/handleError.js";
 
 enum UserRole {
-    ADMIN = "Admin",
-    USER = "User"
+    Admin = "Admin",
+    User = "User"
 }
 
 export async function updateUserRoleRoute(fastify: FastifyInstance) {
@@ -34,17 +34,22 @@ export async function updateUserRoleRoute(fastify: FastifyInstance) {
      
             // Verifica se o usuário existe
             const userResponse = await getUserById(userId)
-            if (!userResponse.data || userResponse.error) {
+            const user = userResponse.data
+            if (!user || userResponse.error) {
                 return reply.status(userResponse.status).send({ message: userResponse.message })
+            }
+
+            if (user.role?.roleName === newRole){
+                return reply.status(400).send({ message: `O usuário ${user.firstName} já possui a permissão ${newRole}`})
             }
     
             const updatedUser = await prisma.user.update({
                 where: {userId},
-                data: {roleId: (newRole === "Admin" ? 1 : 2)}
+                data: {roleId: (newRole === UserRole.Admin ? 1 : 2)}
             })
     
             return reply.status(200).send({
-                message: `Permissão do usuário ${updatedUser.firstName} atualizada com sucesso para ${newRole}`,
+                message: `Permissão do usuário ${updatedUser.firstName} atualizada com sucesso para ${newRole}`
             })
         } catch (error){
             console.error(error)
