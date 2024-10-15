@@ -4,6 +4,11 @@ import { getUserById } from "../../utils/db/getUserById.js";
 import { prisma } from "../../utils/db/prisma.js";
 import { handleError } from "../../utils/handlers/handleError.js";
 
+enum UserRole {
+    ADMIN = "Admin",
+    USER = "User"
+}
+
 export async function updateUserRoleRoute(fastify: FastifyInstance) {
     fastify.put<{
         Params: { id: string },
@@ -14,9 +19,14 @@ export async function updateUserRoleRoute(fastify: FastifyInstance) {
     }>('/usuarios/:id/permissao', async (request, reply) => {
         try {
             const userId = request.params.id
-    
-            // Verificar permissão do usuário
             const {adminId, newRole} = request.body
+    
+            // Validação do newRole usando o enum
+            if (!(newRole in UserRole)) {
+                return reply.status(400).send({ message: "Papel inválido. Somente 'Admin' ou 'User' são aceitos." })
+            }
+
+            // Verificar permissão do usuário
             const verifyRoleResponse = await verifyRole({userId: adminId, requiredRole: "Admin"})
             if (!verifyRoleResponse.hasPermission || verifyRoleResponse.error) {
                 return reply.status(verifyRoleResponse.status).send({ message : verifyRoleResponse.message })
