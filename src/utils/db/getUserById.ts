@@ -1,4 +1,5 @@
 import { GetResponse } from "../../interfaces/getResponseInterface.js"
+import { Role } from "../../interfaces/roleInterface.js"
 import { schemaId } from "../../schemas/schemaId.js"
 import { prisma } from "./prisma.js"
 
@@ -8,11 +9,7 @@ interface Usuario {
     lastName: string
     email: string
     phoneNumber?: string | null
-    role: {
-        roleId: number;
-        roleName: string;
-        roleDescription: string | null;
-    } | null
+    role: Role | null
 }
 
 interface GetUserResponse extends GetResponse{
