@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { schemaCadastre } from "../../schemas/schemaCadastre.js";
+import { schemaCadastre } from "../../schemas/schemaUserCadastre.js";
 import { schemaUserPassword } from "../../schemas/schemaUserPassword.js";
 import { checkExistingUser } from "../../utils/validators/checkExistingUser.js";
 import { handleError } from "../../utils/handlers/handleError.js";

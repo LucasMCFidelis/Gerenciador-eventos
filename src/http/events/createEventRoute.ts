@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify"
-import { schemaEvent } from "../../schemas/schemaEvent.js"
+import { schemaEvent } from "../../schemas/schemaEventCadastre.js"
 import { prisma } from "../../utils/db/prisma.js"
 import { handleError } from "../../utils/handlers/handleError.js"
 import { verifyRole } from "../../utils/security/verifyRole.js"
