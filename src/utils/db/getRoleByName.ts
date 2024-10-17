@@ -15,7 +15,7 @@ export enum UserRole {
 export async function getRoleByName(roleName: UserRole): Promise<GetRoleResponse> {
     try {
         // Validação do newRole usando o enum
-        if (!(roleName in UserRole)) {
+        if (!Object.values(UserRole).includes(roleName)) {
             return {
                 status: 400,
                 message: "Papel inválido. Somente 'Admin' ou 'User' são aceitos." ,
@@ -23,10 +23,12 @@ export async function getRoleByName(roleName: UserRole): Promise<GetRoleResponse
             }
         }
 
+        // Busca pelo nome da role
         const role = await prisma.role.findUnique({
-            where: { roleName } // Busca pelo nome da role
+            where: { roleName } 
         })
 
+        // Verifica de a Role foi encontrada
         if (!role) {
             return {
                 status: 404,
@@ -35,12 +37,14 @@ export async function getRoleByName(roleName: UserRole): Promise<GetRoleResponse
             }
         }
 
+        // Monta objeto de acordo com a interface Role
         const roleData: Role = {
             roleId: role.roleId,
             roleName: role.roleName,
             roleDescription: role.roleDescription
         }
 
+        // Sucesso, então retorna o objeto roleData
         return {
             status: 200,
             data: roleData,
@@ -52,7 +56,7 @@ export async function getRoleByName(roleName: UserRole): Promise<GetRoleResponse
             console.error(error.message)
             return {
                 status: 500,
-                message: `Erro ao buscar a role: ${error.message}`,
+                message: `Erro ao buscar a role: ${JSON.stringify(error)}`,
                 error: true
             }
         } else {
