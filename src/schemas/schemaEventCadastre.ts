@@ -29,10 +29,12 @@ export const schemaEvent = Joi.object({
             'string.min': 'Rua deve conter no mínimo 10 caracteres',
             'string.max': 'Rua deve conter no máximo 120 caracteres'
         }),
-        number: Joi.string().trim().max(8).pattern(new RegExp('^[a-zA-Z0-9\\s]+$')).required().messages({
+        number: Joi.string().custom(
+            (value) => removeWhitespace(value)
+        ).max(8).pattern(new RegExp('^[a-zA-Z0-9\\s]+$')).required().messages({
             'string.base': 'Número deve ser uma string',
             'string.empty': 'Número não pode estar vazio',
-            'string.pattern.base': 'Número deve conter apenas caracteres alfanuméricos',
+            'string.pattern.base': 'Número aceita apenas caracteres alfanuméricos',
             'string.max': 'Número deve conter no máximo 8 caracteres'
         }),
         neighborhood: Joi.string().required().custom(
@@ -57,9 +59,8 @@ export const schemaEvent = Joi.object({
         'date.base': 'Data de término deve ser válida',
         'date.greater': 'Data de término não pode ser menor que a data de início',
     }),
-    accessibilityLevel: Joi.string().valid(...Object.values(AccessibilityLevel)).required().messages({
-        'any.only': 'Nível de acessibilidade inválido',
-        'any.required': 'Nível de acessibilidade é obrigatório'
+    accessibilityLevel: Joi.string().valid(...Object.values(AccessibilityLevel)).optional().messages({
+        'any.only': 'Nível de acessibilidade inválido'
     })
 
 });
