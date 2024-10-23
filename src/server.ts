@@ -38,7 +38,7 @@ const PORT = Number(process.env.PORT) || 3333;
 server.listen({ port: PORT })
     .then(() => console.log(`
         Servidor rodando em http://localhost:${PORT}
-        Documanteção Swaagger em http://localhost:${PORT}/documentation
+        Documentação Swaagger em http://localhost:${PORT}/documentation
         `))
     .catch((error) => {
         console.error(error);
