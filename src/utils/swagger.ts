@@ -116,3 +116,58 @@ export const swaggerSchemaCreateUser = {
       },
   }
 }
+
+export const swaggerSchemaGetUser = {
+  description: 'Retorna um usuário específico pelo ID.',
+  tags: ['Usuários'],
+  params: {
+      type: 'object',
+      required: ['id'],
+      properties: {
+          id: {
+              type: 'string',
+              description: 'ID do usuário a ser obtido.',
+          },
+      },
+  },
+  response: {
+      200: {
+          description: 'Usuário encontrado.',
+          type: 'object',
+          properties: {
+              firstName: {
+                  description: 'Primeiro nome do usuário.'
+              },
+              lastName: {
+                  description: 'Sobrenome do usuário.'
+              },
+              email: {
+                  description: 'Email do usuário.'
+              },
+              phoneNumber: {
+                  description: 'Telefone do usuário, opcional para contato.'
+              }
+          },
+          examples: [
+              {
+                  firstName: 'Lucas',
+                  lastName: 'Fidelis',
+                  email: 'lucas.fidelis@example.com',
+                  phoneNumber: "+5511999998888"
+              }
+          ]
+      },
+      404: {
+          description: 'Usuário não encontrado.',
+          type: 'object',
+          properties: {
+              message: { type: 'string' }
+          },
+          examples: [
+              {
+                  message: "Usuário não encontrado."
+              }
+          ]
+      }
+  }
+}
