@@ -37,7 +37,7 @@ server.register(swagger, {
 server.register(swaggerUi, {
   routePrefix: '/docs', // Prefixo para acessar a UI da documentação
   uiConfig: {
-    docExpansion: 'full',
+    docExpansion: 'none',
     deepLinking: false,
   },
   staticCSP: true,
