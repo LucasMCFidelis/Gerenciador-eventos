@@ -1,40 +1,61 @@
-import { fastify } from "fastify";
-import { userRoutes } from "./http/users/index.js";  // Verifique se esse caminho está correto
-import { eventRoutes } from "./http/events/index.js"; // Verifique se esse caminho está correto
+import fastify from "fastify";
+import { userRoutes } from "./http/users/index.js";
+import { eventRoutes } from "./http/events/index.js";
 import swagger from "@fastify/swagger";
 import swaggerUi from '@fastify/swagger-ui';
-import { swaggerDocs } from "./utils/swagger.js";
 
 const server = fastify();
+
+// Registrar o Swagger
+server.register(swagger, {
+  openapi: {
+    info: {
+      title: 'API de Gerenciamento de Eventos',
+      description: 'Documentação da API usando Swagger',
+      version: '1.0.0',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3333',
+        description: 'Servidor local',
+      },
+    ],
+    tags: [
+      {
+        name: 'Usuários',
+        description: 'Operações de gerenciamento de usuários',
+      },
+      {
+        name: 'Eventos',
+        description: 'Operações relacionadas a eventos',
+      },
+    ],
+  },
+});
+
+// Registrar o Swagger UI
+server.register(swaggerUi, {
+  routePrefix: '/docs', // Prefixo para acessar a UI da documentação
+  uiConfig: {
+    docExpansion: 'full',
+    deepLinking: false,
+  },
+  staticCSP: true,
+  transformSpecificationClone: true,
+});
 
 // Registrar as rotas
 server.register(userRoutes);
 server.register(eventRoutes);
 
-// Registrar Swagger e Swagger UI após as rotas
-server.register(swagger, {
-    swagger: swaggerDocs,
-});
-
-// Registrar o Swagger UI
-server.register(swaggerUi, {
-    routePrefix: '/docs', 
-    uiConfig: {
-        docExpansion: 'none', 
-        deepLinking: false,
-    },
-    staticCSP: true, 
-    transformSpecificationClone: true,
-});
-
 // Configurar a porta
 const PORT = Number(process.env.PORT) || 3333;
 server.listen({ port: PORT })
-    .then(() => console.log(`
+  .then(() => console.log(`
         Servidor rodando em http://localhost:${PORT}
-        Documentação Swaagger em http://localhost:${PORT}/docs
+        Documentação Swagger em http://localhost:${PORT}/docs
         `))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
