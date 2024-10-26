@@ -110,9 +110,20 @@ export const swaggerSchemaCreateUser = {
         {
           message: 'Nome deve possuir no mínimo 3 caracteres'
         },
-
       ]
     },
+    409: {
+      description: 'Conflito ao tentar deletar o usuário.',
+      type: 'object',
+      properties: {
+        message: { type: 'string' }
+      },
+      examples: [
+        {
+          message: "Este e-mail já está cadastrado."
+        }
+      ]
+    }
   }
 }
 
