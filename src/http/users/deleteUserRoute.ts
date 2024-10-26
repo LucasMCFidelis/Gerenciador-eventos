@@ -2,49 +2,12 @@ import { FastifyInstance } from "fastify"
 import { getUserById } from "../../utils/db/getUserById.js"
 import { handleError } from "../../utils/handlers/handleError.js"
 import { prisma } from "../../utils/db/prisma.js"
-
-/**
- * @swagger
- * /usuarios/{id}:
- *   delete:
- *     summary: Deletar um usuário
- *     description: Deleta um usuário específico pelo ID.
- *     tags:
- *       - Usuários
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID do usuário a ser deletado
- *     responses:
- *       204:
- *         description: Usuário deletado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Usuário excluído com sucesso
- *       400:
- *         description: Erro de validação
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       404:
- *         description: Usuário não encontrado
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- */
+import { swaggerSchemaDeleteUser } from "../../utils/swagger.js"
 
 export async function deleteUserRoute(fastify: FastifyInstance) {
-    fastify.delete<{ Params: { id: string } }>('/usuarios/:id', async (request, reply) => {
+    fastify.delete<{ Params: { id: string } }>('/usuarios/:id', {
+        schema: swaggerSchemaDeleteUser
+    }, async (request, reply) => {
         try {
             // Extrair o ID do usuário a partir dos parâmetros da rota
             const userId = request.params.id
