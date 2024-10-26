@@ -30,6 +30,16 @@ server.register(swagger, {
         description: 'Operações relacionadas a eventos',
       },
     ],
+    components: {
+      schemas: {
+        ErrorResponse: {
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Descrição do erro" },
+          },
+        },
+      },
+    }
   },
 });
 
