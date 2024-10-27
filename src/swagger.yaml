@@ -4,13 +4,13 @@ info:
   description: Documentação da API usando Swagger
   version: 1.0.0
 servers:
-  - url: http://localhost:3333
-    description: Servidor local
+- url: http://localhost:3333
+  description: Servidor local
 tags:
-  - name: Usuários
-    description: Operações de gerenciamento de usuários
-  - name: Eventos
-    description: Operações relacionadas a eventos
+- name: Usuários
+  description: Operações de gerenciamento de usuários
+- name: Eventos
+  description: Operações relacionadas a eventos
 components:
   schemas:
     ErrorResponse:
@@ -22,32 +22,47 @@ components:
     UserResponse:
       type: object
       properties:
-        id:
+        userId:
           type: string
           example: "123e4567-e89b-12d3-a456-426614174000"
-        name:
+        firstName:
           type: string
-          example: "Nome do Usuário"
+          example: "Carlos"
+        lastName:
+          type: string
+          example: "Araújo dos Santos"
         email:
           type: string
           format: email
-          example: "usuario@example.com"
+          example: "carlos@example.com"
+        phoneNumber:
+          type: string
+          example: "33333333333"
     UserRequest:
       type: object
       properties:
-        name:
+        firstName:
           type: string
-          example: "Nome do Usuário"
+          example: "Carlos"
+        lastName:
+          type: string
+          example: "Araújo dos Santos"
         email:
           type: string
           format: email
-          example: "usuario@example.com"
+          example: "carlos@example.com"
+        phoneNumber:
+          type: string
+          example: "33333333333"
+        password:
+          type: string
+          example: "{Password@123"
 paths:
   /usuarios:
     post:
       summary: "Criar um novo usuário"
       tags:
-        - "Usuários"
+      - "Usuários"
       requestBody:
         required: true
         content:
@@ -72,14 +87,15 @@ paths:
     get:
       summary: "Recuperar um usuário específico pelo ID"
       tags:
-        - "Usuários"
+      - "Usuários"
       parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID do usuário a ser recuperado (formato UUID v4)."
-          schema:
-            type: string
+      - in: path
+        name: id
+        required: true
+        description: "ID do usuário a ser recuperado (formato UUID v4)."
+        schema:
+          type: string
+          example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
       responses:
         '200':
           description: "Usuário recuperado com sucesso."
@@ -93,6 +109,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_id_empty:
+                  summary: "ID vazio"
+                  value:
+                    message: "O ID não pode ser vazio."
+                invalid_id_format:
+                  summary: "ID em formato inválido"
+                  value:
+                    message: "O ID deve estar no formato de UUID v4."
         '404':
           description: "Usuário não encontrado."
           content:
@@ -108,14 +133,15 @@ paths:
     delete:
       summary: "Deletar um usuário específico pelo ID"
       tags:
-        - "Usuários"
+      - "Usuários"
       parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID do usuário a ser deletado (formato UUID v4)."
-          schema:
-            type: string
+      - in: path
+        name: id
+        required: true
+        description: "ID do usuário a ser deletado (formato UUID v4)."
+        schema:
+          type: string
+          example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
       responses:
         '204':
           description: "Usuário deletado com sucesso."
@@ -145,3 +171,74 @@ paths:
                   summary: "Usuário não encontrado"
                   value:
                     message: "Usuário não encontrado."
+
+    put:
+      summary: "Atualizar um usuário específico pelo ID"
+      tags:
+      - "Usuários"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID do usuário a ser atualizado (formato UUID v4)."
+          schema:
+            type: string
+            example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: "Usuário atualizado com sucesso."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Usuário atualizado com sucesso"
+        '400':
+          description: "Requisição inválida."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_email:
+                  summary: "Email inválido"
+                  value:
+                    message: "Este e-mail já está cadastrado."
+                invalid_id_empty:
+                  summary: "ID vazio"
+                  value:
+                    message: "O ID não pode ser vazio."
+                invalid_id_format:
+                  summary: "ID em formato inválido"
+                  value:
+                    message: "O ID deve estar no formato de UUID v4."
+        '404':
+          description: "Usuário não encontrado."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                user_not_found:
+                  summary: "Usuário não encontrado"
+                  value:
+                    message: "Usuário não encontrado."
+        '500':
+          description: "Erro interno do servidor."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                server_error:
+                  summary: "Erro interno"
+                  value:
+                    message: "Erro ao atualizar o usuário."

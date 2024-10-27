@@ -1,12 +1,9 @@
 import { FastifyInstance } from "fastify"
 import { getUserById } from "../../utils/db/getUserById.js"
 import { handleError } from "../../utils/handlers/handleError.js"
-import { swaggerSchemaGetUser } from "../../utils/swagger.js";
 
 export async function getUserRoute(fastify: FastifyInstance) {
-    fastify.get<{ Params: { id: string } }>('/usuarios/:id', {
-        schema: swaggerSchemaGetUser
-    }, async (request, reply) => {
+    fastify.get<{ Params: { id: string } }>('/usuarios/:id', async (request, reply) => {
         try {
             // Extrair o ID do usuário a partir dos parâmetros da rota
             const userId = request.params.id;
