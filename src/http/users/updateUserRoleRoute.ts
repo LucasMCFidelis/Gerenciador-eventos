@@ -4,7 +4,6 @@ import { getUserById } from "../../utils/db/getUserById.js";
 import { prisma } from "../../utils/db/prisma.js";
 import { handleError } from "../../utils/handlers/handleError.js";
 import { getRoleByName, UserRole } from "../../utils/db/getRoleByName.js";
-import { swaggerSchemaUpdateUserRole } from "../../utils/swagger.js";
 
 export async function updateUserRoleRoute(fastify: FastifyInstance) {
     fastify.put<{
@@ -13,9 +12,7 @@ export async function updateUserRoleRoute(fastify: FastifyInstance) {
             adminId: string,
             newRole: UserRole
         }
-    }>('/usuarios/:id/permissao', {
-        schema: swaggerSchemaUpdateUserRole
-    }, async (request, reply) => {
+    }>('/usuarios/:id/permissao', async (request, reply) => {
         try {
              // Extrair o ID do usuário a partir dos parâmetros da rota
             const userId = request.params.id

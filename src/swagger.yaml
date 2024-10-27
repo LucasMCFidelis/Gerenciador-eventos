@@ -242,3 +242,102 @@ paths:
                   summary: "Erro interno"
                   value:
                     message: "Erro ao atualizar o usuário."
+
+  /usuarios/{id}/permissao:
+    put:
+      summary: "Atualizar a permissão de um usuário específico pelo ID"
+      tags:
+      - "Usuários"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID do usuário a ter sua permissão atualizada (formato UUID v4)."
+          schema:
+            type: string
+            example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                adminId:
+                  type: string
+                  description: "ID do administrador realizando a atualização (formato UUID v4)."
+                  example: "123e4567-e89b-12d3-a456-426614174000"
+                newRole:
+                  type: string
+                  description: "Nova permissão a ser atribuída ao usuário. Deve ser uma permissão válida no sistema."
+                  example: "Admin"
+      responses:
+        '200':
+          description: "Permissão do usuário atualizada com sucesso."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Permissão do usuário atualizada com sucesso, Carlos agora é Admin."
+        '400':
+          description: "Requisição inválida."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_role:
+                  summary: "Permissão inválida"
+                  value:
+                    message: "A permissão especificada é inválida."
+                invalid_admin_id:
+                  summary: "ID do administrador inválido"
+                  value:
+                    message: "O ID do administrador é inválido ou o administrador não possui permissão."
+        '403':
+          description: "Permissão insuficiente para realizar esta ação."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficient_permission:
+                  summary: "Permissão insuficiente"
+                  value:
+                    message: "Permissão insuficiente. Requerido: Admin, atual: User."
+        '404':
+          description: "Usuário não encontrado."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                user_not_found:
+                  summary: "Usuário não encontrado"
+                  value:
+                    message: "Usuário não encontrado."
+        '409':
+          description: "Conflito. O usuário já possui a permissão especificada."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                role_already_set:
+                  summary: "Permissão já atribuída"
+                  value:
+                    message: "O usuário Carlos já possui a permissão User."
+        '500':
+          description: "Erro interno do servidor."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                server_error:
+                  summary: "Erro interno"
+                  value:
+                    message: "Erro ao atualizar a permissão do usuário."
