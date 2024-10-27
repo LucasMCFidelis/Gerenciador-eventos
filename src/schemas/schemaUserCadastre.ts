@@ -5,6 +5,7 @@ export const schemaCadastre = Joi.object({
     firstName: Joi.string().custom(
         (value) => removeWhitespace(value)
     ).min(3).pattern(new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$')).required().messages({
+        'any.required': 'Nome é obrigatório',
         'string.base': 'Nome deve ser uma string',
         'string.empty': 'Nome não pode estar vazio',
         'string.min': 'Nome deve possuir no mínimo 3 caracteres',
@@ -13,12 +14,14 @@ export const schemaCadastre = Joi.object({
     lastName: Joi.string().custom(
         (value) => removeWhitespace(value)
     ).min(5).pattern(new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$')).required().messages({
+        'any.required': 'Sobrenome é obrigatório',
         'string.base': 'Sobrenome deve ser uma string',
         'string.empty': 'Sobrenome não pode estar vazio',
         'string.min': 'Sobrenome deve possuir no mínimo 5 caracteres',
         'string.pattern.base': 'Sobrenome deve conter apenas caracteres alfabéticos, acentuados e espaços'
     }),
     email: Joi.string().email().required().messages({
+        'any.required': 'Email é obrigatório',
         'string.base': 'Email deve ser uma string',
         'string.email': 'Email deve ser um email válido',
         'string.empty': 'Email não pode estar vazio'
