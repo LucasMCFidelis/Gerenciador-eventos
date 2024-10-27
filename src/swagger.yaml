@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: API de Gerenciamento de Eventos
+  description: Documentação da API usando Swagger
+  version: 1.0.0
+servers:
+  - url: http://localhost:3333
+    description: Servidor local
+tags:
+  - name: Usuários
+    description: Operações de gerenciamento de usuários
+  - name: Eventos
+    description: Operações relacionadas a eventos
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Descrição do erro"
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        name:
+          type: string
+          example: "Nome do Usuário"
+        email:
+          type: string
+          format: email
+          example: "usuario@example.com"
+    UserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Nome do Usuário"
+        email:
+          type: string
+          format: email
+          example: "usuario@example.com"
+paths:
+  /usuarios:
+    post:
+      summary: "Criar um novo usuário"
+      tags:
+        - "Usuários"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: "Usuário criado com sucesso."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: "Requisição inválida."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /usuarios/{id}:
+    get:
+      summary: "Recuperar um usuário específico pelo ID"
+      tags:
+        - "Usuários"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID do usuário a ser recuperado (formato UUID v4)."
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Usuário recuperado com sucesso."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: "Requisição inválida."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: "Usuário não encontrado."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                user_not_found:
+                  summary: "Usuário não encontrado"
+                  value:
+                    message: "Usuário não encontrado."
+
+    delete:
+      summary: "Deletar um usuário específico pelo ID"
+      tags:
+        - "Usuários"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID do usuário a ser deletado (formato UUID v4)."
+          schema:
+            type: string
+      responses:
+        '204':
+          description: "Usuário deletado com sucesso."
+        '400':
+          description: "Requisição inválida."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_id_empty:
+                  summary: "ID vazio"
+                  value:
+                    message: "O ID não pode ser vazio."
+                invalid_id_format:
+                  summary: "ID em formato inválido"
+                  value:
+                    message: "O ID deve estar no formato de UUID v4."
+        '404':
+          description: "Usuário não encontrado."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                user_not_found:
+                  summary: "Usuário não encontrado"
+                  value:
+                    message: "Usuário não encontrado."
