@@ -3,43 +3,21 @@ import { userRoutes } from "./http/users/index.js";
 import { eventRoutes } from "./http/events/index.js";
 import swagger from "@fastify/swagger";
 import swaggerUi from '@fastify/swagger-ui';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Obter o diretório atual
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const server = fastify();
 
 // Registrar o Swagger
 server.register(swagger, {
-  openapi: {
-    info: {
-      title: 'API de Gerenciamento de Eventos',
-      description: 'Documentação da API usando Swagger',
-      version: '1.0.0',
-    },
-    servers: [
-      {
-        url: 'http://localhost:3333',
-        description: 'Servidor local',
-      },
-    ],
-    tags: [
-      {
-        name: 'Usuários',
-        description: 'Operações de gerenciamento de usuários',
-      },
-      {
-        name: 'Eventos',
-        description: 'Operações relacionadas a eventos',
-      },
-    ],
-    components: {
-      schemas: {
-        ErrorResponse: {
-          type: "object",
-          properties: {
-            message: { type: "string", example: "Descrição do erro" },
-          },
-        },
-      },
-    }
+  mode: "static",
+  specification: {
+    path: path.join(__dirname, "swagger.yaml"), 
+    baseDir: __dirname, 
   },
 });
 
