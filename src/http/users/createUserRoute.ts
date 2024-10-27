@@ -6,12 +6,9 @@ import { handleError } from "../../utils/handlers/handleError.js";
 import { prisma } from "../../utils/db/prisma.js";
 import { hashPassword } from "../../utils/security/hashPassword.js";
 import { CadastreUser } from "../../interfaces/cadastreUserInterface.js";
-import { swaggerSchemaCreateUser } from "../../utils/swagger.js";
 
 export async function createUserRoute(fastify: FastifyInstance) {
-    fastify.post('/usuarios', {
-        schema: swaggerSchemaCreateUser
-    }, async (request, reply) => {
+    fastify.post('/usuarios', async (request, reply) => {
         try {
             // Extrair dados fornecidos no corpo da requisição
             const { firstName, lastName, email, phoneNumber, password } = request.body as CadastreUser;
