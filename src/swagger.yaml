@@ -72,18 +72,21 @@ components:
         linkEvent:
           type: string
           example: "https://www.evento-tecnologia.com"
-        street:
-          type: string
-          example: "Avenida Brasil"
-        number:
-          type: string
-          example: "1234"
-        neighborhood:
-          type: string
-          example: "Centro"
-        complement:
-          type: string
-          example: "Sala 3"
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+              example: "Rua da Tecnologia"
+            number:
+              type: string
+              example: "123"
+            neighborhood:
+              type: string
+              example: "Centro"
+            complement:
+              type: string
+              example: "Próximo à praça central"
         accessibilityLevel:
           type: string
           enum:
@@ -425,3 +428,50 @@ paths:
                   summary: "Erro interno"
                   value:
                     message: "Erro na consulta ao banco de dados"
+
+  /eventos/{id}:
+    get:
+      summary: "Recuperar um evento específico pelo ID"
+      tags:
+      - "Eventos"
+      parameters:
+      - in: path
+        name: id
+        required: true
+        description: "ID do evento a ser recuperado (formato UUID v4)."
+        schema:
+          type: string
+          example: "0457333a-bd1a-45da-86bc-4e80b72ae9ac"
+      responses:
+        '200':
+          description: "Evento recuperado com sucesso."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+        '400':
+          description: "Requisição inválida."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_id_empty:
+                  summary: "ID vazio"
+                  value:
+                    message: "O ID não pode ser vazio."
+                invalid_id_format:
+                  summary: "ID em formato inválido"
+                  value:
+                    message: "O ID deve estar no formato de UUID v4."
+        '404':
+          description: "Evento não encontrado."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                user_not_found:
+                  summary: "Evento não encontrado"
+                  value:
+                    message: "Evento não encontrado."

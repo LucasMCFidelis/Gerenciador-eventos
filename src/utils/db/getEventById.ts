@@ -4,7 +4,7 @@ import { schemaId } from "../../schemas/schemaId.js"
 import { mapAccessibilityLevel } from "../validators/mapAccessibilityLevel.js"
 import { prisma } from "./prisma.js"
 
-interface GetEventResponse extends GetResponse{
+interface GetEventResponse extends GetResponse {
     data?: Event
 }
 
@@ -20,7 +20,7 @@ export async function getEventById(eventId: string): Promise<GetEventResponse> {
                 error: true
             }
         }
-        
+
         const event = await prisma.event.findUnique({
             where: {
                 eventId
@@ -50,7 +50,8 @@ export async function getEventById(eventId: string): Promise<GetEventResponse> {
                 },
                 startDateTime: event.startDateTime,
                 endDateTime: event.endDateTime,
-                accessibilityLevel: mapAccessibilityLevel(event.accessibilityLevel)
+                accessibilityLevel: mapAccessibilityLevel(event.accessibilityLevel),
+                createdAt: event.createdAt
             },
             error: false
         }

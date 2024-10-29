@@ -18,4 +18,5 @@ export interface Event {
     startDateTime: Date
     endDateTime?: Date | null
     accessibilityLevel: AccessibilityLevel
+    createdAt: Date
 }
