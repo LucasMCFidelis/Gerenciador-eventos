@@ -5,6 +5,8 @@ import swagger from "@fastify/swagger";
 import swaggerUi from '@fastify/swagger-ui';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import authPlugin from './plugins/auth.js';
+
 
 // Obter o diretório atual
 const __filename = fileURLToPath(import.meta.url);
@@ -31,6 +33,9 @@ server.register(swaggerUi, {
   staticCSP: true,
   transformSpecificationClone: true,
 });
+
+// Registrar plugin de autenticação
+server.register(authPlugin);
 
 // Registrar as rotas
 server.register(userRoutes);
