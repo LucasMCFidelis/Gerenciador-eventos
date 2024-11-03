@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client"
 import { GetResponse } from "../../interfaces/getResponseInterface.js"
 import { schemaUserUpdate } from "../../schemas/schemaUserUpdate.js"
 import { prisma } from "./prisma.js"
@@ -6,10 +7,11 @@ interface UserAutentication {
     userId: string
     email: string
     password: string
+    role: Role
 }
 
 interface GetUserResponse extends GetResponse {
-    data?: UserAutentication | null
+    data?: UserAutentication
 }
 
 export async function getUserByEmail(userEmail: string): Promise<GetUserResponse> {
@@ -21,7 +23,7 @@ export async function getUserByEmail(userEmail: string): Promise<GetUserResponse
             status: 400,
             message: error.message.toLowerCase(),
             error: true,
-            data: null
+            data: undefined
         }
     }
 
@@ -34,7 +36,14 @@ export async function getUserByEmail(userEmail: string): Promise<GetUserResponse
             select: {
                 userId: true,
                 email: true,
-                password: true
+                password: true,
+                role: {
+                    select: {
+                        roleId: true,
+                        roleName: true,
+                        roleDescription: true
+                    }
+                }
             }
         })
 
@@ -44,7 +53,7 @@ export async function getUserByEmail(userEmail: string): Promise<GetUserResponse
                 status: 404,
                 message: "Nenhum usuário encontrado com este email",
                 error: true,
-                data: null
+                data: undefined
             }
         }
 
@@ -61,7 +70,7 @@ export async function getUserByEmail(userEmail: string): Promise<GetUserResponse
             status: 500,
             message: "Erro interno ao buscar usuário",
             error: true,
-            data: null
+            data: undefined
         }
     }
 }
