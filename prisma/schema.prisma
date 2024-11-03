@@ -27,8 +27,8 @@ model User {
 
   // Adicionando relacionamento com Role
   // 1 - Admim / 2 - User
-  roleId Int?  @default(2)
-  role   Role? @relation(fields: [roleId], references: [roleId])
+  roleId Int  @default(2)
+  role   Role @relation(fields: [roleId], references: [roleId])
 
   @@map("users")
 }
