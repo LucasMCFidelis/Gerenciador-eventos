@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { comparePasswords } from "../../utils/security/comparePasswords.js";
 import { getUserByEmail } from "../../utils/db/getUserByEmail.js";
+import { generateToken } from "../../utils/security/generateToken.js";
 
 export async function loginUserRoute(fastify:FastifyInstance) {
     // ADICIONAR LOGICA DE CRIAÇÃO DE TOKENS PARA PRÓXIMAS AUTENTICAÇÕES 
@@ -27,8 +28,10 @@ export async function loginUserRoute(fastify:FastifyInstance) {
                 return reply.status(401).send({ message: 'Credenciais inválidas' })
             }
 
-            // Retorno de sucesso com os detalhes do usuário
-            return reply.status(200).send({ message: 'Login bem-sucedido', userId: user.userId })
+            const token = generateToken(fastify, user)
+
+            // Retorno de sucesso com token de autenticação do usuário
+            return reply.status(200).send({ message: 'Login bem-sucedido', userToken: token })
         } catch (error) {
             // Capturar erros inesperados e retornar uma mensagem genérica
             return reply.status(500).send({ message: 'Erro ao realizar login' })
