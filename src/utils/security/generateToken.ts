@@ -1,16 +1,9 @@
 import { FastifyInstance } from 'fastify';
-import { Role } from '../../interfaces/roleInterface.js';
+import { UserTokenInterfaceProps } from '../../interfaces/UserTokenInterfaceProps.js'
 
-
-interface UserTokenProps {
-    userId: string
-    email: string
-    role: Role
-}
-
-export function generateToken(fastify: FastifyInstance, user: UserTokenProps) {
+export function generateToken(fastify: FastifyInstance, user: UserTokenInterfaceProps) {
   return fastify.jwt.sign(
-    { 
+    {
       userId: user.userId,
       email: user.email,
       role: user.role?.roleName
