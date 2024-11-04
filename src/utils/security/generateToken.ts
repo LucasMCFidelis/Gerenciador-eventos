@@ -6,7 +6,7 @@ export function generateToken(fastify: FastifyInstance, user: UserTokenInterface
     {
       userId: user.userId,
       email: user.email,
-      role: user.role?.roleName
+      roleName: user.roleName
     },
     { expiresIn: '1h' }
   );
