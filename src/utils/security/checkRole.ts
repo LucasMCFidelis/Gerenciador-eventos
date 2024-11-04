@@ -3,15 +3,16 @@ import { UserTokenInterfaceProps } from '../../interfaces/UserTokenInterfaceProp
 
 declare module 'fastify' {
     interface FastifyRequest {
-        authenticatedUser: UserTokenInterfaceProps
+        user: UserTokenInterfaceProps
     }
 }
 
 export function checkRole(requiredRole: string) {
-    return async (request: FastifyRequest, reply: FastifyReply) => {
-        const userRole = request.authenticatedUser.role.roleName
+    return (request: FastifyRequest, reply: FastifyReply) => {       
+        const userRole = request.user.roleName
+
         if (userRole !== requiredRole) {
-            reply.status(403).send({ message: 'Acesso não autorizado' })
+            reply.status(403).send({ message: `Permissão insuficiente. Requerido: ${requiredRole}, atual: ${userRole}` })
         }
     }
 }
