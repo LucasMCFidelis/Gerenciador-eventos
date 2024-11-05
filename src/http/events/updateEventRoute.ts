@@ -11,17 +11,17 @@ export async function UpdateEventRoute(fastify: FastifyInstance) {
         Params: { id: string },
         Body: Partial<EventRequestBody>
     }>('/eventos/:id',  {
-        onRequest: [fastify.authenticate, checkRole('Admin')]
+        onRequest: [fastify.authenticate, await checkRole('Admin')]
     }, async (request, reply) => {
         try {
             // Extrai o Id do evento dos parâmetros da rota e os dados do corpo da requisição de acordo com EventRequestBody
             const { title, description, linkEvent, address, startDateTime, endDateTime, accessibilityLevel } = request.body
             const eventId = request.params.id    
-
+            
             const user = request.user
 
             // Verifica se userId está presente
-            if (user.userId) {
+            if (!user.userId) {
                 return reply.status(400).send({ message: "userId é obrigatório" })
             }
 
