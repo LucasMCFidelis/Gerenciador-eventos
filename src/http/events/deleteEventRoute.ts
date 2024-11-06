@@ -1,27 +1,19 @@
 import { FastifyInstance } from "fastify"
 import { prisma } from "../../utils/db/prisma.js"
 import { handleError } from "../../utils/handlers/handleError.js"
-import { verifyRole } from "../../utils/security/verifyRole.js"
 import { checkExistingEvent } from "../../utils/validators/checkExistingEvent.js"
+import { checkRole } from "../../utils/security/checkRole.js"
 
 export async function deleteEventRoute(fastify: FastifyInstance) {
     fastify.delete<{ 
         Params: { id: string },
         Body: { userId: string} 
-    }>('/eventos/:id', async (request, reply) => {
+    }>('/eventos/:id', {
+        onRequest: [fastify.authenticate, await checkRole('Admin')]
+    }, async (request, reply) => {
         try {
             // Extrai o Id do evento dos parâmetros da rota e o Id do usuário do corpo da requisição
             const eventId = request.params.id
-            const userId = request.body.userId
-
-            // Valida a permissão do usuário
-            const { status: roleStatus, hasPermission, message: roleMessage, error} = await verifyRole({
-                userId,
-                requiredRole: 'Admin'
-            })
-            if (!hasPermission || error) {
-                return reply.status(roleStatus).send({ roleMessage })
-            }
 
             // Checa se o evento existe antes de tentar deletar do banco de dados
             const { status: eventStatus, eventExisting, message: eventMessage } = await checkExistingEvent(eventId)
