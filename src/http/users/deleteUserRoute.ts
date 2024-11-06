@@ -2,9 +2,15 @@ import { FastifyInstance } from "fastify"
 import { getUserById } from "../../utils/db/getUserById.js"
 import { handleError } from "../../utils/handlers/handleError.js"
 import { prisma } from "../../utils/db/prisma.js"
+import { authorizeUserById } from "../../utils/security/authorizeUserById.js"
 
 export async function deleteUserRoute(fastify: FastifyInstance) {
-    fastify.delete<{ Params: { id: string } }>('/usuarios/:id', async (request, reply) => {
+    fastify.delete<{ Params: { id: string } }>('/usuarios/:id', {
+        onRequest: [
+            fastify.authenticate, 
+            async (request, reply) => await authorizeUserById(request.params.id)(request, reply)
+        ]
+    }, async (request, reply) => {
         try {
             // Extrair o ID do usuário a partir dos parâmetros da rota
             const userId = request.params.id
