@@ -30,6 +30,8 @@ model User {
   roleId Int  @default(2)
   role   Role @relation(fields: [roleId], references: [roleId])
 
+  recoveryCodes RecoveryCode[]
+
   @@map("users")
 }
 
@@ -59,4 +61,17 @@ model Role {
   users User[]
 
   @@map("roles")
+}
+
+model RecoveryCode {
+  id        String   @id @default(cuid()) 
+  userEmail String   // E-mail do usuário associado ao código
+  code      String   // Código de recuperação gerado
+  expiresAt DateTime // Data e hora de expiração do código
+  createdAt DateTime @default(now()) // Data de criação do código
+  updatedAt DateTime @updatedAt // Data de atualização (para manter o registro atualizado)
+
+  user      User     @relation(fields: [userEmail], references: [email])
+
+  @@map("recovery_codes")
 }
