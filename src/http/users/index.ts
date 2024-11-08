@@ -6,6 +6,7 @@ import { loginUserRoute } from "./loginUserRoute.js";
 import { updateUserPasswordRoute } from "./updateUserPasswordRoute.js";
 import { updateUserRoute } from "./updateUserRoute.js";
 import { updateUserRoleRoute } from "./updateUserRoleRoute.js";
+import { sendRecoveryCodeRoute } from "./sendRecoveryCodeRoute.js";
 
 export async function userRoutes(fastify:FastifyInstance) {
     fastify.register(createUserRoute)
@@ -15,4 +16,5 @@ export async function userRoutes(fastify:FastifyInstance) {
     fastify.register(updateUserPasswordRoute)
     fastify.register(updateUserRoute)
     fastify.register(updateUserRoleRoute)
+    fastify.register(sendRecoveryCodeRoute)
 }
