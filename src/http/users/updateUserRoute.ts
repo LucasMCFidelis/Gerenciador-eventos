@@ -5,12 +5,18 @@ import { handleError } from "../../utils/handlers/handleError.js";
 import { prisma } from "../../utils/db/prisma.js";
 import { schemaUserUpdate } from "../../schemas/schemaUserUpdate.js";
 import { CadastreUser } from "../../interfaces/cadastreUserInterface.js";
+import { authorizeUserById } from "../../utils/security/authorizeUserById.js";
 
 export async function updateUserRoute(fastify: FastifyInstance) {
     fastify.put<{
         Params: { id: string },
         Body: Partial<CadastreUser>
-    }>('/usuarios/:id', async (request, reply) => {
+    }>('/usuarios/:id', {
+        onRequest: [
+            fastify.authenticate, 
+            async (request, reply) => await authorizeUserById(request.params.id)(request, reply)
+        ]
+    }, async (request, reply) => {
         try {
             const userId = request.params.id
 
