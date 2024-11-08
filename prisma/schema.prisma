@@ -65,7 +65,7 @@ model Role {
 
 model RecoveryCode {
   id        String   @id @default(cuid()) 
-  userEmail String   // E-mail do usuário associado ao código
+  userEmail String   @unique // E-mail do usuário associado ao código
   code      String   // Código de recuperação gerado
   expiresAt DateTime // Data e hora de expiração do código
   createdAt DateTime @default(now()) // Data de criação do código
