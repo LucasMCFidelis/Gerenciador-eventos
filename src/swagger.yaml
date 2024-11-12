@@ -253,7 +253,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdateRequest'
+              $ref: '#/components/schemas/UserRequest'
       security:
         - bearerAuth: []  
       responses:
@@ -303,17 +303,17 @@ paths:
 
   /usuarios/{id}/permissao:
     put:
-      summary: "Atualizar a permissão de um usuário específico pelo ID"
+      summary: Atualiza a permissão de um usuário
       tags:
-      - "Usuários"
+        - "Usuários"
+      description: Esta rota permite que um administrador atualize a permissão de um usuário existente.
       parameters:
-      - in: path
-        name: id
-        required: true
-        description: "ID do usuário a ter sua permissão atualizada (formato UUID v4)."
-        schema:
-          type: string
-          example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
+        - name: id
+          in: path
+          required: true
+          description: ID do usuário cuja permissão será atualizada.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -321,18 +321,15 @@ paths:
             schema:
               type: object
               properties:
-                adminId:
-                  type: string
-                  description: "ID do administrador realizando a atualização (formato UUID v4)."
-                  example: "123e4567-e89b-12d3-a456-426614174000"
                 newRole:
                   type: string
-                  description: "Nova permissão a ser atribuída ao usuário. Deve ser uma permissão
-                    válida no sistema."
-                  example: "Admin"
+                  enum: [Admin, User]
+                  description: O novo papel que será atribuído ao usuário.
+      security:
+        - bearerAuth: []
       responses:
         '200':
-          description: "Permissão do usuário atualizada com sucesso."
+          description: Permissão do usuário atualizada com sucesso.
           content:
             application/json:
               schema:
@@ -340,67 +337,70 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Permissão do usuário atualizada com sucesso, Carlos agora é Admin."
+                    example: "Permissão do usuário atualizada com sucesso, João agora é Admin"
         '400':
-          description: "Requisição inválida."
+          description: Erro de validação ou entrada inválida.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
                 invalid_role:
-                  summary: "Permissão inválida"
+                  summary: "Permissão informada não é valida"
                   value:
-                    message: "A permissão especificada é inválida."
-                invalid_admin_id:
-                  summary: "ID do administrador inválido"
-                  value:
-                    message: "O ID do administrador é inválido ou o administrador não possui
-                      permissão."
+                    message: "Papel inválido. Somente 'Admin' ou 'User ' são aceitos."
         '403':
-          description: "Permissão insuficiente para realizar esta ação."
+          description: Permissão insuficiente para realizar a operação.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                insufficient_permission:
+                access_denied:
                   summary: "Permissão insuficiente"
                   value:
-                    message: "Permissão insuficiente. Requerido: Admin, atual: User."
+                    message: "Permissão insuficiente. Requerido: Admin, atual: User"
         '404':
-          description: "Usuário não encontrado."
+          description: Usuário ou papel não encontrado.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                role_not_found:
+                  summary: "A permissão(role) fornecida não foi encontrada"
+                  value:
+                    message: "Role não encontrada"
                 user_not_found:
                   summary: "Usuário não encontrado"
                   value:
                     message: "Usuário não encontrado."
         '409':
-          description: "Conflito. O usuário já possui a permissão especificada."
+          description: Conflito ao tentar atualizar a permissão para um papel já existente.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                role_already_set:
-                  summary: "Permissão já atribuída"
-                  value:
-                    message: "O usuário Carlos já possui a permissão User."
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "O usuário João já possui a permissão Admin"
         '500':
-          description: "Erro interno do servidor."
+          description: Erro interno do servidor.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                server_error:
-                  summary: "Erro interno"
+                error_update_role:
+                  summary: "Erro interno na atualização da permissão do usuário"
                   value:
-                    message: "Erro ao atualizar a permissão do usuário."
+                    message: "Erro interno ao realizar operação"
+                error_get_role:
+                  summary: "Erro durante a busca de role"
+                  value:
+                    message: "Erro ao buscar a role"
+      
 
   /eventos:
     get:
