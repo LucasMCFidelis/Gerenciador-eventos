@@ -181,7 +181,7 @@ paths:
                     message: "Usuário não encontrado."
 
     delete:
-      summary: "Deletar um usuário específico pelo ID. O usuário deve ser autorizado a deletar o próprio registro."
+      summary: "Deletar um usuário específico pelo ID."
       tags:
       - "Usuários"
       parameters:
@@ -237,34 +237,32 @@ paths:
                     message: "Usuário não encontrado."
 
     put:
-      summary: "Atualizar um usuário específico pelo ID"
+      summary: "Atualizar as informações de um usuário específico pelo ID."
       tags:
-      - "Usuários"
+        - "Usuários"
       parameters:
-      - in: path
-        name: id
-        required: true
-        description: "ID do usuário a ser atualizado (formato UUID v4)."
-        schema:
-          type: string
-          example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
+        - in: path
+          name: id
+          required: true
+          description: "ID do usuário a ser atualizado (formato UUID v4)."
+          schema:
+            type: string
+            example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequest'
+              $ref: '#/components/schemas/UserUpdateRequest'
+      security:
+        - bearerAuth: []  
       responses:
         '200':
           description: "Usuário atualizado com sucesso."
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Usuário atualizado com sucesso"
+                $ref: '#/components/schemas/UserResponse'
         '400':
           description: "Requisição inválida."
           content:
@@ -272,10 +270,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                invalid_email:
-                  summary: "Email inválido"
-                  value:
-                    message: "Este e-mail já está cadastrado."
                 invalid_id_empty:
                   summary: "ID vazio"
                   value:
@@ -284,6 +278,17 @@ paths:
                   summary: "ID em formato inválido"
                   value:
                     message: "O ID deve estar no formato de UUID v4."
+        '403':
+          description: "Acesso negado. O usuário não tem permissão para atualizar este registro."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                access_denied:
+                  summary: "Acesso negado"
+                  value:
+                    message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado para a operação."
         '404':
           description: "Usuário não encontrado."
           content:
@@ -295,17 +300,6 @@ paths:
                   summary: "Usuário não encontrado"
                   value:
                     message: "Usuário não encontrado."
-        '500':
-          description: "Erro interno do servidor."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                server_error:
-                  summary: "Erro interno"
-                  value:
-                    message: "Erro ao atualizar o usuário."
 
   /usuarios/{id}/permissao:
     put:
