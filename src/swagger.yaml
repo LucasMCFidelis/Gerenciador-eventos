@@ -213,7 +213,8 @@ paths:
                   value:
                     message: "O ID deve estar no formato de UUID v4."
         '403':
-          description: "Acesso negado. O usuário não tem permissão para deletar este registro."
+          description: "Acesso negado. O usuário não tem permissão para deletar este
+            registro."
           content:
             application/json:
               schema:
@@ -239,15 +240,15 @@ paths:
     put:
       summary: "Atualizar as informações de um usuário específico pelo ID."
       tags:
-        - "Usuários"
+      - "Usuários"
       parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID do usuário a ser atualizado (formato UUID v4)."
-          schema:
-            type: string
-            example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
+      - in: path
+        name: id
+        required: true
+        description: "ID do usuário a ser atualizado (formato UUID v4)."
+        schema:
+          type: string
+          example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
       requestBody:
         required: true
         content:
@@ -255,7 +256,7 @@ paths:
             schema:
               $ref: '#/components/schemas/UserRequest'
       security:
-        - bearerAuth: []  
+      - bearerAuth: []
       responses:
         '200':
           description: "Usuário atualizado com sucesso."
@@ -279,7 +280,8 @@ paths:
                   value:
                     message: "O ID deve estar no formato de UUID v4."
         '403':
-          description: "Acesso negado. O usuário não tem permissão para atualizar este registro."
+          description: "Acesso negado. O usuário não tem permissão para atualizar este
+            registro."
           content:
             application/json:
               schema:
@@ -288,7 +290,8 @@ paths:
                 access_denied:
                   summary: "Acesso negado"
                   value:
-                    message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado para a operação."
+                    message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado
+                      para a operação."
         '404':
           description: "Usuário não encontrado."
           content:
@@ -303,17 +306,18 @@ paths:
 
   /usuarios/{id}/permissao:
     put:
-      summary: Atualiza a permissão de um usuário
+      summary: "Atualiza a permissão de um usuário"
       tags:
-        - "Usuários"
-      description: Esta rota permite que um administrador atualize a permissão de um usuário existente.
+      - "Usuários"
+      description: Esta rota permite que um administrador atualize a permissão de um
+        usuário existente.
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID do usuário cuja permissão será atualizada.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: ID do usuário cuja permissão será atualizada.
+        schema:
+          type: string
       requestBody:
         required: true
         content:
@@ -323,10 +327,10 @@ paths:
               properties:
                 newRole:
                   type: string
-                  enum: [Admin, User]
+                  enum: [ Admin, User ]
                   description: O novo papel que será atribuído ao usuário.
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       responses:
         '200':
           description: Permissão do usuário atualizada com sucesso.
@@ -400,7 +404,79 @@ paths:
                   summary: "Erro durante a busca de role"
                   value:
                     message: "Erro ao buscar a role"
-      
+
+  /usuarios/recuperacao/enviar-codigo:
+    post:
+      summary: "Envia código para recuperação de senha"
+      tags:
+      - "Usuários"
+      description: Esta rota permite que o usuário receba um código no seu email, para
+        que possa ser utilizado em outra rota como validação antes da
+        redefinição de senha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "carlos@example.com"
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Código foi enviado para o email informado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Código de recuperação enviado para o seu e-mail"
+        '400':
+          description: Erro de validação ou entrada inválida.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_email:
+                  summary: "Email fornecido não tem formato valido"
+                  value:
+                    message: "Email deve ser um email válido"
+                invalid_type_email:
+                  summary: "Email fornecido com um tipo invalido"
+                  value:
+                    message: "Email deve ser uma string"
+        '404':
+          description: Usuário não encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                user_not_found:
+                  summary: "Usuário não encontrado"
+                  value:
+                    message: "Nenhum usuário encontrado com este email"
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error_send_code:
+                  summary: "Erro interno ao enviar código de validação para o email do usuário"
+                  value:
+                    message: "Erro interno ao realizar operação"
+                error_get_user:
+                  summary: "Erro interno durante a busca do usuário"
+                  value:
+                    message: "Erro interno ao buscar usuário"
 
   /eventos:
     get:
