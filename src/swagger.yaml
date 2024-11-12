@@ -90,12 +90,12 @@ components:
         accessibilityLevel:
           type: string
           enum:
-            - SEM_ACESSIBILIDADE
-            - ACESSIBILIDADE_BASICA
-            - ACESSIBILIDADE_AUDITIVA
-            - ACESSIBILIDADE_VISUAL
-            - ACESSIBILIDADE_COMPLETA
-            - NAO_INFORMADA
+          - SEM_ACESSIBILIDADE
+          - ACESSIBILIDADE_BASICA
+          - ACESSIBILIDADE_AUDITIVA
+          - ACESSIBILIDADE_VISUAL
+          - ACESSIBILIDADE_COMPLETA
+          - NAO_INFORMADA
           example: "ACESSIBILIDADE_BASICA"
         startDateTime:
           type: string
@@ -181,7 +181,7 @@ paths:
                     message: "Usuário não encontrado."
 
     delete:
-      summary: "Deletar um usuário específico pelo ID"
+      summary: "Deletar um usuário específico pelo ID. O usuário deve ser autorizado a deletar o próprio registro."
       tags:
       - "Usuários"
       parameters:
@@ -192,6 +192,8 @@ paths:
         schema:
           type: string
           example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
+      security:
+      - bearerAuth: []
       responses:
         '204':
           description: "Usuário deletado com sucesso."
@@ -210,6 +212,18 @@ paths:
                   summary: "ID em formato inválido"
                   value:
                     message: "O ID deve estar no formato de UUID v4."
+        '403':
+          description: "Acesso negado. O usuário não tem permissão para deletar este registro."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                access_denied:
+                  summary: "Acesso negado"
+                  value:
+                    message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado
+                      para a operação."
         '404':
           description: "Usuário não encontrado."
           content:
@@ -227,13 +241,13 @@ paths:
       tags:
       - "Usuários"
       parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID do usuário a ser atualizado (formato UUID v4)."
-          schema:
-            type: string
-            example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
+      - in: path
+        name: id
+        required: true
+        description: "ID do usuário a ser atualizado (formato UUID v4)."
+        schema:
+          type: string
+          example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
       requestBody:
         required: true
         content:
@@ -299,13 +313,13 @@ paths:
       tags:
       - "Usuários"
       parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID do usuário a ter sua permissão atualizada (formato UUID v4)."
-          schema:
-            type: string
-            example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
+      - in: path
+        name: id
+        required: true
+        description: "ID do usuário a ter sua permissão atualizada (formato UUID v4)."
+        schema:
+          type: string
+          example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
       requestBody:
         required: true
         content:
@@ -319,7 +333,8 @@ paths:
                   example: "123e4567-e89b-12d3-a456-426614174000"
                 newRole:
                   type: string
-                  description: "Nova permissão a ser atribuída ao usuário. Deve ser uma permissão válida no sistema."
+                  description: "Nova permissão a ser atribuída ao usuário. Deve ser uma permissão
+                    válida no sistema."
                   example: "Admin"
       responses:
         '200':
@@ -346,7 +361,8 @@ paths:
                 invalid_admin_id:
                   summary: "ID do administrador inválido"
                   value:
-                    message: "O ID do administrador é inválido ou o administrador não possui permissão."
+                    message: "O ID do administrador é inválido ou o administrador não possui
+                      permissão."
         '403':
           description: "Permissão insuficiente para realizar esta ação."
           content:
@@ -391,12 +407,12 @@ paths:
                   summary: "Erro interno"
                   value:
                     message: "Erro ao atualizar a permissão do usuário."
-  
+
   /eventos:
     get:
       summary: "Lista todos os eventos ordenados por título em ordem alfabética."
       tags:
-        - Eventos
+      - Eventos
       responses:
         '200':
           description: "Lista de eventos encontrada com sucesso"
