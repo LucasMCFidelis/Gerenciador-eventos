@@ -8,10 +8,12 @@ import { hashPassword } from "../../utils/security/hashPassword.js";
 import { CadastreUser } from "../../interfaces/cadastreUserInterface.js";
 
 export async function createUserRoute(fastify: FastifyInstance) {
-    fastify.post('/usuarios', async (request, reply) => {
+    fastify.post<{
+        Body: CadastreUser
+    }>('/usuarios', async (request, reply) => {
         try {
             // Extrair dados fornecidos no corpo da requisição
-            const { firstName, lastName, email, phoneNumber, password } = request.body as CadastreUser;
+            const { firstName, lastName, email, phoneNumber, password } = request.body;
 
             // Validação dos dados com schemas
             await schemaCadastre.concat(schemaUserPassword).validateAsync({

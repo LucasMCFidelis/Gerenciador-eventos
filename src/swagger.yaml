@@ -132,6 +132,73 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_firstName:
+                  summary: "Nome fornecido com um tipo invalido"
+                  value:
+                    message: "Nome deve ser uma string"
+                empty_firstName:
+                  summary: "Nome fornecido vazio ou apenas com espaços"
+                  value:
+                    message: "Nome não pode estar vazio"
+                must_curt_firstName:
+                  summary: "Nome fornecido foi muito curto"
+                  value:
+                    message: "Nome deve possuir no mínimo 3 caracteres"
+                invalid_caractere_firstName:
+                  summary: "Nome fornecido com caractere invalido"
+                  value:
+                    message: "Nome deve conter apenas caracteres alfabéticos, acentuados e espaços"
+                invalid_lastName:
+                  summary: "Sobrenome fornecido com um tipo invalido"
+                  value:
+                    message: "Sobrenome deve ser uma string"
+                empty_lastName:
+                  summary: "Sobrenome fornecido vazio ou apenas com espaços"
+                  value:
+                    message: "Sobrenome não pode estar vazio"
+                must_curt_lastName:
+                  summary: "Sobrenome fornecido foi muito curto"
+                  value:
+                    message: "Sobrenome deve possuir no mínimo 5 caracteres"
+                invalid_caractere_lastName:
+                  summary: "Sobrenome fornecido com caractere invalido"
+                  value:
+                    message: "Sobrenome deve conter apenas caracteres alfabéticos, acentuados e espaços"
+                invalid_type_email:
+                  summary: "Email fornecido com um tipo invalido"
+                  value:
+                    message: "Email deve ser uma string"
+                invalid_email:
+                  summary: "Email fornecido não tem formato valido"
+                  value:
+                    message: "Email deve ser um email válido"
+              
+                empty_password:
+                  summary: "Fornecer a senha vazia ou apenas com espaços"
+                  value:
+                    message: "Senha não pode estar vazia"
+                weak_password:
+                  summary: "Fornecer uma senha fraca"
+                  value:
+                    message: "Senha deve ter pelo menos 8 caracteres, incluir uma letra maiúscula, um número e um caractere especial (!@#$&*)"
+        '500':
+          description: "Erro interno no servidor"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error_create_user:
+                  summary: "Erro interno na criação do usuário"
+                  value:
+                    message: "Erro interno ao realizar operação"
+                error_check_user:
+                  summary: "Erro durante a checagem de existência do usuário"
+                  value:
+                    message: "Erro ao verificar existência do usuário."
+
+              
 
   /usuarios/{id}:
     get:
