@@ -8,7 +8,7 @@ export async function loginUserRoute(fastify: FastifyInstance) {
     fastify.post('/usuarios/login', async (request, reply) => {
         try {
             // Extrair email e senha fornecida do corpo da requisição
-            const { email, senhaFornecida } = request.body as { email: string, senhaFornecida: string }
+            const { email, passwordProvided } = request.body as { email: string, passwordProvided: string }
 
             // Buscar o usuário no banco de dados pelo email
             const userResponse = await getUserByEmail(email)            
@@ -21,7 +21,7 @@ export async function loginUserRoute(fastify: FastifyInstance) {
             }
 
             // Validar a senha fornecida com a armazenada no banco de dados
-            const passwordValid = await comparePasswords(senhaFornecida, userResponse.data.password)
+            const passwordValid = await comparePasswords(passwordProvided, userResponse.data.password)
 
             // Retornar erro de credenciais inválidas se a senha não for válida
             if (!passwordValid) {
