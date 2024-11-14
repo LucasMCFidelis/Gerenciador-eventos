@@ -19,6 +19,16 @@ components:
         message:
           type: string
           example: "Descrição do erro"
+    ErrorValidationResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum: ["Erro de validação"]
+          default: "Erro de validação"
+        message:
+          type: string
+          example: "Descrição do erro"
     UserResponse:
       type: object
       properties:
@@ -131,56 +141,72 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorValidationResponse'
               examples:
-                invalid_firstName:
-                  summary: "Nome fornecido com um tipo invalido"
+                undefined_firstName:
+                  summary: "firstName não foi fornecido"
                   value:
+                    error: "Erro de validação"
+                    message: "Nome é obrigatório"
+                invalid_firstName:
+                  summary: "firstName fornecido com um tipo invalido"
+                  value:
+                    error: "Erro de validação"
                     message: "Nome deve ser uma string"
                 empty_firstName:
-                  summary: "Nome fornecido vazio ou apenas com espaços"
+                  summary: "firstName fornecido vazio ou apenas com espaços"
                   value:
+                    error: "Erro de validação"
                     message: "Nome não pode estar vazio"
                 must_curt_firstName:
-                  summary: "Nome fornecido foi muito curto"
+                  summary: "firstName fornecido foi muito curto"
                   value:
+                    error: "Erro de validação"
                     message: "Nome deve possuir no mínimo 3 caracteres"
                 invalid_caractere_firstName:
-                  summary: "Nome fornecido com caractere invalido"
+                  summary: "firstName fornecido com caractere invalido"
                   value:
+                    error: "Erro de validação"
                     message: "Nome deve conter apenas caracteres alfabéticos, acentuados e espaços"
                 invalid_lastName:
                   summary: "Sobrenome fornecido com um tipo invalido"
                   value:
+                    error: "Erro de validação"
                     message: "Sobrenome deve ser uma string"
                 empty_lastName:
                   summary: "Sobrenome fornecido vazio ou apenas com espaços"
                   value:
+                    error: "Erro de validação"
                     message: "Sobrenome não pode estar vazio"
                 must_curt_lastName:
                   summary: "Sobrenome fornecido foi muito curto"
                   value:
+                    error: "Erro de validação"
                     message: "Sobrenome deve possuir no mínimo 5 caracteres"
                 invalid_caractere_lastName:
                   summary: "Sobrenome fornecido com caractere invalido"
                   value:
+                    error: "Erro de validação"
                     message: "Sobrenome deve conter apenas caracteres alfabéticos, acentuados e espaços"
                 invalid_type_email:
                   summary: "Email fornecido com um tipo invalido"
                   value:
+                    error: "Erro de validação"
                     message: "Email deve ser uma string"
                 invalid_email:
                   summary: "Email fornecido não tem formato valido"
                   value:
+                    error: "Erro de validação"
                     message: "Email deve ser um email válido"
-              
                 empty_password:
                   summary: "Fornecer a senha vazia ou apenas com espaços"
                   value:
+                    error: "Erro de validação"
                     message: "Senha não pode estar vazia"
                 weak_password:
                   summary: "Fornecer uma senha fraca"
                   value:
+                    error: "Erro de validação"
                     message: "Senha deve ter pelo menos 8 caracteres, incluir uma letra maiúscula, um número e um caractere especial (!@#$&*)"
         '500':
           description: "Erro interno no servidor"
@@ -197,8 +223,6 @@ paths:
                   summary: "Erro durante a checagem de existência do usuário"
                   value:
                     message: "Erro ao verificar existência do usuário."
-
-              
 
   /usuarios/{id}:
     get:
