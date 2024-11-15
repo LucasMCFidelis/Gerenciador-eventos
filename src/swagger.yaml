@@ -168,42 +168,42 @@ paths:
                     error: "Erro de validação"
                     message: "Sobrenome é obrigatório"
                 invalid_lastName:
-                  summary: "Sobrenome fornecido com um tipo invalido"
+                  summary: "lastName fornecido com um tipo invalido"
                   value:
                     error: "Erro de validação"
                     message: "Sobrenome deve ser uma string"
                 empty_lastName:
-                  summary: "Sobrenome fornecido vazio ou apenas com espaços"
+                  summary: "lastName fornecido vazio ou apenas com espaços"
                   value:
                     error: "Erro de validação"
                     message: "Sobrenome não pode estar vazio"
                 must_curt_lastName:
-                  summary: "Sobrenome fornecido foi muito curto"
+                  summary: "lastName fornecido foi muito curto"
                   value:
                     error: "Erro de validação"
                     message: "Sobrenome deve possuir no mínimo 5 caracteres"
                 invalid_caractere_lastName:
-                  summary: "Sobrenome fornecido com caractere invalido"
+                  summary: "lastName fornecido com caractere invalido"
                   value:
                     error: "Erro de validação"
                     message: "Sobrenome deve conter apenas caracteres alfabéticos, acentuados e espaços"
                 undefined_email:
-                  summary: "Email não foi fornecido"
+                  summary: "email não foi fornecido"
                   value:
                     error: "Erro de validação"
                     message: "Email é obrigatório"
                 invalid_type_email:
-                  summary: "Email fornecido com um tipo invalido"
+                  summary: "email fornecido com um tipo invalido"
                   value:
                     error: "Erro de validação"
                     message: "Email deve ser uma string"
                 invalid_email:
-                  summary: "Email fornecido não tem formato valido"
+                  summary: "email fornecido não tem formato valido"
                   value:
                     error: "Erro de validação"
                     message: "Email deve ser um email válido"
                 empty_email:
-                  summary: "Email fornecido vazio ou apenas com espaços"
+                  summary: "email fornecido vazio ou apenas com espaços"
                   value:
                     error: "Erro de validação"
                     message: "Email não pode estar vazio"
@@ -217,13 +217,23 @@ paths:
                   value:
                     error: "Erro de validação"
                     message: "Telefone deve começar com (+) e conter entre 10 e 15 dígitos numéricos"
+                undefined_password:
+                  summary: "password não foi fornecida"
+                  value:
+                    error: "Erro de validação"
+                    message: "Senha é obrigatória"
+                invalid_type_password:
+                  summary: "password fornecida com um tipo invalido"
+                  value:
+                    error: "Erro de validação"
+                    message: "Senha deve ser uma string"
                 empty_password:
-                  summary: "Password fornecida vazia ou apenas com espaços"
+                  summary: "password fornecida vazia ou apenas com espaços"
                   value:
                     error: "Erro de validação"
                     message: "Senha não pode estar vazia"
                 weak_password:
-                  summary: "Fornecer uma senha fraca"
+                  summary: "password fornecida é fraca"
                   value:
                     error: "Erro de validação"
                     message: "Senha deve ter pelo menos 8 caracteres, incluir uma letra maiúscula, um número e um caractere especial (!@#$&*)"
