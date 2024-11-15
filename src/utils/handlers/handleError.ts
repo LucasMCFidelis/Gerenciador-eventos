@@ -11,6 +11,9 @@ export function handleError(error: unknown, reply: FastifyReply) {
     } else {
         // Para erros não previstos ou que não sejam do tipo Error
         console.error('Erro desconhecido', error)
-        return reply.status(500).send({ message: 'Erro interno ao realizar operação' })
+        return reply.status(500).send({ 
+            error: 'Erro no servidor',
+            message: 'Erro interno ao realizar operação' 
+        })
     }
 }

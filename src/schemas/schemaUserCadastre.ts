@@ -26,9 +26,8 @@ export const schemaCadastre = Joi.object({
         'string.email': 'Email deve ser um email válido',
         'string.empty': 'Email não pode estar vazio'
     }),
-    phoneNumber: Joi.string().pattern(/^\+?[0-9]{10,15}$/).allow(null).optional().messages({
+    phoneNumber: Joi.string().trim().pattern(/^\+?[0-9]{10,15}$/).allow(null).optional().messages({
         'string.base': 'Telefone deve ser uma string',
         'string.pattern.base': 'Telefone deve começar com (+) e conter entre 10 e 15 dígitos numéricos',
-        'string.empty': 'Telefone não pode estar vazio'
     })
 })

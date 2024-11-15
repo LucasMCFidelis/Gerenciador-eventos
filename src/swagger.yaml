@@ -16,15 +16,9 @@ components:
     ErrorResponse:
       type: object
       properties:
-        message:
-          type: string
-          example: "Descrição do erro"
-    ErrorValidationResponse:
-      type: object
-      properties:
         error:
           type: string
-          enum: ["Erro de validação"]
+          enum: ["Erro de validação", "Erro no servidor"]
           default: "Erro de validação"
         message:
           type: string
@@ -141,7 +135,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorValidationResponse'
+                $ref: '#/components/schemas/ErrorResponse'
               examples:
                 undefined_firstName:
                   summary: "firstName não foi fornecido"
@@ -168,6 +162,11 @@ paths:
                   value:
                     error: "Erro de validação"
                     message: "Nome deve conter apenas caracteres alfabéticos, acentuados e espaços"
+                undefined_lastName:
+                  summary: "lastName não foi fornecido"
+                  value:
+                    error: "Erro de validação"
+                    message: "Sobrenome é obrigatório"
                 invalid_lastName:
                   summary: "Sobrenome fornecido com um tipo invalido"
                   value:
@@ -188,6 +187,11 @@ paths:
                   value:
                     error: "Erro de validação"
                     message: "Sobrenome deve conter apenas caracteres alfabéticos, acentuados e espaços"
+                undefined_email:
+                  summary: "Email não foi fornecido"
+                  value:
+                    error: "Erro de validação"
+                    message: "Email é obrigatório"
                 invalid_type_email:
                   summary: "Email fornecido com um tipo invalido"
                   value:
@@ -198,8 +202,23 @@ paths:
                   value:
                     error: "Erro de validação"
                     message: "Email deve ser um email válido"
+                empty_email:
+                  summary: "Email fornecido vazio ou apenas com espaços"
+                  value:
+                    error: "Erro de validação"
+                    message: "Email não pode estar vazio"
+                invalid_type_phonenumber:
+                  summary: "phoneNumber fornecido com um tipo invalido"
+                  value:
+                    error: "Erro de validação"
+                    message: "Telefone deve ser uma string"
+                invalid_phonenumber:
+                  summary: "phoneNumber fornecido não tem formato valido"
+                  value:
+                    error: "Erro de validação"
+                    message: "Telefone deve começar com (+) e conter entre 10 e 15 dígitos numéricos"
                 empty_password:
-                  summary: "Fornecer a senha vazia ou apenas com espaços"
+                  summary: "Password fornecida vazia ou apenas com espaços"
                   value:
                     error: "Erro de validação"
                     message: "Senha não pode estar vazia"
@@ -218,10 +237,12 @@ paths:
                 error_create_user:
                   summary: "Erro interno na criação do usuário"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro interno ao realizar operação"
                 error_check_user:
                   summary: "Erro durante a checagem de existência do usuário"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro ao verificar existência do usuário."
 
   /usuarios/{id}:
