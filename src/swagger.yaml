@@ -303,6 +303,23 @@ paths:
                   summary: "Usuário não encontrado"
                   value:
                     message: "Usuário não encontrado."
+        '500':
+          description: "Erro interno no servidor"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error_get_user:
+                  summary: "Erro interno na busca do usuário"
+                  value:
+                    error: "Erro no servidor"
+                    message: "Erro interno ao buscar usuário"
+                error_user:
+                  summary: "Erro interno durante a operação"
+                  value:
+                    error: "Erro no servidor"
+                    message: "Erro interno ao realizar operação"
 
     delete:
       summary: "Deletar um usuário específico pelo ID."
@@ -362,6 +379,23 @@ paths:
                   summary: "Usuário não encontrado"
                   value:
                     message: "Usuário não encontrado."
+        '500':
+          description: "Erro interno no servidor"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error_get_user:
+                  summary: "Erro interno na busca do usuário"
+                  value:
+                    error: "Erro no servidor"
+                    message: "Erro interno ao buscar usuário"
+                error_delete_user:
+                  summary: "Erro interno ao deletar usuário"
+                  value:
+                    error: "Erro no servidor"
+                    message: "Erro interno ao realizar operação"
 
     put:
       summary: "Atualizar as informações de um usuário específico pelo ID."
@@ -431,6 +465,28 @@ paths:
                   summary: "Usuário não encontrado"
                   value:
                     message: "Usuário não encontrado."
+        '500':
+          description: "Erro interno no servidor"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error_get_user:
+                  summary: "Erro interno na busca do usuário"
+                  value:
+                    error: "Erro no servidor"
+                    message: "Erro interno ao buscar usuário"
+                error_check_user:
+                  summary: "Erro durante a checagem de existência do usuário"
+                  value:
+                    error: "Erro no servidor"
+                    message: "Erro ao verificar existência do usuário."
+                error_update_user:
+                  summary: "Erro interno ao atualizar usuário"
+                  value:
+                    error: "Erro no servidor"
+                    message: "Erro interno ao realizar operação"
 
   /usuarios/{id}/permissao:
     put:
