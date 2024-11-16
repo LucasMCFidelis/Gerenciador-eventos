@@ -1,9 +1,8 @@
+import { GetResponse } from "../../interfaces/getResponseInterface.js"
 import { prisma } from "../db/prisma.js"
 
-interface checkExistingEventResponse {
-    status: number
+interface checkExistingEventResponse extends GetResponse{
     eventExisting: boolean
-    message?: string
 }
 
 export async function checkExistingEvent(eventId: string): Promise<checkExistingEventResponse> {
@@ -21,20 +20,23 @@ export async function checkExistingEvent(eventId: string): Promise<checkExisting
             return {
                 status: 404,
                 eventExisting: false,
-                message: 'Evento não encontrado'
+                message: 'Evento não encontrado',
+                error: "Erro Not Found"
             }
         }
 
         return {
             status: 200,
-            eventExisting: true
+            eventExisting: true,
+            error: false
         }
     } catch (error) {
         console.error(error)
         return {
             status: 500,
             eventExisting: false,
-            message: 'Erro ao consultar o evento'
+            message: 'Erro ao consultar o evento',
+            error: "Erro no servidor"
         }
     }
 }

@@ -1,10 +1,8 @@
+import { GetResponse } from "../../interfaces/getResponseInterface.js"
 import { prisma } from "../db/prisma.js"
 
-interface CheckExistingUserResponse {
-    status: number
+interface CheckExistingUserResponse extends GetResponse {
     existingUser: boolean
-    message?: string
-    error?: boolean
 }
 
 export async function checkExistingUser(userEmail: string): Promise<CheckExistingUserResponse> {
@@ -19,7 +17,7 @@ export async function checkExistingUser(userEmail: string): Promise<CheckExistin
                 status: 409,
                 existingUser: true,
                 message: 'Este e-mail já está cadastrado.',
-                error: true
+                error: "Erro de Conflito"
             }
         }
 
@@ -35,7 +33,7 @@ export async function checkExistingUser(userEmail: string): Promise<CheckExistin
             status: 500,
             existingUser: false,
             message: 'Erro ao verificar existência do usuário.',
-            error: true
+            error: "Erro no servidor"
         }
     }
 }

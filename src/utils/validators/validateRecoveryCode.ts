@@ -20,7 +20,7 @@ export async function validateRecoveryCode({userEmail, recoveryCode}: CodeValida
     if (!recoveryRecord) {
       return { 
         status: 400,
-        error: true, 
+        error: "Erro de validação", 
         message: "Código de recuperação inválido" 
     };
     }
@@ -30,7 +30,7 @@ export async function validateRecoveryCode({userEmail, recoveryCode}: CodeValida
     if (currentTime > new Date(recoveryRecord.expiresAt)) {
       return { 
         status: 400,
-        error: true, 
+        error: "Erro de validação", 
         message: "Código de recuperação expirado" 
         };
     }
@@ -47,7 +47,7 @@ export async function validateRecoveryCode({userEmail, recoveryCode}: CodeValida
     console.error(error);
     return { 
         status: 500,
-        error: true, 
+        error: "Erro no servidor", 
         message: "Erro ao validar o código de recuperação" 
     };
   }
