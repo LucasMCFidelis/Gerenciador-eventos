@@ -285,10 +285,12 @@ paths:
                 invalid_id_empty:
                   summary: "ID vazio"
                   value:
+                    error: "Erro de validação"
                     message: "O ID não pode ser vazio."
                 invalid_id_format:
                   summary: "ID em formato inválido"
                   value:
+                    error: "Erro de validação"
                     message: "O ID deve estar no formato de UUID v4."
         '404':
           description: "Usuário não encontrado."
@@ -329,10 +331,12 @@ paths:
                 invalid_id_empty:
                   summary: "ID vazio"
                   value:
+                    error: "Erro de validação"
                     message: "O ID não pode ser vazio."
                 invalid_id_format:
                   summary: "ID em formato inválido"
                   value:
+                    error: "Erro de validação"
                     message: "O ID deve estar no formato de UUID v4."
         '403':
           description: "Acesso negado. O usuário não tem permissão para deletar este
@@ -396,10 +400,12 @@ paths:
                 invalid_id_empty:
                   summary: "ID vazio"
                   value:
+                    error: "Erro de validação"
                     message: "O ID não pode ser vazio."
                 invalid_id_format:
                   summary: "ID em formato inválido"
                   value:
+                    error: "Erro de validação"
                     message: "O ID deve estar no formato de UUID v4."
         '403':
           description: "Acesso negado. O usuário não tem permissão para atualizar este
@@ -474,6 +480,7 @@ paths:
                 invalid_role:
                   summary: "Permissão informada não é valida"
                   value:
+                    error: "Erro de validação"
                     message: "Papel inválido. Somente 'Admin' ou 'User ' são aceitos."
         '403':
           description: Permissão insuficiente para realizar a operação.
@@ -566,10 +573,12 @@ paths:
                 invalid_email:
                   summary: "Email fornecido não tem formato valido"
                   value:
+                    error: "Erro de validação"
                     message: "Email deve ser um email válido"
                 invalid_type_email:
                   summary: "Email fornecido com um tipo invalido"
                   value:
+                    error: "Erro de validação"
                     message: "Email deve ser uma string"
         '404':
           description: Usuário não encontrado.
@@ -641,26 +650,32 @@ paths:
                 invalid_email:
                   summary: "Email fornecido não tem formato valido"
                   value:
+                    error: "Erro de validação"
                     message: "Email deve ser um email válido"
                 invalid_type_email:
                   summary: "Email fornecido com um tipo invalido"
                   value:
+                    error: "Erro de validação"
                     message: "Email deve ser uma string"
                 empty_password:
                   summary: "Fornecer a senha vazia ou apenas com espaços"
                   value:
+                    error: "Erro de validação"
                     message: "Senha não pode estar vazia"
                 weak_password:
                   summary: "Fornecer uma senha fraca"
                   value:
+                    error: "Erro de validação"
                     message: "Senha deve ter pelo menos 8 caracteres, incluir uma letra maiúscula, um número e um caractere especial (!@#$&*)"
                 invalid_recovery_code:
                   summary: "Fornecer um código de validação invalido"
                   value:
+                    error: "Erro de validação"
                     message: "Código de recuperação inválido" 
                 expired-recovery_code:
                   summary: "Fornecer um código de validação expirado"
                   value:
+                    error: "Erro de validação"
                     message: "Código de recuperação expirado" 
         '404':
           description: Usuário não encontrado.
@@ -736,10 +751,12 @@ paths:
                 invalid_email:
                   summary: "Email fornecido não tem formato valido"
                   value:
+                    error: "Erro de validação"
                     message: "Email deve ser um email válido"
                 invalid_type_email:
                   summary: "Email fornecido com um tipo invalido"
                   value:
+                    error: "Erro de validação"
                     message: "Email deve ser uma string"
         '401':
           description: Credenciais não condizem com as armazenadas.
@@ -842,10 +859,12 @@ paths:
                 invalid_id_empty:
                   summary: "ID vazio"
                   value:
+                    error: "Erro de validação"
                     message: "O ID não pode ser vazio."
                 invalid_id_format:
                   summary: "ID em formato inválido"
                   value:
+                    error: "Erro de validação"
                     message: "O ID deve estar no formato de UUID v4."
         '404':
           description: "Evento não encontrado."
