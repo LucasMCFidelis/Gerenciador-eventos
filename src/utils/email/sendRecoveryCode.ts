@@ -68,7 +68,7 @@ export async function sendRecoveryCode(userEmail: string): Promise<GetResponse> 
     console.error(error);
     return { 
         status: 500,
-        error: true, 
+        error: "Erro no servidor", 
         message: "Erro ao enviar o código de recuperação" 
     };
   }
