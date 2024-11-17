@@ -12,6 +12,11 @@ tags:
 - name: Eventos
   description: Operações relacionadas a eventos
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     ErrorResponse:
       type: object
@@ -335,7 +340,7 @@ paths:
           type: string
           example: "2aca17c6-b372-443c-8eff-70fe8d85100e"
       security:
-      - bearerAuth: []
+        - bearerAuth: []
       responses:
         '204':
           description: "Usuário deletado com sucesso."
@@ -343,10 +348,10 @@ paths:
             application/json:
               schema:
                 type: object
-                  properties:
-                    message:
-                      type: string
-                      example: "Usuário excluído com sucesso"
+                properties:
+                  message:
+                    type: string
+                    example: "Usuário excluído com sucesso"
         '400':
           description: "Requisição inválida."
           content:
@@ -966,3 +971,20 @@ paths:
                   value:
                     error: "Erro Not Found"
                     message: "Evento não encontrado."
+        '500':
+          description: "Erro interno do servidor ao buscar eventos"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                server_error:
+                  summary: "Erro interno"
+                  value:
+                    error: "Erro no servidor"
+                    message: "Erro interno ao realizar operação"
+                error_get_event:
+                  summary: "Erro interno durante a busca"
+                  value:
+                    error: "Erro no servidor"
+                    message: "Erro ao consultar o evento"
