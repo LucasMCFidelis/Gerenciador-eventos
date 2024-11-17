@@ -25,9 +25,12 @@ export async function createUserRoute(fastify: FastifyInstance) {
             });
 
             // Verificação de usuário existente
-            const { status, existingUser, message, error } = await checkExistingUser(email);
-            if (existingUser || error) {
-                return reply.status(status).send({ message });
+            const emailCheckResponse = await checkExistingUser(email)
+            if (emailCheckResponse.existingUser || emailCheckResponse.error) {
+                return reply.status(emailCheckResponse.status).send({ 
+                    error: emailCheckResponse.error,
+                    message: emailCheckResponse.message 
+                })
             }
 
             // Criptografar a senha do usuário

@@ -18,7 +18,10 @@ export async function deleteUserRoute(fastify: FastifyInstance) {
             // Buscar o usuário no banco de dados utilizando a função utilitária
             const userResponse = await getUserById(userId)
             if (!userResponse.data || userResponse.error) {
-                return reply.status(userResponse.status).send({ message: userResponse.message })
+                return reply.status(userResponse.status).send({ 
+                    error: userResponse.error,
+                    message: userResponse.message 
+                })
             }
 
             // Deletar usuário 

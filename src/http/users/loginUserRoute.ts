@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { comparePasswords } from "../../utils/security/comparePasswords.js";
 import { getUserByEmail } from "../../utils/db/getUserByEmail.js";
 import { generateToken } from "../../utils/security/generateToken.js";
+import { ErrorResponse } from "../../types/errorResponseType.js";
 
 export async function loginUserRoute(fastify: FastifyInstance) {
     // ADICIONAR LOGICA DE CRIAÇÃO DE TOKENS PARA PRÓXIMAS AUTENTICAÇÕES 
@@ -15,9 +16,10 @@ export async function loginUserRoute(fastify: FastifyInstance) {
 
             // Se houve um erro na busca ou usuário não existe
             if (userResponse.error || !userResponse.data) {
-                // Manter uma mensagem de erro padrão para casos onde `user` não é encontrado
-                const errorMessage = userResponse.message || 'Credenciais inválidas'
-                return reply.status(userResponse.error ? userResponse.status : 401).send({ message: errorMessage })
+                return reply.status(userResponse.status).send({ 
+                    error: userResponse.error,
+                    message: userResponse.message 
+                })
             }
 
             // Validar a senha fornecida com a armazenada no banco de dados
@@ -25,9 +27,13 @@ export async function loginUserRoute(fastify: FastifyInstance) {
 
             // Retornar erro de credenciais inválidas se a senha não for válida
             if (!passwordValid) {
-                return reply.status(401).send({ message: 'Credenciais inválidas' })
+                const errorValue: ErrorResponse = "Erro de autenticação"
+                return reply.status(401).send({ 
+                    error: errorValue,
+                    message: 'Credenciais inválidas' 
+                })
             }
-
+            
             const user = {
                 userId: userResponse.data.userId,
                 email: userResponse.data.email,

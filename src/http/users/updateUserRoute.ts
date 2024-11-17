@@ -23,7 +23,10 @@ export async function updateUserRoute(fastify: FastifyInstance) {
             // 1. Verifica se o usuário existe
             const userResponse = await getUserById(userId)
             if (!userResponse.data || userResponse.error) {
-                return reply.status(userResponse.status).send({ message: userResponse.message })
+                return reply.status(userResponse.status).send({
+                    error: userResponse.error,
+                    message: userResponse.message 
+                })
             }
             const user = userResponse.data
 
@@ -35,7 +38,10 @@ export async function updateUserRoute(fastify: FastifyInstance) {
             if (email !== user.email) {
                 const emailCheckResponse = await checkExistingUser(email)
                 if (emailCheckResponse.existingUser || emailCheckResponse.error) {
-                    return reply.status(emailCheckResponse.status).send({ message: emailCheckResponse.message })
+                    return reply.status(emailCheckResponse.status).send({ 
+                        error: emailCheckResponse.error,
+                        message: emailCheckResponse.message 
+                    })
                 }
             }
 
@@ -53,7 +59,9 @@ export async function updateUserRoute(fastify: FastifyInstance) {
             })
 
             // 5. Responde com sucesso
-            return reply.status(200).send({ message: 'Usuário atualizado com sucesso' })
+            return reply.status(200).send({ 
+                message: 'Usuário atualizado com sucesso' 
+            })
         } catch (error) {
             // 6. Tratamento de erros genéricos
             return handleError(error, reply)

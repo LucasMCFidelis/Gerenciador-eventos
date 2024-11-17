@@ -16,21 +16,23 @@ export async function sendRecoveryCodeRoute(fastify: FastifyInstance) {
       const user = userResponse.data;
 
       if (!user || userResponse.error) {
-        return reply
-          .status(userResponse.status)
-          .send({ message: userResponse.message });
+        return reply.status(userResponse.status).send({
+          error: userResponse.error,
+          message: userResponse.message,
+        });
       }
 
       const sendCode = await sendRecoveryCode(email);
       if (sendCode.error) {
-        return reply
-          .status(sendCode.status)
-          .send({ message: sendCode.message });
+        return reply.status(sendCode.status).send({
+          error: sendCode.error,
+          message: sendCode.message,
+        });
       }
 
-      return reply
-        .status(200)
-        .send({ message: "Código de recuperação enviado para o seu e-mail" });
+      return reply.status(200).send({
+        message: "Código de recuperação enviado para o seu e-mail",
+      });
     } catch (error) {
       return handleError(error, reply);
     }
