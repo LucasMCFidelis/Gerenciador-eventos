@@ -18,7 +18,7 @@ components:
       properties:
         error:
           type: string
-          enum: ["Erro de validação", "Erro no servidor"]
+          enum: ["Erro de validação","Erro no servidor","Erro Not Found","Erro de autorização","Erro de autenticação","Erro de Conflito"]
           default: "Erro de validação"
         message:
           type: string
@@ -302,6 +302,7 @@ paths:
                 user_not_found:
                   summary: "Usuário não encontrado"
                   value:
+                    error: "Erro Not Found"
                     message: "Usuário não encontrado."
         '500':
           description: "Erro interno no servidor"
@@ -338,6 +339,14 @@ paths:
       responses:
         '204':
           description: "Usuário deletado com sucesso."
+          content:
+            application/json:
+              schema:
+                type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Usuário excluído com sucesso"
         '400':
           description: "Requisição inválida."
           content:
@@ -366,6 +375,7 @@ paths:
                 access_denied:
                   summary: "Acesso negado"
                   value:
+                    error: "Erro de autorização"
                     message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado
                       para a operação."
         '404':
@@ -378,6 +388,7 @@ paths:
                 user_not_found:
                   summary: "Usuário não encontrado"
                   value:
+                    error: "Erro Not Found"
                     message: "Usuário não encontrado."
         '500':
           description: "Erro interno no servidor"
@@ -452,6 +463,7 @@ paths:
                 access_denied:
                   summary: "Acesso negado"
                   value:
+                    error: "Erro de autorização"
                     message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado
                       para a operação."
         '404':
@@ -464,6 +476,7 @@ paths:
                 user_not_found:
                   summary: "Usuário não encontrado"
                   value:
+                    error: "Erro Not Found"
                     message: "Usuário não encontrado."
         '500':
           description: "Erro interno no servidor"
@@ -548,6 +561,7 @@ paths:
                 access_denied:
                   summary: "Permissão insuficiente"
                   value:
+                    error: "Erro de autorização"
                     message: "Permissão insuficiente. Requerido: Admin, atual: User"
         '404':
           description: Usuário ou papel não encontrado.
@@ -559,21 +573,25 @@ paths:
                 role_not_found:
                   summary: "A permissão(role) fornecida não foi encontrada"
                   value:
+                    error: "Erro Not Found"
                     message: "Role não encontrada"
                 user_not_found:
                   summary: "Usuário não encontrado"
                   value:
+                    error: "Erro Not Found"
                     message: "Usuário não encontrado."
         '409':
           description: Conflito ao tentar atualizar a permissão para um papel já existente.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "O usuário João já possui a permissão Admin"
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                role_conflict:
+                  summary: "A permissão(role) fornecida não foi encontrada"
+                  value:
+                    error: "Erro de Conflito"
+                    message: "O usuário João já possui a permissão Admin"
         '500':
           description: Erro interno do servidor.
           content:
@@ -584,10 +602,12 @@ paths:
                 error_update_role:
                   summary: "Erro interno na atualização da permissão do usuário"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro interno ao realizar operação"
                 error_get_role:
                   summary: "Erro durante a busca de role"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro ao buscar a role"
 
   /usuarios/recuperacao/enviar-codigo:
@@ -646,6 +666,7 @@ paths:
                 user_not_found:
                   summary: "Usuário não encontrado"
                   value:
+                    error: "Erro Not Found"
                     message: "Nenhum usuário encontrado com este email"
         '500':
           description: Erro interno do servidor.
@@ -657,10 +678,12 @@ paths:
                 error_send_code:
                   summary: "Erro interno ao enviar código de validação para o email do usuário"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro interno ao realizar operação"
                 error_get_user:
                   summary: "Erro interno durante a busca do usuário"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro interno ao buscar usuário"
 
   /usuarios/recuperacao/atualizar-senha:
@@ -743,6 +766,7 @@ paths:
                 user_not_found:
                   summary: "Usuário não encontrado"
                   value:
+                    error: "Erro Not Found"
                     message: "Nenhum usuário encontrado com este email"
         '500':
           description: Erro interno do servidor.
@@ -754,14 +778,17 @@ paths:
                 error_send_code:
                   summary: "Erro interno ao atualizar senha do usuário"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro interno ao realizar operação"
                 error_get_user:
                   summary: "Erro interno durante a busca do usuário"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro interno ao buscar usuário"
                 error_validate_code:
                   summary: "Erro interno durante a validação do código"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro ao validar o código de recuperação" 
 
   /usuarios/login:
@@ -824,6 +851,7 @@ paths:
                 invalid_credentials:
                   summary: "Credenciais inválidas"
                   value:
+                    error: "Erro de autenticação"
                     message: "Credenciais inválidas"
         '404':
           description: Usuário não encontrado.
@@ -835,6 +863,7 @@ paths:
                 user_not_found:
                   summary: "Usuário não encontrado"
                   value:
+                    error: "Erro Not Found"
                     message: "Nenhum usuário encontrado com este email"
         '500':
           description: Erro interno do servidor.
@@ -846,6 +875,7 @@ paths:
                 error_login:
                   summary: "Erro interno ao realizar o login do usuário"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro ao realizar login"
 
   /eventos:
@@ -872,6 +902,7 @@ paths:
                 no_events:
                   summary: "Nenhum evento encontrado"
                   value:
+                    error: "Erro Not Found"
                     message: "Nenhum evento encontrado"
         '500':
           description: "Erro interno do servidor ao buscar eventos"
@@ -883,6 +914,7 @@ paths:
                 server_error:
                   summary: "Erro interno"
                   value:
+                    error: "Erro no servidor"
                     message: "Erro na consulta ao banco de dados"
 
   /eventos/{id}:
@@ -932,4 +964,5 @@ paths:
                 user_not_found:
                   summary: "Evento não encontrado"
                   value:
+                    error: "Erro Not Found"
                     message: "Evento não encontrado."
