@@ -16,9 +16,12 @@ export async function deleteEventRoute(fastify: FastifyInstance) {
             const eventId = request.params.id
 
             // Checa se o evento existe antes de tentar deletar do banco de dados
-            const { status: eventStatus, eventExisting, message: eventMessage } = await checkExistingEvent(eventId)
-            if (!eventExisting) {
-                return reply.status(eventStatus).send({ eventMessage })
+            const checkResponse = await checkExistingEvent(eventId)
+            if (!checkResponse.eventExisting) {
+                return reply.status(checkResponse.status).send({
+                    error: checkResponse.error,
+                    message: checkResponse.message
+                })
             }
 
             // Deleta o Evento

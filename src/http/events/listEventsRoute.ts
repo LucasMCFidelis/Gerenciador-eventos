@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { prisma } from "../../utils/db/prisma.js"
+import { ErrorResponse } from "../../types/errorResponseType.js";
 
 export async function listEventRoute(fastify: FastifyInstance) {
     fastify.get('/eventos', async (request, reply) => {
@@ -31,11 +32,18 @@ export async function listEventRoute(fastify: FastifyInstance) {
 
                 return reply.status(200).send(formattedEvents)
             } else {
-                return reply.status(404).send({ message: 'Nenhum evento encontrado' })
+                const errorValue: ErrorResponse = "Erro Not Found"
+                return reply.status(404).send({ 
+                    error: errorValue,
+                    message: 'Nenhum evento encontrado' })
             }
         } catch (error) {
             console.error(error)
-            return reply.status(500).send({ message: 'Erro na consulta ao banco de dados' })
+            const errorValue: ErrorResponse = "Erro no servidor"
+            return reply.status(500).send({ 
+                error: errorValue,
+                message: 'Erro na consulta ao banco de dados' 
+            })
         }
     })
 }

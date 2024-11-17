@@ -14,7 +14,6 @@ export async function createEventRoute(fastify: FastifyInstance) {
         try {
             // Extrai os dados do corpo da requisição com base na interface EventRequestBody
             const {
-                userId,
                 title,
                 description,
                 linkEvent,

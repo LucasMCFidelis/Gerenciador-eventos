@@ -5,6 +5,7 @@ import { checkExistingEvent } from "../../utils/validators/checkExistingEvent.js
 import { EventRequestBody } from "../../interfaces/eventRequestBodyInterface.js"
 import { schemaEventUpdate } from "../../schemas/schemaEventUpdate.js"
 import { checkRole } from "../../utils/security/checkRole.js"
+import { ErrorResponse } from "../../types/errorResponseType.js"
 
 export async function UpdateEventRoute(fastify: FastifyInstance) {
     fastify.put<{
@@ -22,7 +23,11 @@ export async function UpdateEventRoute(fastify: FastifyInstance) {
 
             // Verifica se userId está presente
             if (!user.userId) {
-                return reply.status(400).send({ message: "userId é obrigatório" })
+                const errorValue: ErrorResponse = "Erro de validação"
+                return reply.status(400).send({ 
+                    error: errorValue,
+                    message: "userId é obrigatório" 
+                })
             }
 
             // Validar os dados fornecidos no corpo da requisição
@@ -37,9 +42,12 @@ export async function UpdateEventRoute(fastify: FastifyInstance) {
             })
 
             // Checa se o evento com id fornecido existe
-            const { status: eventStatus, eventExisting, message: eventMessage } = await checkExistingEvent(eventId)
-            if (!eventExisting) {
-                return reply.status(eventStatus).send({ eventMessage })
+            const checkResponse = await checkExistingEvent(eventId)
+            if (!checkResponse.eventExisting) {
+                return reply.status(checkResponse.status).send({
+                    error: checkResponse.error,
+                    message: checkResponse.message
+                })
             }
 
             // Atualiza evento no banco de dados

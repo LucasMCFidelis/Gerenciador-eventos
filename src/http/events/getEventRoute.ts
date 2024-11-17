@@ -11,7 +11,10 @@ export async function getEventRoute(fastify: FastifyInstance) {
             // Buscar o evento no banco de dados utilizando a função utilitária
             const eventResponse = await getEventById(eventId)
             if (!eventResponse.data || eventResponse.error) {
-                return reply.status(eventResponse.status).send({ message: eventResponse.message })
+                return reply.status(eventResponse.status).send({ 
+                    error: eventResponse.error,
+                    message: eventResponse.message 
+                })
             }
 
             // Responder com os dados do usuário encontrado
