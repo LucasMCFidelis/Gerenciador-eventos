@@ -22,7 +22,7 @@ export async function getUserByEmail(userEmail: string): Promise<GetUserResponse
         return {
             status: 400,
             message: error.message.toLowerCase(),
-            error: true,
+            error: "Erro de validação",
             data: undefined
         }
     }
@@ -52,7 +52,7 @@ export async function getUserByEmail(userEmail: string): Promise<GetUserResponse
             return {
                 status: 404,
                 message: "Nenhum usuário encontrado com este email",
-                error: true,
+                error: "Erro Not Found",
                 data: undefined
             }
         }
@@ -69,7 +69,7 @@ export async function getUserByEmail(userEmail: string): Promise<GetUserResponse
         return {
             status: 500,
             message: "Erro interno ao buscar usuário",
-            error: true,
+            error: "Erro no servidor",
             data: undefined
         }
     }

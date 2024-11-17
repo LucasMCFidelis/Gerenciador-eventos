@@ -21,7 +21,7 @@ export async function getRoleByName(
       return {
         status: 400,
         message: "Papel inválido. Somente 'Admin' ou 'User' são aceitos.",
-        error: true,
+        error: "Erro de validação",
       };
     }
 
@@ -35,7 +35,7 @@ export async function getRoleByName(
       return {
         status: 404,
         message: "Role não encontrada",
-        error: true,
+        error: "Erro Not Found",
       };
     }
 
@@ -57,7 +57,7 @@ export async function getRoleByName(
     return {
       status: 500,
       message: "Erro ao buscar a role",
-      error: true,
+      error: "Erro no servidor",
     };
   }
 }

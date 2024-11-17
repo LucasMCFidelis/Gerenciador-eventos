@@ -1,10 +1,11 @@
+import { ErrorResponse } from "../../types/errorResponseType.js"
 import { hashPassword } from "../security/hashPassword.js"
 import { prisma } from "./prisma.js"
 
 interface UpdatePasswordResponse {
     status: number
     message?: string
-    error?: boolean
+    error?: ErrorResponse
 }
 
 export async function updateUserPassword(userId: string, newPassword: string): Promise<UpdatePasswordResponse> {
@@ -36,7 +37,7 @@ export async function updateUserPassword(userId: string, newPassword: string): P
             return {
                 status: 404,
                 message: 'Usuário não encontrado para atualização',
-                error: true
+                error: "Erro Not Found"
             }
         }
 
@@ -44,7 +45,7 @@ export async function updateUserPassword(userId: string, newPassword: string): P
         return {
             status: 500,
             message: 'Erro ao atualizar senha',
-            error: true
+            error: "Erro no servidor"
         }
     }
 }

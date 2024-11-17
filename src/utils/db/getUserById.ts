@@ -24,7 +24,7 @@ export async function getUserById(userId: string): Promise<GetUserResponse> {
         return {
             status: 400,
             message: error.message ,
-            error: true
+            error: "Erro de validação"
         }
     }
 
@@ -49,21 +49,22 @@ export async function getUserById(userId: string): Promise<GetUserResponse> {
             return {
                 status: 404,
                 message: "Usuário não encontrado",
-                error: true
+                error: "Erro Not Found"
             }
         }
 
         // Retornar o usuário encontrado
         return {
             status: 200,
-            data: user
+            data: user,
+            error: false
         }
     } catch (error) {
         console.error("Erro ao buscar usuário", error)
         return {
             status: 500,
             message: "Erro interno ao buscar usuário",
-            error: true
+            error: "Erro no servidor"
         }
     }
 }

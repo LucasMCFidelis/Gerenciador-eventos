@@ -17,7 +17,7 @@ export async function getEventById(eventId: string): Promise<GetEventResponse> {
             return {
                 status: 400,
                 message: error.message,
-                error: true
+                error: "Erro de validação"
             }
         }
 
@@ -31,7 +31,7 @@ export async function getEventById(eventId: string): Promise<GetEventResponse> {
             return {
                 status: 404,
                 message: 'Evento não encontrado',
-                error: true
+                error: "Erro Not Found"
             }
         }
 
@@ -60,7 +60,7 @@ export async function getEventById(eventId: string): Promise<GetEventResponse> {
         return {
             status: 500,
             message: 'Erro ao consultar o evento',
-            error: true
+            error: "Erro no servidor"
         }
     }
 }
