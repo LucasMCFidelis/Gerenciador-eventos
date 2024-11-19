@@ -163,6 +163,30 @@ components:
                 error: "Erro de autorização"
                 message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado
                   para a operação."
+    UserNotFound:
+      description: "Usuário não encontrado."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            user_not_found:
+              summary: "Usuário não encontrado"
+              value:
+                error: "Erro Not Found"
+                message: "Usuário não encontrado."
+    UserNotFoundByEmail:
+      description: Usuário não encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            user_not_found:
+              summary: "Usuário não encontrado"
+              value:
+                error: "Erro Not Found"
+                message: "Nenhum usuário encontrado com este email"
 
 paths:
   /usuarios:
@@ -355,17 +379,7 @@ paths:
                     error: "Erro de validação"
                     message: "O ID deve estar no formato de UUID v4."
         '404':
-          description: "Usuário não encontrado."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                user_not_found:
-                  summary: "Usuário não encontrado"
-                  value:
-                    error: "Erro Not Found"
-                    message: "Usuário não encontrado."
+          $ref: '#/components/responses/UserNotFound'
         '500':
           description: "Erro interno no servidor"
           content:
@@ -426,17 +440,7 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenErrorUser'
         '404':
-          description: "Usuário não encontrado."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                user_not_found:
-                  summary: "Usuário não encontrado"
-                  value:
-                    error: "Erro Not Found"
-                    message: "Usuário não encontrado."
+          $ref: '#/components/responses/UserNotFound'
         '500':
           description: "Erro interno no servidor"
           content:
@@ -503,17 +507,7 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenErrorUser'
         '404':
-          description: "Usuário não encontrado."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                user_not_found:
-                  summary: "Usuário não encontrado"
-                  value:
-                    error: "Erro Not Found"
-                    message: "Usuário não encontrado."
+          $ref: '#/components/responses/UserNotFound'
         '500':
           description: "Erro interno no servidor"
           content:
@@ -677,17 +671,7 @@ paths:
                     error: "Erro de validação"
                     message: "Email deve ser uma string"
         '404':
-          description: Usuário não encontrado.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                user_not_found:
-                  summary: "Usuário não encontrado"
-                  value:
-                    error: "Erro Not Found"
-                    message: "Nenhum usuário encontrado com este email"
+          $ref: '#/components/responses/UserNotFoundByEmail'
         '500':
           description: Erro interno do servidor.
           content:
@@ -774,17 +758,7 @@ paths:
                     error: "Erro de validação"
                     message: "Código de recuperação expirado" 
         '404':
-          description: Usuário não encontrado.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                user_not_found:
-                  summary: "Usuário não encontrado"
-                  value:
-                    error: "Erro Not Found"
-                    message: "Nenhum usuário encontrado com este email"
+          $ref: '#/components/responses/UserNotFoundByEmail'
         '500':
           description: Erro interno do servidor.
           content:
@@ -868,17 +842,7 @@ paths:
                     error: "Erro de autenticação"
                     message: "Credenciais inválidas"
         '404':
-          description: Usuário não encontrado.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                user_not_found:
-                  summary: "Usuário não encontrado"
-                  value:
-                    error: "Erro Not Found"
-                    message: "Nenhum usuário encontrado com este email"
+          $ref: '#/components/responses/UserNotFoundByEmail'
         '500':
           description: Erro interno do servidor.
           content:
