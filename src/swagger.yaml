@@ -137,6 +137,16 @@ components:
       value:
         error: "Erro no servidor"
         message: "Erro interno ao realizar operação"
+    ErrorCheckUserExisting:
+      summary: "Erro durante a checagem de existência do usuário"
+      value:
+        error: "Erro no servidor"
+        message: "Erro ao verificar existência do usuário."
+    ErrorGetUser:
+      summary: "Erro interno na busca do usuário"
+      value:
+        error: "Erro no servidor"
+        message: "Erro interno ao buscar usuário"
   responses:
     ForbiddenErrorAdmin:
       description: Permissão insuficiente para realizar a operação.
@@ -336,10 +346,7 @@ paths:
                 server_error:
                   $ref: '#/components/examples/ServerErrorExample'
                 error_check_user:
-                  summary: "Erro durante a checagem de existência do usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro ao verificar existência do usuário."
+                  $ref: '#/components/examples/ErrorCheckUserExisting'
 
   /usuarios/{id}:
     get:
@@ -388,10 +395,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
                 error_get_user:
-                  summary: "Erro interno na busca do usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao buscar usuário"
+                  $ref: '#/components/examples/ErrorGetUser'
                 server_error:
                   $ref: '#/components/examples/ServerErrorExample'
 
@@ -449,10 +453,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
                 error_get_user:
-                  summary: "Erro interno na busca do usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao buscar usuário"
+                  $ref: '#/components/examples/ErrorGetUser'
                 server_error:
                   $ref: '#/components/examples/ServerErrorExample'
 
@@ -516,15 +517,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
                 error_get_user:
-                  summary: "Erro interno na busca do usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao buscar usuário"
+                  $ref: '#/components/examples/ErrorGetUser'
                 error_check_user:
-                  summary: "Erro durante a checagem de existência do usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro ao verificar existência do usuário."
+                  $ref: '#/components/examples/ErrorCheckUserExisting'
                 server_error:
                   $ref: '#/components/examples/ServerErrorExample'
 
@@ -808,7 +803,7 @@ paths:
                 properties:
                   token:
                     type: string
-                    example: 
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZDRhMmUyOS00MWI1LTQ0MTUtOWI1MC1hMmQxY2I1ODQ5MWIiLCJlbWFpbCI6Impvc2VAZXhhbXBsZS5jb20iLCJyb2xlTmFtZSI6IlVzZXIiLCJpYXQiOjE3MzIwMjExMTUsImV4cCI6MTczMjAyNDcxNX0.QnOJa0B89Rg1RZUIZ-DTulstLLRElG_oVKWbJeXABsk"
                   message:
                     type: string
                     example: "Login bem-sucedido"
