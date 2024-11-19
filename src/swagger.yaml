@@ -131,6 +131,38 @@ components:
         createdAt:
           type: string
           example: "2023-10-20T12:30:45Z"
+  examples:
+    ServerErrorExample:
+      summary: "Erro interno"
+      value:
+        error: "Erro no servidor"
+        message: "Erro interno ao realizar operação"
+  responses:
+    ForbiddenErrorAdmin:
+      description: Permissão insuficiente para realizar a operação.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            access_denied:
+              summary: "Permissão insuficiente"
+              value:
+                error: "Erro de autorização"
+                message: "Permissão insuficiente. Requerido: Admin, atual: User"
+    ForbiddenErrorUser:
+      description: "Acesso negado. O usuário não tem permissão para interagir com este registro."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            access_denied:
+              summary: "Acesso negado"
+              value:
+                error: "Erro de autorização"
+                message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado
+                  para a operação."
 
 paths:
   /usuarios:
@@ -277,11 +309,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                error_create_user:
-                  summary: "Erro interno na criação do usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao realizar operação"
+                server_error:
+                  $ref: '#/components/examples/ServerErrorExample'
                 error_check_user:
                   summary: "Erro durante a checagem de existência do usuário"
                   value:
@@ -349,11 +378,8 @@ paths:
                   value:
                     error: "Erro no servidor"
                     message: "Erro interno ao buscar usuário"
-                error_user:
-                  summary: "Erro interno durante a operação"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao realizar operação"
+                server_error:
+                  $ref: '#/components/examples/ServerErrorExample'
 
     delete:
       summary: "Deletar um usuário específico pelo ID."
@@ -398,19 +424,7 @@ paths:
                     error: "Erro de validação"
                     message: "O ID deve estar no formato de UUID v4."
         '403':
-          description: "Acesso negado. O usuário não tem permissão para deletar este
-            registro."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                access_denied:
-                  summary: "Acesso negado"
-                  value:
-                    error: "Erro de autorização"
-                    message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado
-                      para a operação."
+          $ref: '#/components/responses/ForbiddenErrorUser'
         '404':
           description: "Usuário não encontrado."
           content:
@@ -435,11 +449,8 @@ paths:
                   value:
                     error: "Erro no servidor"
                     message: "Erro interno ao buscar usuário"
-                error_delete_user:
-                  summary: "Erro interno ao deletar usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao realizar operação"
+                server_error:
+                  $ref: '#/components/examples/ServerErrorExample'
 
     put:
       summary: "Atualizar as informações de um usuário específico pelo ID."
@@ -490,18 +501,7 @@ paths:
                     error: "Erro de validação"
                     message: "O ID deve estar no formato de UUID v4."
         '403':
-          description: "Acesso negado. O usuário não tem permissão para atualizar este registro."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                access_denied:
-                  summary: "Acesso negado"
-                  value:
-                    error: "Erro de autorização"
-                    message: "Acesso negado. O ID do usuário logado não corresponde ao ID solicitado
-                      para a operação."
+          $ref: '#/components/responses/ForbiddenErrorUser'
         '404':
           description: "Usuário não encontrado."
           content:
@@ -531,11 +531,8 @@ paths:
                   value:
                     error: "Erro no servidor"
                     message: "Erro ao verificar existência do usuário."
-                error_update_user:
-                  summary: "Erro interno ao atualizar usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao realizar operação"
+                server_error:
+                  $ref: '#/components/examples/ServerErrorExample'
 
   /usuarios/{id}/permissao:
     put:
@@ -588,17 +585,7 @@ paths:
                     error: "Erro de validação"
                     message: "Papel inválido. Somente 'Admin' ou 'User ' são aceitos."
         '403':
-          description: Permissão insuficiente para realizar a operação.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                access_denied:
-                  summary: "Permissão insuficiente"
-                  value:
-                    error: "Erro de autorização"
-                    message: "Permissão insuficiente. Requerido: Admin, atual: User"
+          $ref: '#/components/responses/ForbiddenErrorAdmin'
         '404':
           description: Usuário ou papel não encontrado.
           content:
@@ -635,11 +622,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                error_update_role:
-                  summary: "Erro interno na atualização da permissão do usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao realizar operação"
+                server_error:
+                  $ref: '#/components/examples/ServerErrorExample'
                 error_get_role:
                   summary: "Erro durante a busca de role"
                   value:
@@ -711,11 +695,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                error_send_code:
-                  summary: "Erro interno ao enviar código de validação para o email do usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao realizar operação"
+                server_error:
+                  $ref: '#/components/examples/ServerErrorExample'
                 error_get_user:
                   summary: "Erro interno durante a busca do usuário"
                   value:
@@ -811,11 +792,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                error_send_code:
-                  summary: "Erro interno ao atualizar senha do usuário"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao realizar operação"
+                server_error:
+                  $ref: '#/components/examples/ServerErrorExample'
                 error_get_user:
                   summary: "Erro interno durante a busca do usuário"
                   value:
@@ -948,10 +926,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
                 server_error:
-                  summary: "Erro interno"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro na consulta ao banco de dados"
+                  $ref: '#/components/examples/ServerErrorExample'
 
   /eventos/{id}:
     get:
@@ -1010,10 +985,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
                 server_error:
-                  summary: "Erro interno"
-                  value:
-                    error: "Erro no servidor"
-                    message: "Erro interno ao realizar operação"
+                  $ref: '#/components/examples/ServerErrorExample'
                 error_get_event:
                   summary: "Erro interno durante a busca"
                   value:
