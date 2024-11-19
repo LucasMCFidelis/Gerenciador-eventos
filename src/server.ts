@@ -41,12 +41,14 @@ server.register(authPlugin);
 server.register(userRoutes);
 server.register(eventRoutes);
 
-// Configurar a porta
+// Configurar a porta e host
 const PORT = Number(process.env.PORT) || 3333;
-server.listen({ port: PORT })
+const HOST = process.env.HOST || 'localhost'; 
+
+server.listen({ port: PORT, host: HOST })
   .then(() => console.log(`
-        Servidor rodando em http://localhost:${PORT}
-        Documentação Swagger em http://localhost:${PORT}/docs
+        Servidor rodando em http://${HOST}:${PORT}
+        Documentação Swagger em http://${HOST}:${PORT}/docs
         `))
   .catch((error) => {
     console.error(error);
