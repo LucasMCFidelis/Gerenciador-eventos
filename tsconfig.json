@@ -15,5 +15,6 @@
     "rootDir": "./",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*", "prisma/seed.ts"]
+  "include": ["src/**/*", "prisma/seed.ts"],
+  "exclude": ["node_modules", "dist"]
 }
