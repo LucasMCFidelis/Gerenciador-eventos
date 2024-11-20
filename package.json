@@ -14,7 +14,7 @@
     "build": "tsup src/**/*.ts --out-dir dist --dts --format esm && cpy src/swagger.yaml dist/ --flat"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx src/utils/db/seed.ts"
   },
   "keywords": [],
   "author": "",

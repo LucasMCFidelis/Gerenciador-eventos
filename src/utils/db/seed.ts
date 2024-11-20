@@ -1,4 +1,4 @@
-import { prisma } from "../src/utils/db/prisma.js"
+import { prisma } from "./prisma.js"
 
 async function seedRoles() {
   await prisma.role.createMany({

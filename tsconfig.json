@@ -12,9 +12,9 @@
     "skipLibCheck": true,
     "moduleResolution": "node16",
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*", "prisma/seed.ts"],
+  "include": ["src/**/*", "src/utils/db/seed.ts"],
   "exclude": ["node_modules", "dist"]
 }
