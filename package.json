@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
     "dev": "tsx --watch --no-warnings src/server.js",
-    "build": "tsup src/**/*.ts --out-dir dist --dts --format esm && copy src\\swagger.yaml dist\\swagger.yaml"
+    "build": "tsup src/**/*.ts --out-dir dist --dts --format esm && cpy src/swagger.yaml dist/"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -37,6 +37,7 @@
     "@types/nodemailer": "^6.4.16",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-schema-official": "^2.0.25",
+    "cpy-cli": "^5.0.0",
     "prisma": "^5.19.1",
     "tsup": "^8.3.0",
     "tsx": "^4.19.1",
