@@ -6,11 +6,10 @@
     "lib": ["es2023"],
     "module": "node16",
     "target": "es2022",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "moduleResolution": "node16",
     "outDir": "./dist",
     "rootDir": "./src",
     "allowSyntheticDefaultImports": true
