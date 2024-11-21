@@ -1,6 +1,13 @@
+import { hashPassword } from "../security/hashPassword.js"
 import { prisma } from "./prisma.js"
 
 async function seedRoles() {
+  const existingRoles = await prisma.role.findFirst()
+  if (existingRoles) {
+    console.log('Roles já foram criados.')
+    return
+  }
+  
   await prisma.role.createMany({
     data: [
       { roleName: 'Admin', roleDescription: 'Acesso total ao sistema' },
@@ -11,6 +18,13 @@ async function seedRoles() {
 }
 
 async function seedAdmins() {
+  // Verificar se os dados já existem
+  const existingUser = await prisma.user.findFirst()
+  if (existingUser) {
+    console.log('Seed já foi executado.')
+    return
+  }
+  
   await prisma.user.createMany({
     data: [
       {
@@ -18,7 +32,7 @@ async function seedAdmins() {
         lastName: 'Doe acme', 
         email: 'john.doe@example.com',
         phoneNumber: '5551234567',
-        password: '@J0hnD03#',
+        password: await hashPassword('@J0hnD03#'),
         roleId: 1
       },
       {
@@ -26,16 +40,19 @@ async function seedAdmins() {
         lastName: 'Pedro Araújo', 
         email: 'carlos@example.com',
         phoneNumber: '5588874567',
-        password: '@JMKIoowD03#',
+        password: await hashPassword('@JMKIoowD03#'),
         roleId: 1
       }
     ]
   })
+  console.log('Admins criados com sucesso!')
 }
 
 async function main() {
   await seedRoles()
   await seedAdmins()
+
+  console.log('Seed executado com sucesso.')
 }
 
 main()
