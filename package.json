@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/server.js",
+    "start": "node src/dist/server.js",
     "dev": "tsx --watch --no-warnings src/server.js",
     "build": "tsup src/**/*.ts --out-dir src/dist --dts --format esm --clean && cpy src/swagger.yaml src/dist/ --flat"
   },
