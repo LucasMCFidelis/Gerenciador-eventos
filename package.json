@@ -9,9 +9,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --loader ts-node/esm dist/server.js",
+    "start": "node dist/server.js",
     "dev": "tsx --watch --no-warnings src/server.js",
-    "build": "tsup src/**/*.ts --out-dir dist --dts --format esm && cpy src/swagger.yaml dist/ --flat"
+    "build": "tsup src/**/*.ts --out-dir dist --dts --format esm --clean && cpy src/swagger.yaml dist/ --flat"
   },
   "prisma": {
     "seed": "tsx src/utils/db/seed.ts"
@@ -29,8 +29,7 @@
     "fastify": "^5.0.0",
     "joi": "^17.13.3",
     "nodemailer": "^6.9.16",
-    "swagger-jsdoc": "^6.2.8",
-    "ts-node": "^10.9.2"
+    "swagger-jsdoc": "^6.2.8"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
