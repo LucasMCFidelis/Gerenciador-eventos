@@ -5,4 +5,5 @@ export default defineConfig({
   outDir: "dist", // Diretório de saída
   format: ["esm"], // Formatos de saída (CommonJS e ES Module)
   clean: true, // Limpar a pasta 'dist' antes de gerar os arquivos
+  dts: true, // Gera arquivos de tipos .d.ts
 });
