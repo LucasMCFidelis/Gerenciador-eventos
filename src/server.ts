@@ -2,11 +2,11 @@ import fastify from "fastify";
 import { userRoutes } from "./http/users/index.js";
 import { eventRoutes } from "./http/events/index.js";
 import swagger from "@fastify/swagger";
-import swaggerUi from '@fastify/swagger-ui';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import authPlugin from './plugins/auth.js';
-
+import swaggerUi from "@fastify/swagger-ui";
+import path from "path";
+import { fileURLToPath } from "url";
+import authPlugin from "./plugins/auth.js";
+import cors from "@fastify/cors";
 
 // Obter o diretório atual
 const __filename = fileURLToPath(import.meta.url);
@@ -14,20 +14,26 @@ const __dirname = path.dirname(__filename);
 
 const server = fastify();
 
+// Configurar o CORS
+server.register(cors, {
+  origin: ["https://api-catalogo-eventos.onrender.com"], // Origem da API, talvez deja necessário adicionar a do frontend posteriormente
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+});
+
 // Registrar o Swagger
 server.register(swagger, {
   mode: "static",
   specification: {
-    path: path.join(__dirname, "swagger.yaml"), 
-    baseDir: __dirname, 
+    path: path.join(__dirname, "swagger.yaml"),
+    baseDir: __dirname,
   },
 });
 
 // Registrar o Swagger UI
 server.register(swaggerUi, {
-  routePrefix: '/docs', // Prefixo para acessar a UI da documentação
+  routePrefix: "/docs", // Prefixo para acessar a UI da documentação
   uiConfig: {
-    docExpansion: 'none',
+    docExpansion: "none",
     deepLinking: false,
   },
   staticCSP: true,
@@ -43,13 +49,16 @@ server.register(eventRoutes);
 
 // Configurar a porta e host
 const PORT = Number(process.env.PORT) || 3333;
-const HOST = process.env.HOST || 'localhost'; 
+const HOST = process.env.HOST || "localhost";
 
-server.listen({ port: PORT, host: HOST })
-  .then(() => console.log(`
+server
+  .listen({ port: PORT, host: HOST })
+  .then(() =>
+    console.log(`
         Servidor rodando em http://${HOST}:${PORT}
         Documentação Swagger em http://${HOST}:${PORT}/docs
-        `))
+        `)
+  )
   .catch((error) => {
     console.error(error);
     process.exit(1);
