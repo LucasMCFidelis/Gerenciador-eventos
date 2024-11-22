@@ -6,6 +6,8 @@ info:
 servers:
 - url: http://localhost:3333
   description: Servidor local
+- url: https://api-catalogo-eventos.onrender.com
+  description: Servidor de produção
 tags:
 - name: Usuários
   description: Operações de gerenciamento de usuários
