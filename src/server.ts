@@ -16,8 +16,9 @@ const server = fastify();
 
 // Configurar o CORS
 server.register(cors, {
-  origin: ["https://api-catalogo-eventos.onrender.com"], // Origem da API, talvez deja necessário adicionar a do frontend posteriormente
+  origin: "*", // Libera totalmente para testes
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  credentials: true,
 });
 
 // Registrar o Swagger
