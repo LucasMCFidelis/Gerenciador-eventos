@@ -2,14 +2,11 @@ import { prisma } from "./prisma.js";
 
 import { GetResponse } from "../../interfaces/getResponseInterface.js";
 import { Role } from "../../interfaces/roleInterface.js";
+import { UserRole } from "../../types/userRoleType.js";
+import { ValidateRoleName } from "../validators/validateRoleName.js";
 
 interface GetRoleResponse extends GetResponse {
   data?: Role;
-}
-
-export enum UserRole {
-  Admin = "Admin",
-  User = "User",
 }
 
 export async function getRoleByName(
@@ -17,7 +14,8 @@ export async function getRoleByName(
 ): Promise<GetRoleResponse> {
   try {
     // Validação do newRole usando o enum
-    if (!Object.values(UserRole).includes(roleName)) {
+    const validRoleName = ValidateRoleName(roleName)
+    if (!validRoleName) {
       return {
         status: 400,
         message: "Papel inválido. Somente 'Admin' ou 'User' são aceitos.",
