@@ -1,5 +1,7 @@
+import { UserRole } from "../types/userRoleType.js";
+
 export interface Role {
     roleId: number;
-    roleName: string;
+    roleName: UserRole;
     roleDescription: string | null;
 }
