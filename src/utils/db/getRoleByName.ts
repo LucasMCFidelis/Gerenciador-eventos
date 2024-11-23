@@ -40,7 +40,7 @@ export async function getRoleByName(
     // Monta objeto de acordo com a interface Role
     const roleData: Role = {
       roleId: role.roleId,
-      roleName: role.roleName,
+      roleName: role.roleName as UserRole,
       roleDescription: role.roleDescription,
     };
 

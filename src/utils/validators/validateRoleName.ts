@@ -1,4 +1,6 @@
-export function ValidateRoleName(roleName: string): boolean {
+import { UserRole } from "../../types/userRoleType.js";
+
+export function ValidateRoleName(roleName: UserRole): boolean {
   if (roleName !== "Admin" && roleName !== "User") {
     return false;
   }
