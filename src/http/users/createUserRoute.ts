@@ -41,7 +41,7 @@ export async function createUserRoute(fastify: FastifyInstance) {
                 data: {
                     firstName,
                     lastName,
-                    email,
+                    email: email.toLowerCase(),
                     phoneNumber,
                     password: hashedPassword
                 }

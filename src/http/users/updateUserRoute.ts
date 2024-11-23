@@ -53,7 +53,7 @@ export async function updateUserRoute(fastify: FastifyInstance) {
                 data: {
                     ...(firstName && { firstName }),
                     ...(lastName && { lastName }),
-                    ...(email && { email }),
+                    ...(email && { email: email.toLowerCase() }),
                     ...(phoneNumber && { phoneNumber })
                 }
             })

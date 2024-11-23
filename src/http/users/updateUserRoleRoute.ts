@@ -2,9 +2,10 @@ import { FastifyInstance } from "fastify";
 import { getUserById } from "../../utils/db/getUserById.js";
 import { prisma } from "../../utils/db/prisma.js";
 import { handleError } from "../../utils/handlers/handleError.js";
-import { getRoleByName, UserRole } from "../../utils/db/getRoleByName.js";
+import { getRoleByName } from "../../utils/db/getRoleByName.js";
 import { checkRole } from "../../utils/security/checkRole.js";
 import { ErrorResponse } from "../../types/errorResponseType.js";
+import { UserRole } from "../../types/userRoleType.js";
 
 export async function updateUserRoleRoute(fastify: FastifyInstance) {
     fastify.put<{

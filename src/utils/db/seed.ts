@@ -70,13 +70,13 @@ async function seedAdmins() {
         data: {
           firstName: admin.firstName,
           lastName: admin.lastName,
-          email: admin.email,
+          email: admin.email.toLowerCase(),
           phoneNumber: admin.phoneNumber,
           password: hashedPassword,
           roleId: roleResponse.data?.roleId,
         },
       });
-      
+
       console.log(`${admin.firstName} criado`);
     } catch (error) {
       console.error(error);

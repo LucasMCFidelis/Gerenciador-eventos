@@ -31,7 +31,7 @@ export async function getUserByEmail(userEmail: string): Promise<GetUserResponse
         // Buscar usuário no banco de dados com base no email fornecido
         const user = await prisma.user.findUnique({
             where: {
-                email: userEmail
+                email: userEmail.toLowerCase()
             },
             select: {
                 userId: true,

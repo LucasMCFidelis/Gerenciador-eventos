@@ -8,7 +8,7 @@ interface CheckExistingUserResponse extends GetResponse {
 export async function checkExistingUser(userEmail: string): Promise<CheckExistingUserResponse> {
     try {
         const existingUser = await prisma.user.findUnique({
-            where: { email: userEmail },
+            where: { email: userEmail.toLowerCase() },
             select: { email: true }
         })
 

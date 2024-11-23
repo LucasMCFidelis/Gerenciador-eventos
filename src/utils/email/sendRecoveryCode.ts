@@ -15,6 +15,8 @@ function generateRecoveryCode(length: number): string {
 // Função para enviar o código de recuperação por e-mail
 export async function sendRecoveryCode(userEmail: string): Promise<GetResponse> {
   try {
+    userEmail = userEmail.toLowerCase()
+
     // Gerar um código aleatório de 6 caracteres
     const recoveryCode = generateRecoveryCode(6);
 
@@ -26,13 +28,13 @@ export async function sendRecoveryCode(userEmail: string): Promise<GetResponse> 
     const recoveryRecord = await prisma.recoveryCode.upsert({
       where: {userEmail},
       update: {
-        userEmail: userEmail,
+        userEmail,
         code: recoveryCode,
         expiresAt: expiresAt,
         
       },
       create: {
-        userEmail: userEmail,
+        userEmail,
         code: recoveryCode,
         expiresAt: expiresAt,
       }

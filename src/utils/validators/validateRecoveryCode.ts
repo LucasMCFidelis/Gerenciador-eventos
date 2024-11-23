@@ -11,7 +11,7 @@ export async function validateRecoveryCode({userEmail, recoveryCode}: CodeValida
     // Buscar o código de recuperação associado ao usuário no banco de dados
     const recoveryRecord = await prisma.recoveryCode.findFirst({
       where: {
-        userEmail,
+        userEmail: userEmail.toLowerCase(),
         code: recoveryCode,
       },
     });
