@@ -4,11 +4,14 @@ import { schemaEventOrganizer } from "../../schemas/schemaEventOrganizerCadastre
 import { CadastreEventOrganizer } from "../../interfaces/cadastreEventOrganizer.js";
 import { checkExistingEventOrganizer } from "../../utils/validators/checkExistingEventOrganizer.js";
 import { prisma } from "../../utils/db/prisma.js";
+import { checkRole } from "../../utils/security/checkRole.js";
 
 export async function createEventOrganizerRoute(fastify:FastifyInstance) {
     fastify.post<{
         Body: CadastreEventOrganizer
-    }>('/eventos-organizadores' , async (request, reply) => {
+    }>('/eventos-organizadores', {
+        onRequest: [fastify.authenticate, await checkRole('Admin')]
+    }, async (request, reply) => {
         try {
             const {organizerName, organizerCnpj, organizerEmail, organizerPhoneNumber} = request.body
 
