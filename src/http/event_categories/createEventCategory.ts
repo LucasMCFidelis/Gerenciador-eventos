@@ -8,7 +8,7 @@ import { schemaEventCategory } from "../../schemas/schemaEventCategoryCadastre.j
 export async function createEventCategoryRoute(fastify:FastifyInstance) {
     fastify.post<{
         Body: CadastreEventCategory
-    }>('/eventos-organizadores', {
+    }>('/eventos-categorias', {
         onRequest: [fastify.authenticate, await checkRole('Admin')]
     }, async (request, reply) => {
         try {
