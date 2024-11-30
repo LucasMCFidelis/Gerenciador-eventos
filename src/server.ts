@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import authPlugin from "./plugins/auth.js";
 import cors from "@fastify/cors";
 import { eventOrganizersRoutes } from "./http/event_organizers/index.js";
+import { eventCategoryRoutes } from "./http/event_categories/index.js";
 
 // Obter o diretório atual
 const __filename = fileURLToPath(import.meta.url);
@@ -49,6 +50,7 @@ server.register(authPlugin);
 server.register(userRoutes);
 server.register(eventRoutes);
 server.register(eventOrganizersRoutes);
+server.register(eventCategoryRoutes);
 
 // Configurar a porta e host
 const PORT = Number(process.env.PORT) || 3333;
