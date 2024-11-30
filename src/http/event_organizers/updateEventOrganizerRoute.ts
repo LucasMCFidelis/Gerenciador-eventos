@@ -10,7 +10,7 @@ import { CadastreEventOrganizer } from "../../interfaces/cadastreEventOrganizer.
 import { schemaEventOrganizer } from "../../schemas/schemaEventOrganizerCadastre.js"
 import { checkExistingEventOrganizer } from "../../utils/validators/checkExistingEventOrganizer.js"
 
-export async function UpdateEventRoute(fastify: FastifyInstance) {
+export async function UpdateEventOrganizerRoute(fastify: FastifyInstance) {
     fastify.put<{
         Params: { id: string },
         Body: Partial<CadastreEventOrganizer>

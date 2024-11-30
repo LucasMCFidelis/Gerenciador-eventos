@@ -4,7 +4,7 @@ import { handleError } from "../../utils/handlers/handleError.js"
 import { checkRole } from "../../utils/security/checkRole.js"
 import { checkExistingEventOrganizer } from "../../utils/validators/checkExistingEventOrganizer.js"
 
-export async function deleteEventRoute(fastify: FastifyInstance) {
+export async function deleteEventOrganizerRoute(fastify: FastifyInstance) {
     fastify.delete<{ 
         Params: { id: string },
     }>('/eventos-organizadores/:id', {
