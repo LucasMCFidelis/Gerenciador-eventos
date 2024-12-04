@@ -3,8 +3,14 @@ import jwt from '@fastify/jwt';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export default fp(async function (fastify) {
+  const JWT_SECRET = process.env.JWT_SECRET
+  if(!JWT_SECRET){
+    console.log('A variável ambiente JWT_SECRET obrigatoriamente precisa ser definida');
+    return
+  }
+
   fastify.register(jwt, {
-    secret: process.env.JWT_SECRET || 'sua_chave_secreta_aqui'
+    secret: JWT_SECRET
   });
 
   // Adiciona o método `authenticate` ao Fastify
