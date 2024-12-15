@@ -4,8 +4,8 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 export default fp(async function (fastify) {
   const JWT_SECRET = process.env.JWT_SECRET
-    console.log('A variável ambiente JWT_SECRET obrigatoriamente precisa ser definida');
   if(!JWT_SECRET){
+    console.log('A variável ambiente JWT_SECRET obrigatoriamente precisa ser definida');
     return
   }
 

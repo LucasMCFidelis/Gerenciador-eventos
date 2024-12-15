@@ -11,7 +11,7 @@ export async function UpdateEventCategoryRoute(fastify: FastifyInstance) {
     fastify.put<{
         Params: { id: string },
         Body: Partial<EventCategory>
-    }>('/eventos-organizadores/:id',  {
+    }>('/eventos-categorias/:id',  {
         onRequest: [fastify.authenticate, await checkRole('Admin')]
     }, async (request, reply) => {
         try {
