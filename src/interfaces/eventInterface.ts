@@ -1,3 +1,4 @@
+import { Decimal } from "@prisma/client/runtime/library"
 import { Address } from "./addressInterface.js"
 
 export enum AccessibilityLevel {
@@ -14,9 +15,12 @@ export interface Event {
     title: string
     description?: string | null
     linkEvent?: string | null
+    price: Decimal
     address: Address
     startDateTime: Date
     endDateTime?: Date | null
     accessibilityLevel: AccessibilityLevel
-    createdAt: Date
+    createdAt: Date,
+    eventOrganizerId: string,
+    eventCategoryId: string
 }
