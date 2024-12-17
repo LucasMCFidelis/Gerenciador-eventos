@@ -20,6 +20,13 @@ export const schemaEvent = Joi.object({
         'string.base': 'O link deve ser uma string',
         'string.uri': 'O link deve ser uma URL válida',
     }),
+    price: Joi.number().precision(2).positive().max(999999.99).required().messages({
+        'number.base': 'Preço deve ser um número válido',
+        'number.positive': 'Preço deve ser maior que zero',
+        'number.max': 'Preço não pode ultrapassar R$ 999.999,99',
+        'number.precision': 'Preço deve ter no máximo 2 casas decimais',
+        'any.required': 'Preço é obrigatório'
+    }),
     address: Joi.object({
         street: Joi.string().required().custom(
             (value) => removeWhitespace(value)
